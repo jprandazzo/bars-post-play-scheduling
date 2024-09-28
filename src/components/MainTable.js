@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';  // Ensure correct import for firebaseConfig
 import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 import Modal from 'react-modal';
+import './MainTable.css';
 
-export function MainTable({ year, season, resetApp }) {
+export const MainTable = ({ year, season }) => {
   const [records, setRecords] = useState([]);
   const [isEventModalOpen, setEventModalOpen] = useState(false);
   const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
@@ -134,11 +135,12 @@ export function MainTable({ year, season, resetApp }) {
 
   return (
     <div>
-      <button onClick={resetApp}>Home</button>
-      <h2>{`${season} ${year}`}</h2>
-      <button onClick={() => setEventModalOpen(true)}>Add New Event</button>
-      <button onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
-      
+      {/* <h2>{`${season} ${year}`}</h2> */}
+      <div className='add-event-season-buttons'>
+        <button onClick={() => setEventModalOpen(true)}>Add New Event</button>
+        <button onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
+      </div>
+
       {/* Render Main Table */}
       <table>
         <thead>

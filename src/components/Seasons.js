@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Seasons({ year, setSeason }) {
+export const Seasons = ({ year, setSeason }) => {
   const seasons = ['Winter', 'Spring', 'Summer', 'Fall'];
 
   return (

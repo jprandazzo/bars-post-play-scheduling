@@ -1,0 +1,7 @@
+.add-event-season-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5em; /* Add spacing between season buttons */
+    margin-bottom: 1em;
+}
