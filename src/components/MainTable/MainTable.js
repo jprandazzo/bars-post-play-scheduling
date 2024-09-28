@@ -39,17 +39,14 @@ export const MainTable = ({ currentSchedule }) => {
   
       const formattedRecords = records.docs.map((doc) => {
         const eventData = doc.data();
-        
-        let eventDateStr = eventData.eventDate.replace(/\u202F/g, ' ');  // Replace non-breaking spaces with regular spaces
-        console.log("Event Date Before Parsing (Cleaned):", eventDateStr);
-
-        const eventDate = parse(eventDateStr, "MMMM d, yyyy hh:mm:ss a", new Date());
-        console.log("eventDateafterparsing: "+eventDate)
+  
+        // Parse without "at"
+        const eventDate = parse(eventData.eventDate, "MMMM d, yyyy hh:mm:ss a", new Date());
   
         return {
           ...eventData,
           id: doc.id,
-          eventDate,  // Use the parsed Date object
+          eventDate,  // Store as Date object
         };
       });
   

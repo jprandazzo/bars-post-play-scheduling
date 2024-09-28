@@ -1,10 +1,10 @@
-export const convertTimestampToFormattedString = (dateObj, format = "MMMM d, yyyy 'at' hh:mm:ss a z") => {
+export const convertTimestampToFormattedString = (dateObj, format = "MMMM d, yyyy 'at' hh:mm:ss a") => {
   let date;
 
   if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
     date = dateObj;
   } else if (typeof dateObj === 'string' || dateObj instanceof String) {
-    date = new Date(dateObj);
+    date = new Date(dateObj);  // Convert string to Date object
   } else {
     console.error("Invalid Date:", dateObj);
     return 'Invalid Date';
@@ -15,7 +15,6 @@ export const convertTimestampToFormattedString = (dateObj, format = "MMMM d, yyy
     return 'Invalid Date';
   }
 
-  // Format components based on the desired output
   const components = {
     d: date.getDate(),
     dd: String(date.getDate()).padStart(2, '0'),
@@ -26,14 +25,13 @@ export const convertTimestampToFormattedString = (dateObj, format = "MMMM d, yyy
     mm: String(date.getMinutes()).padStart(2, '0'),
     ss: String(date.getSeconds()).padStart(2, '0'),
     a: date.getHours() >= 12 ? 'PM' : 'AM',
-    z: 'UTC' + (date.getTimezoneOffset() / -60),  // Add timezone based on offset
   };
 
-  const regex = /(MMMM|dd|d|yyyy|hh|h|mm|ss|a|z|'[^']*')/g;
+  const regex = /(MMMM|dd|d|yyyy|hh|h|mm|ss|a|'[^']*')/g;
 
   return format.replace(regex, (match) => {
     if (match.startsWith("'")) {
-      return match.slice(1, -1);
+      return match.slice(1, -1);  // Keep "at" as a literal string
     }
     return components[match] || match;
   });

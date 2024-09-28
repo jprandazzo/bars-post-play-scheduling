@@ -54,16 +54,18 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
   
     const combinedDate = parseDateInput(newEvent.eventDate, time);  // Combine date and time
   
-    // Convert the Date object back to the required string format
-    const eventDateString = convertTimestampToFormattedString(combinedDate, "MMMM d, yyyy 'at' hh:mm:ss a z");
+    // Convert the Date object to the required string format without "at"
+    const eventDateString = convertTimestampToFormattedString(combinedDate, "MMMM d, yyyy hh:mm:ss a");
   
     const updatedEvent = {
       ...newEvent,
-      eventDate: eventDateString,  // Save as string in Firestore
+      eventDate: eventDateString,  // Store as a formatted string without "at"
     };
   
     handleAddNewEvent(updatedEvent, setAllRecords, setEventModalOpen);
   };
+  
+  
   
   
   
