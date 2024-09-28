@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import './NavBar.css';
-import { getCurrentSeason } from "../utils/getCurrentSeason";
+import { getCurrentSeason } from "../utils/seasonUtils/getCurrentSeason";
 
 export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
   const [popupVisible, setPopupVisible] = useState(false);

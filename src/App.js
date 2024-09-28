@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MainTable } from './components/MainTable';
 import { NavBar } from './components/NavBar';
-import { getCurrentSeason } from './utils/getCurrentSeason';
+import { getCurrentSeason } from './utils/seasonUtils/getCurrentSeason';
 import './App.css'
 
 export const App = () => {
@@ -20,7 +20,7 @@ export const App = () => {
         {currentSchedule.season} {currentSchedule.year}
       </h1>
 
-      <MainTable year={currentSchedule.year} season={currentSchedule.season} />
+      <MainTable currentSchedule={currentSchedule} />
 
       
     </div>

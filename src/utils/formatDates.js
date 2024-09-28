@@ -1,7 +1,21 @@
-export const convertTimestampToFormattedString = (timestamp, format = "dddd, MMM d yyyy 'at' HH:mm a") => {
-  // Convert Firestore Timestamp to JavaScript Date object
-  const milliseconds = timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
-  const date = new Date(milliseconds);
+export const convertTimestampToFormattedString = (input, format = "dddd, MMM d yyyy 'at' HH:mm a") => {
+  let date;
+
+  // Check if input is a Firestore Timestamp object
+  if (input && typeof input === 'object' && input.seconds !== undefined && input.nanoseconds !== undefined) {
+    // Convert Firestore Timestamp to JavaScript Date object
+    const milliseconds = input.seconds * 1000 + Math.floor(input.nanoseconds / 1000000);
+    date = new Date(milliseconds);
+  } else if (typeof input === 'string') {
+    // Handle input as a string (e.g., 'Sat Sep 28 2024 06:14:06 GMT-0400 (Eastern Daylight Time)')
+    date = new Date(input);
+
+    if (isNaN(date)) {
+      throw new Error("Invalid date string provided");
+    }
+  } else {
+    throw new Error("Invalid input type. Expected a Firestore Timestamp or a valid date string.");
+  }
 
   // Build a map for all the date components
   const components = {
