@@ -1,120 +1,132 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { Timestamp } from 'firebase/firestore'; // Assuming you're using Firebase
-import { getCurrentSeason } from '../../utils/seasonUtils/getCurrentSeason';
 
-export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent, setNewEvent, handleAddNewEvent, setAllRecords }) => {
-  // State to hold the time values
-  const [time, setTime] = useState({
-    hour: '',
-    minute: '',
-    amPm: 'AM'
-  });
 
-  // Function to auto-populate dayOfWeek, season, and year based on the event date
+import { getSeason } from '../../utils/seasonUtils';
+import { parseDateInput } from '../../utils/dateUtils';
+import { convertTimestampToFormattedString } from '../../utils/dateUtils';
+
+export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllRecords }) => {
+  const [time, setTime] = useState({ hour: '', minute: '', amPm: 'AM' });
+
+  // Function to format Date object to 'YYYY-MM-DD'
+  const formatDateForInput = (date) => {
+    return date instanceof Date ? date.toISOString().split('T')[0] : '';  // Ensure date is a valid Date object
+  };
+
   const handleDateChange = (e) => {
-    const eventDate = new Date(e.target.value);
+    const [year, month, day] = e.target.value.split('-').map(Number);
+    const eventDate = new Date(year, month - 1, day);  // Create a Date object
     const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
-    const year = eventDate.getFullYear();
-    
-    // Determine season based on month
-    const month = eventDate.getMonth() + 1; // getMonth() is zero-based
-    let season = '';
-    if ([12, 1, 2].includes(month)) {
-      season = 'Winter';
-    } else if ([3, 4, 5].includes(month)) {
-      season = 'Spring';
-    } else if ([6, 7, 8].includes(month)) {
-      season = 'Summer';
-    } else {
-      season = 'Fall';
-    }
+    console.log("AddNewEventModal updated eventDate:", eventDate);  // Log updated eventDate
 
-    setNewEvent({
-      ...newEvent,
-      eventDate: e.target.value,
+
+    // Update the event state with the date change
+    setNewEvent((prevEvent) => ({
+      ...prevEvent,
+      eventDate,  // Store as a Date object
       dayOfWeek,
       sportYear: year,
-      sportSeason: season
+      sportSeason: getSeason(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`).season
+    }));
+
+    console.log("Updated event after date change:", eventDate);  // Debugging log
+  };
+
+  const handleInputChange = (field, value) => {
+    setNewEvent((prevEvent) => {
+      // Ensure state immutability and update correctly
+      const updatedEvent = {
+        ...prevEvent,
+        [field]: value
+      };
+
+      console.log(`Updated event for field ${field}:`, updatedEvent);  // Debugging log for each field change
+      return updatedEvent;
     });
   };
 
-  // Function to combine date and time into a Timestamp object
   const handleAddEventWithTimestamp = () => {
     if (!newEvent.eventDate || !time.hour || !time.minute || !time.amPm) {
       alert("Please provide both date and time");
       return;
     }
-
-    const [year, month, day] = newEvent.eventDate.split('-');
-    const hour = parseInt(time.hour, 10) % 12 + (time.amPm === 'PM' ? 12 : 0); // Convert to 24-hour format
-    const minute = parseInt(time.minute, 10);
-
-    const combinedDate = new Date(year, month - 1, day, hour, minute); // Combine date and time
-
-    // const eventTimestamp = Timestamp.fromDate(combinedDate); // Create Firebase Timestamp with seconds and nanoseconds
-
-    // console.log(eventTimestamp)
+  
+    const combinedDate = parseDateInput(newEvent.eventDate, time);  // Combine date and time
+  
+    // Convert the Date object back to the required string format
+    const eventDateString = convertTimestampToFormattedString(combinedDate, "MMMM d, yyyy 'at' hh:mm:ss a z");
+  
     const updatedEvent = {
       ...newEvent,
-      eventDate: combinedDate,
-      year: combinedDate.getFullYear(),
-      season: getCurrentSeason(combinedDate) // Save the Timestamp in the event
+      eventDate: eventDateString,  // Save as string in Firestore
     };
-
+  
     handleAddNewEvent(updatedEvent, setAllRecords, setEventModalOpen);
   };
+  
+  
+  
 
   return (
     <Modal isOpen={isEventModalOpen} onRequestClose={() => setEventModalOpen(false)}>
       <h2>Add New Event</h2>
 
       {/* Date input */}
+      <label>Date</label>
       <input
         type="date"
-        placeholder="Event Date"
-        value={newEvent.eventDate || ''}
+        value={formatDateForInput(newEvent?.eventDate)}  // Format the Date object to 'YYYY-MM-DD'
         onChange={handleDateChange}
       />
 
       {/* Week number input */}
+      <label>Week Number</label>
       <input
         type="text"
         placeholder="Week number"
-        value={newEvent.weekNumber || ''}
-        onChange={(e) => setNewEvent({ ...newEvent, weekNumber: e.target.value })}
+        value={newEvent?.weekNumber || ''}  // Display the current state
+        onChange={(e) => handleInputChange('weekNumber', e.target.value)}  // Update the state
       />
 
+      {/* Sport input */}
+      <label>Sport</label>
       <input
         type="text"
         placeholder="Sport"
-        value={newEvent.sport || ''}
-        onChange={(e) => setNewEvent({ ...newEvent, sport: e.target.value })}
+        value={newEvent?.sport || ''}  // Display the current state
+        onChange={(e) => handleInputChange('sport', e.target.value)}  // Update the state
       />
 
-      {/* Display auto-populated fields */}
+      {/* WTNB or Coed input */}
+      <label>WTNB or Coed</label>
       <input
         type="text"
-        placeholder="Day of Week"
-        value={newEvent.dayOfWeek || ''}
-        readOnly
+        value={newEvent?.wtnbOrCoed || ''}  // Display the current state
+        onChange={(e) => handleInputChange('wtnbOrCoed', e.target.value)}  // Update the state
       />
 
+      {/* Confirmed checkbox */}
+      <label>
+        Is Confirmed:
+        <input
+          type="checkbox"
+          checked={newEvent?.isConfirmed || false}  // Display the current state
+          onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}  // Update the state
+        />
+      </label>
+
+      {/* Location */}
+      <label>Location</label>
       <input
         type="text"
-        placeholder="Sport Season"
-        value={newEvent.sportSeason || ''}
-        readOnly
-      />
-
-      <input
-        type="number"
-        placeholder="Sport Year"
-        value={newEvent.sportYear || ''}
-        readOnly
+        placeholder="Location"
+        value={newEvent?.location || ''}  // Display the current state
+        onChange={(e) => handleInputChange('location', e.target.value)}  // Update the state
       />
 
       {/* Time Input Section */}
+      <label>Time</label>
       <div>
         <input
           type="number"
@@ -142,30 +154,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
         </select>
       </div>
 
-      <input
-        type="text"
-        placeholder="WTNB or Coed"
-        value={newEvent.wtnbOrCoed || ''}
-        onChange={(e) => setNewEvent({ ...newEvent, wtnbOrCoed: e.target.value })}
-      />
-
-      <label>
-        Is Confirmed:
-        <input
-          type="checkbox"
-          checked={newEvent.isConfirmed || false}
-          onChange={(e) => setNewEvent({ ...newEvent, isConfirmed: e.target.checked })}
-        />
-      </label>
-
-      {/* Other inputs for remaining fields */}
-      <input
-        type="text"
-        placeholder="Location"
-        value={newEvent.location || ''}
-        onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-      />
-
+      {/* Buttons */}
       <button onClick={handleAddEventWithTimestamp}>Add Event</button>
       <button onClick={() => setEventModalOpen(false)}>Cancel</button>
     </Modal>

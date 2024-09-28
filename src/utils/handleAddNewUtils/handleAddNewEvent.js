@@ -6,9 +6,10 @@ export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOp
 
   try {
     const eventsCollectionRef = collection(db, 'post play events');
+    console.log(Timestamp.fromDate(newEvent.eventDate))
     await addDoc(eventsCollectionRef, {
       weekNumber: newEvent.weekNumber,
-      eventDate: Date(newEvent.date),
+      eventDate: Timestamp.fromDate(newEvent.eventDate),
       sport: newEvent.sport,
       wtnbOrCoed: newEvent.wtnbOrCoed,
       dayOfWeek: newEvent.dayOfWeek,
@@ -20,8 +21,8 @@ export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOp
       isConfirmed: newEvent.isConfirmed  | false,
       isPizzaNight: newEvent.isPizzaNight | false,
       isPizzaOrdered: newEvent.isPizzaOrdered | false,
-      year: newEvent.year,
-      season: newEvent.season,
+      sportYear: newEvent.sportYear,
+      sportSeason: newEvent.sportSeason,
     });
 
     const data = await getDocs(eventsCollectionRef);

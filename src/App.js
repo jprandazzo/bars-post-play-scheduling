@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { MainTable } from './components/MainTable';
-import { NavBar } from './components/NavBar';
+import { MainTable } from './components/MainTable/MainTable';
+import { NavBar } from './components/NavBar/NavBar';
 import { getCurrentSeason } from './utils/seasonUtils/getCurrentSeason';
 import './App.css'
 
 export const App = () => {
-  // const currentYear = new Date().getFullYear();
-  // const currentMonth = new Date().getMonth();
   const [currentSchedule, setCurrentSchedule] = useState(getCurrentSeason())
 
   return (
@@ -17,7 +15,7 @@ export const App = () => {
 
       <h1>Schedule for season:
         <br/>
-        {currentSchedule.season} {currentSchedule.year}
+        {currentSchedule.season[0].toUpperCase()+currentSchedule.season.slice(1)} {currentSchedule.year}
       </h1>
 
       <MainTable currentSchedule={currentSchedule} />

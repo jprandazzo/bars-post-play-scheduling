@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import './NavBar.css';
-import { getCurrentSeason } from "../utils/seasonUtils/getCurrentSeason";
+
+import { getCurrentSeason } from "../../utils/seasonUtils/getCurrentSeason";
+
+import './NavBar.css'
 
 export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
   const [popupVisible, setPopupVisible] = useState(false);
@@ -13,23 +15,26 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
   };
 
   const handleSeasonChange = (direction) => {
-    const seasonOrder = ['Winter', 'Spring', 'Summer', 'Fall'];
+    const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
     const currentSeasonIndex = seasonOrder.indexOf(currentSchedule.season);
-    
+  
+  
     if (direction === 'prev') {
       if (currentSeasonIndex === 0) {
-        setCurrentSchedule({ year: currentSchedule.year - 1, season: 'Fall' });
+        setCurrentSchedule({ year: currentSchedule.year - 1, season: 'fall' });
       } else {
         setCurrentSchedule({ year: currentSchedule.year, season: seasonOrder[currentSeasonIndex - 1] });
       }
     } else if (direction === 'next') {
       if (currentSeasonIndex === 3) {
-        setCurrentSchedule({ year: currentSchedule.year + 1, season: 'Winter' });
+        setCurrentSchedule({ year: currentSchedule.year + 1, season: 'winter' });
       } else {
         setCurrentSchedule({ year: currentSchedule.year, season: seasonOrder[currentSeasonIndex + 1] });
       }
     }
   };
+  
+  
 
   const handlePopupClick = (e) => {
     if (e.target.className === 'popup-container') {
