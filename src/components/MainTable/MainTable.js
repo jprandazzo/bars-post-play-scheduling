@@ -14,6 +14,7 @@ import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
+    const [uniqueLocations, setUniqueLocations] = useState([]);  // Store deduplicated locations
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
@@ -44,8 +45,8 @@ export const MainTable = ({ currentSchedule }) => {
         selectedDayOfWeek: '',
         selectedIsPizzaNight: '',
         selectedLocation: '',
-        selectedSports: ["Dodgeball", "Pickleball", "Bowling", "Kickball"],  // Store multiple selected sports with correct capitalization
-        selectedWtnbOrCoed: ["WTNB", "Coed"],  // Store multiple WTNB/Coed selections with correct capitalization
+        selectedSports: ["Dodgeball", "Pickleball", "Bowling", "Kickball"],
+        selectedWtnbOrCoed: ["WTNB", "Coed"],
     });
 
     const [isFilterDropdownVisible, setFilterDropdownVisible] = useState({
@@ -56,23 +57,19 @@ export const MainTable = ({ currentSchedule }) => {
         wtnbOrCoed: false,
     });
 
-    // Fetch records from Firestore
     useEffect(() => {
         fetchData({ setAllRecords });
     }, []);
-
-    // Log fetched records and filters to debug
-    useEffect(() => {
-        console.log('Fetched all records:', allRecords);
-        console.log('User filters:', userFilters);
-    }, [allRecords, userFilters]);
 
     useEffect(() => {
         const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
         const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
         setFilteredAndSortedRecords(filteredAndSorted);
 
-        console.log('Filtered and sorted records:', filteredAndSorted);
+        // Deduplicate locations from filtered records
+        const uniqueLocationsSet = new Set(filteredAndSorted.map(record => record.location));
+        setUniqueLocations(Array.from(uniqueLocationsSet));  // Convert Set to array
+
     }, [allRecords, currentSchedule, userFilters]);
 
     const handleDeleteEvent = async (id) => {
@@ -137,9 +134,9 @@ export const MainTable = ({ currentSchedule }) => {
                             <span style={{ cursor: 'pointer' }}>
                                 <input
                                     type="date"
-                                    value={userFilters.selectedDate}  // Single date selection
-                                    onChange={(e) => handleFilterChange('selectedDate', e.target.value)}  // Handle date change
-                                    style={{ display: 'inline-block' }}  // Show calendar on click
+                                    value={userFilters.selectedDate}
+                                    onChange={(e) => handleFilterChange('selectedDate', e.target.value)}
+                                    style={{ display: 'inline-block' }}
                                 />
                             </span>
                         </th>
@@ -149,7 +146,6 @@ export const MainTable = ({ currentSchedule }) => {
                             <span onClick={() => toggleFilterDropdown('sport')} style={{ cursor: 'pointer' }}>🔽</span>
                             {isFilterDropdownVisible.sport && (
                                 <div className="dropdown">
-                                    {/* Multiple sports selection */}
                                     <label>
                                         <input
                                             type="checkbox"
@@ -191,7 +187,6 @@ export const MainTable = ({ currentSchedule }) => {
                             <span onClick={() => toggleFilterDropdown('wtnbOrCoed')} style={{ cursor: 'pointer' }}>🔽</span>
                             {isFilterDropdownVisible.wtnbOrCoed && (
                                 <div className="dropdown">
-                                    {/* WTNB or Coed selection */}
                                     <label>
                                         <input
                                             type="checkbox"
@@ -221,11 +216,17 @@ export const MainTable = ({ currentSchedule }) => {
                             <span onClick={() => toggleFilterDropdown('location')} style={{ cursor: 'pointer' }}>🔽</span>
                             {isFilterDropdownVisible.location && (
                                 <div className="dropdown">
-                                    <input
-                                        type="text"
+                                    <select
                                         value={userFilters.selectedLocation}
                                         onChange={(e) => handleFilterChange('selectedLocation', e.target.value)}
-                                    />
+                                    >
+                                        <option value="">All</option>
+                                        {uniqueLocations.map((location, index) => (
+                                            <option key={index} value={location}>
+                                                {location}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
                         </th>
