@@ -1,6 +1,6 @@
 // import { convertDateObjectToFormattedString } from "./dateUtils";
 
-export const filterEvents = (events, currentSchedule) => {
+export const filterEventsToCurrentSeason = (events, currentSchedule) => {
     // events.forEach(event=> console.log(event.sportYear + event.sportSeason + convertDateObjectToFormattedString(event.eventDate)))
     // console.log(currentSchedule.year)
     return events.filter(
