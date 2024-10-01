@@ -1,59 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
+import { getJsDate } from '../../../utils/getJsDate';
+
 export const EditEventModal = ({
   isOpen,
   onClose,
   event,
-  editedEvent,
-  setEditedEvent,
-  handleSaveChanges,
-  handleDiscardChanges,
+  onEdit,
+  isEditModalOpen,
+  setIsEditModalOpen,
+  // editedEvent,
+  // setEditedEvent,
+  // handleSaveChanges,
+  // handleDiscardChanges,
 }) => {
-  const [time, setTime] = useState({ hour: '', minute: '', amPm: 'AM' });
+  const [editedEvent, setEditedEvent] = useState(event)
+  const [time, setTime] = useState({ hour: event.eventDate.hour, minute: event.eventDate.minute, amPm: event.eventDate.amPm });
+  console.log(time)
 
+  const formatDateForInput = (date) => {
+    return date instanceof Date ? date.toISOString().split('T')[0] : '';  // Ensure date is valid
+  };
   // Initialize the state for editedEvent when the modal opens
-  useEffect(() => {
-    if (event) {
-      // Convert eventDate to a Date object if it's a string
-      const eventDate = new Date(event.eventDate);
-      const hours = eventDate.getHours() % 12 || 12;
-      const minutes = eventDate.getMinutes();
-      const amPm = eventDate.getHours() >= 12 ? 'PM' : 'AM';
+  // do i need this?
+  // useEffect(() => {
+  //   if (event) {
+  //     // Convert eventDate to a Date object if it's a string
+  //     const eventDate = getJsDate(event.eventDate);
+  //     const hours = event.eventDate.hour
+  //     const minutes = event.eventDate.minute
+  //     const amPm = event.eventDate.amPm
 
-      setEditedEvent(event);  // Set the initial state for editedEvent
-      setTime({
-        hour: hours.toString().padStart(2, '0'),
-        minute: minutes.toString().padStart(2, '0'),
-        amPm,
-      });
-    }
-  }, [event, setEditedEvent]);
+  //     setEditedEvent(event);  // Set the initial state for editedEvent
+  //     // setTime({
+  //     //   hour: hours.toString().padStart(2, '0'),
+  //     //   minute: minutes.toString().padStart(2, '0'),
+  //     //   amPm,
+  //     // });
+  //   }
+  // }, [event]);
 
   // Function to format Date object to 'YYYY-MM-DD'
-  const formatDateForInput = (date) => {
-    // Check if date is valid and handle both string and Date objects
-    if (date instanceof Date && !isNaN(date.getTime())) {
-      return date.toISOString().split('T')[0];
-    }
-    const parsedDate = new Date(date);  // Try to parse a string as a Date object
-    if (!isNaN(parsedDate.getTime())) {
-      return parsedDate.toISOString().split('T')[0];
-    }
+  // const formatDateForInput = (date) => {
+  //   // Check if date is valid and handle both string and Date objects
+  //   if (date instanceof Date && !isNaN(date.getTime())) {
+  //     return date.toISOString().split('T')[0];
+  //   }
+  //   const parsedDate = new Date(date);  // Try to parse a string as a Date object
+  //   if (!isNaN(parsedDate.getTime())) {
+  //     return parsedDate.toISOString().split('T')[0];
+  //   }
 
-    console.error('Invalid or undefined date:', date);  // Log invalid dates
-    return '';  // Fallback to empty string for invalid dates
-  };
+  //   console.error('Invalid or undefined date:', date);  // Log invalid dates
+  //   return '';  // Fallback to empty string for invalid dates
+  // };
 
   const handleDateChange = (e) => {
     const [year, month, day] = e.target.value.split('-').map(Number);
     const eventDate = new Date(year, month - 1, day);  // Create a Date object
-    const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
+    // const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
 
     setEditedEvent((prev) => ({
       ...prev,
-      eventDate,
-      dayOfWeek
+      eventDate: eventDate,
+      // dayOfWeek
+    }));
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditedEvent((prevEvent) => ({
+      ...prevEvent,
+      [field]: value
     }));
   };
 
@@ -62,97 +80,193 @@ export const EditEventModal = ({
       alert("Please provide both date and time");
       return;
     }
-
-    const combinedDate = new Date(
-      editedEvent.eventDate.getFullYear(),
-      editedEvent.eventDate.getMonth(),
-      editedEvent.eventDate.getDate(),
-      time.amPm === 'PM' ? parseInt(time.hour, 10) + 12 : parseInt(time.hour, 10),
-      parseInt(time.minute, 10)
-    );
-
+    const transformedDate = getJsDate(editedEvent.eventDate)
+    
     const updatedEvent = {
       ...editedEvent,
-      eventDate: combinedDate,
+      eventDate: {
+        year: transformedDate.getFullYear(),
+        month: transformedDate.getMonth()+1,
+        date: transformedDate.getDate(),
+        hour: time.hour,
+        minute: time.minute,
+        amPm: time.amPm
+      },
     };
-
-    handleSaveChanges(updatedEvent);
+    
+    onEdit(updatedEvent); //update this
+    setIsEditModalOpen(false);  // Close the modal after saving
   };
+
+//   const handleSaveChanges = () => {
+//     // Convert the date object into a string format (e.g., "YYYY-MM-DD")
+//     const eventDateString = event.eventDate instanceof Date ? event.eventDate.toISOString().split('T')[0] : '';  // Or your preferred format
+  
+//     const updatedEvent = {
+//       ...event,
+//       eventDate: eventDateString,  // Send the date as a string to Firestore
+//     };
+  
+//     onEdit(updatedEvent);  // Send the event to Firestore
+//     setIsEditModalOpen(false);  // Close the modal after saving
+// };
+
+const handleDiscardChanges = () => {
+  if (window.confirm("Are you sure you want to discard changes?")) {
+      setEditedEvent(event);  // Reset the edited event back to the original state
+      setIsEditModalOpen(false);
+  }
+};
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose}>
       <h2>Edit Event</h2>
 
-      {/* Date input */}
-      <label>Date</label>
-      <input
-        type="date"
-        value={formatDateForInput(editedEvent.eventDate)}  // Format the Date object to 'YYYY-MM-DD'
-        onChange={handleDateChange}
-      />
+      <div>
+        <label>Date
+          <input
+            type="date"
+            value={formatDateForInput(getJsDate(editedEvent.eventDate))}  // YYYY-MM-DD
+            onChange={handleDateChange}
+          />
+        </label>
+      </div>
 
-      {/* Week number input */}
-      <label>Week Number</label>
-      <input
-        type="text"
-        value={editedEvent.weekNumber}
-        onChange={(e) => setEditedEvent({ ...editedEvent, weekNumber: e.target.value })}
-      />
+      <div>
+        <label>Time
+          <input
+            type="number"
+            placeholder="HH"
+            value={time.hour}
+            onChange={(e) => setTime({...time, hour: e.target.value})}
+            min="01"
+            max="12"
+          />
+          <span>:</span>
+          <input
+            type="number"
+            placeholder="MM"
+            value={time.minute}
+            onChange={(e) => setTime({...time, minute: e.target.value})}
+            min="00"
+            max="59"
+          />
+          <select
+            value={time.amPm}
+            onChange={(e) => setTime({...time, amPm: e.target.value})}
+          >
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </label>
+      </div>
 
-      {/* Sport input */}
-      <label>Sport</label>
-      <input
-        type="text"
-        value={editedEvent.sport}
-        onChange={(e) => setEditedEvent({ ...editedEvent, sport: e.target.value })}
-      />
+      <div>
+        <label>Week Number
+          <input
+            type="text"
+            value={editedEvent.weekNumber}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, weekNumber: e.target.value })}
+            onChange={(e) => handleInputChange('weekNumber', e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* WTNB or Coed input */}
-      <label>WTNB or Coed</label>
-      <input
-        type="text"
-        value={editedEvent.wtnbOrCoed}
-        onChange={(e) => setEditedEvent({ ...editedEvent, wtnbOrCoed: e.target.value })}
-      />
+      <div>
+        <label>Sport
+          <input
+            type="text"
+            value={editedEvent.sport}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, sport: e.target.value })}
+            onChange={(e) => handleInputChange('sport', e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Day of Week */}
-      <label>Day of Week</label>
-      <input
-        type="text"
-        value={editedEvent.dayOfWeek}
-        readOnly
-      />
+      <div>
+        <label>WTNB or Coed
+          <input
+            type="text"
+            value={editedEvent.wtnbOrCoed}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, wtnbOrCoed: e.target.value })}
+            onChange={(e) => handleInputChange('wtnbOrCoed', e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Number of Attendees */}
-      <label>Number of Attendees</label>
-      <input
-        type="number"
-        value={editedEvent.numAttendees}
-        onChange={(e) => setEditedEvent({ ...editedEvent, numAttendees: e.target.value })}
-      />
+      <div>
+        <label>Number of Attendees
+          <input
+            type="number"
+            value={editedEvent.numAttendees}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, numAttendees: e.target.value })}
+            onChange={(e) => handleInputChange('numAttendees', e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Location */}
-      <label>Location</label>
-      <input
-        type="text"
-        value={editedEvent.location}
-        onChange={(e) => setEditedEvent({ ...editedEvent, location: e.target.value })}
-      />
+      <div>
+        <label>Location
+          <input
+            type="text"
+            value={editedEvent.location}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, location: e.target.value })}
+            onChange={(e) => handleInputChange('location', e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Confirmed checkbox */}
-      <label>
-        Is Confirmed:
-        <input
-          type="checkbox"
-          checked={editedEvent.isConfirmed || false}
-          onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-        />
-      </label>
+      <div>
+        <label>
+          Is Contacted:
+          <input
+            type="checkbox"
+            checked={editedEvent.isContacted || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isContacted', e.target.checked)}
+          />
+        </label>
+      </div>
+      
+      <div>
+        <label>
+          Is Confirmed:
+          <input
+            type="checkbox"
+            checked={editedEvent.isConfirmed || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
+          />
+        </label>
+      </div>
 
-      {/* Buttons */}
+      <div>
+        <label>
+          Is Pizza Night:
+          <input
+            type="checkbox"
+            checked={editedEvent.isPizzaNight || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Is Pizza Confirmed:
+          <input
+            type="checkbox"
+            checked={editedEvent.isPizzaNight || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+          />
+        </label>
+      </div>
+
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-        <button onClick={handleSave}>Save Changes</button>
-        <button onClick={handleDiscardChanges}>Discard Changes</button>
+        <button type="button" onClick={handleSave}>Save Changes</button>
+        <button type="button" onClick={handleDiscardChanges}>Discard Changes</button>
       </div>
     </Modal>
   );

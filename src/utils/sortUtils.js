@@ -1,4 +1,4 @@
-// utils/sortUtils.js
+import { getJsDate } from "./getJsDate";
 
 /**
  * Sort records by date ascending, then week number ascending, then sport, then WTNB/Coed (WTNB first).
@@ -8,9 +8,7 @@
 export const sortRecords = (records) => {
     return records.sort((a, b) => {
       // 1. Sort by date ascending
-      const getJsDate = (dateObject) => {
-        return new Date(`${dateObject.year}-${dateObject.month}-${dateObject.date} ${dateObject.hour}:${dateObject.minute} ${dateObject.amPm}`)
-      }
+
       const dateA = getJsDate(a.eventDate);
       const dateB = getJsDate(b.eventDate);
   

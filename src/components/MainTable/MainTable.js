@@ -13,7 +13,7 @@ import { EventRow } from './EventRow/EventRow';
 export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
-    const [isEventModalOpen, setEventModalOpen] = useState(false);
+    const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
       eventDate: {
@@ -71,7 +71,7 @@ export const MainTable = ({ currentSchedule }) => {
     return (
         <div>
             <div className='add-event-season-buttons'>
-                <button type="button" onClick={() => setEventModalOpen(true)}>Add New Event</button>
+                <button type="button" onClick={() => setIsEventModalOpen(true)}>Add New Event</button>
                 <button type="button" onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
             </div>
 
@@ -103,10 +103,9 @@ export const MainTable = ({ currentSchedule }) => {
                 </tbody>
             </table>
 
-            {/* Add New Event Modal */}
-            <AddNewEventModal {...{ isEventModalOpen, setEventModalOpen, handleAddNewEvent, setAllRecords, setNewEvent, newEvent }} />
+            <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, setAllRecords, setNewEvent, newEvent }} />
 
-            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, setAllRecords, setEventModalOpen }} />
+            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, setAllRecords, setIsEventModalOpen }} />
         </div>
     );
 };

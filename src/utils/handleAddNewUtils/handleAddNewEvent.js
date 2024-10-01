@@ -4,7 +4,7 @@ import { db } from '../../firebaseConfig';  // Ensure correct import for firebas
 import { fetchData } from '../fetchData';
 
 // Function to handle adding a new event
-export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOpen) => {
+export const handleAddNewEvent = async (newEvent, setAllRecords, setIsEventModalOpen) => {
 
   try {
     const eventsCollectionRef = collection(db, 'post play events');
@@ -27,7 +27,7 @@ export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOp
     });
 
     fetchData({setAllRecords})
-    setEventModalOpen(false);
+    setIsEventModalOpen(false);
   } catch (error) {
     console.error("Error adding event:", error);
   }

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 
 import { getSeason } from '../../utils/seasonUtils';
-import { parseDateInput, convertDateObjectToFormattedString } from '../../utils/dateUtils';
 
-export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllRecords }) => {
+export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllRecords }) => {
   const [time, setTime] = useState({ hour: '', minute: '', amPm: 'AM' });
 
   // Format the Date object to 'YYYY-MM-DD' for <input type="date">
@@ -16,11 +15,11 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
   const handleDateChange = (e) => {
     const [year, month, date] = e.target.value.split('-').map(Number);
     const eventDate = new Date(year, month, date);  // Create Date object from input
-    // const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
+    const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
 
     setNewEvent((prevEvent) => ({
       ...prevEvent,
-      eventDate,  // Store as a Date object
+      eventDate,
       sportYear: year,
       sportSeason: getSeason(`${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`).season
     }));
@@ -47,20 +46,21 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
         year: newEvent.eventDate.getFullYear(),
         month: newEvent.eventDate.getMonth()+1,
         date: newEvent.eventDate.getDate(),
+        dayOfWeek: newEvent.eventDate.toLocaleDateString('en-US', { weekday: 'long' }),
         hour: time.hour,
         minute: time.minute,
         amPm: time.amPm
       },
     };
 
-    // console.log(updatedEvent)
-    handleAddNewEvent(updatedEvent, setAllRecords, setEventModalOpen);
+    handleAddNewEvent(updatedEvent, setAllRecords, setIsEventModalOpen);
   };
 
   return (
-    <Modal isOpen={isEventModalOpen} onRequestClose={() => setEventModalOpen(false)}>
+    <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)}>
       <h2>Add New Event</h2>
 
+      <div>
       <label>Date
         <input
           type="date"
@@ -68,53 +68,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
           onChange={handleDateChange}
         />
       </label>
+      </div>
 
-      <label>Week Number
-        <input
-          type="text"
-          placeholder="Week number"
-          value={newEvent?.weekNumber || ''}
-          onChange={(e) => handleInputChange('weekNumber', e.target.value)}
-        />
-      </label>
-
-      <label>Sport
-        <input
-          type="text"
-          placeholder="Sport"
-          value={newEvent?.sport || ''}
-          onChange={(e) => handleInputChange('sport', e.target.value)}
-        />
-      </label>
-
-      <label>WTNB or Coed
-        <input
-          type="text"
-          value={newEvent?.wtnbOrCoed || ''}
-          onChange={(e) => handleInputChange('wtnbOrCoed', e.target.value)}
-        />
-      </label>
-
-      <label>
-        Is Confirmed:
-        <input
-          type="checkbox"
-          checked={newEvent?.isConfirmed || false}
-          onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
-        />
-      </label>
-
-      <label>Location
-        <input
-          type="text"
-          placeholder="Location"
-          value={newEvent?.location || ''}
-          onChange={(e) => handleInputChange('location', e.target.value)}
-        />
-      </label>
-
-      <label>Time
-        <div>
+      <div>
+        <label>Time
           <input
             type="number"
             placeholder="HH"
@@ -139,11 +96,101 @@ export const AddNewEventModal = ({ isEventModalOpen, setEventModalOpen, newEvent
             <option value="AM">AM</option>
             <option value="PM">PM</option>
           </select>
-        </div>
-      </label>
+        </label>
+      </div>
+
+      <div>
+        <label>Week Number
+          <input
+            type="text"
+            placeholder="Week number"
+            value={newEvent?.weekNumber || ''}
+            onChange={(e) => handleInputChange('weekNumber', e.target.value)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>Sport
+          <input
+            type="text"
+            placeholder="Sport"
+            value={newEvent?.sport || ''}
+            onChange={(e) => handleInputChange('sport', e.target.value)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>WTNB or Coed
+          <input
+            type="text"
+            value={newEvent?.wtnbOrCoed || ''}
+            onChange={(e) => handleInputChange('wtnbOrCoed', e.target.value)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Is Contacted:
+          <input
+            type="checkbox"
+            checked={newEvent?.isContacted || false}
+            onChange={(e) => handleInputChange('isContacted', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Is Confirmed:
+          <input
+            type="checkbox"
+            checked={newEvent.isConfirmed || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Is Pizza Night:
+          <input
+            type="checkbox"
+            checked={newEvent.isPizzaNight || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Is Pizza Confirmed:
+          <input
+            type="checkbox"
+            checked={newEvent.isPizzaNight || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>Location
+          <input
+            type="text"
+            placeholder="Location"
+            value={newEvent?.location || ''}
+            onChange={(e) => handleInputChange('location', e.target.value)}
+          />
+        </label>
+      </div>
 
       <button type="button" onClick={handleAddEventWithTimestamp}>Add Event</button>
-      <button type="button" onClick={() => setEventModalOpen(false)}>Cancel</button>
+      <button type="button" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
     </Modal>
   );
 };

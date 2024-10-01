@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-export const AddNewSeasonModal = ({ isSeasonModalOpen, setSeasonModalOpen, newSeason = {}, setNewSeason, handleAddNewSeason, setAllRecords, setEventModalOpen }) => {
+export const AddNewSeasonModal = ({ isSeasonModalOpen, setSeasonModalOpen, newSeason = {}, setNewSeason, handleAddNewSeason, setAllRecords, setIsEventModalOpen }) => {
   return (
     <Modal isOpen={isSeasonModalOpen} onRequestClose={() => setSeasonModalOpen(false)}>
       <h2>Add New Season</h2>
@@ -59,8 +59,8 @@ export const AddNewSeasonModal = ({ isSeasonModalOpen, setSeasonModalOpen, newSe
         Closing Party
       </label>
 
-      <button onClick={() => handleAddNewSeason(newSeason, setAllRecords, setSeasonModalOpen, setEventModalOpen)}>Add Season</button>
-      <button onClick={() => setSeasonModalOpen(false)}>Cancel</button>
+      <button type ="button" onClick={() => handleAddNewSeason(newSeason, setAllRecords, setSeasonModalOpen, setIsEventModalOpen)}>Add Season</button>
+      <button type="button" onClick={() => setSeasonModalOpen(false)}>Cancel</button>
     </Modal>
   );
 };
