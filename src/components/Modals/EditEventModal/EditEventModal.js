@@ -17,7 +17,6 @@ export const EditEventModal = ({
 }) => {
   const [editedEvent, setEditedEvent] = useState(event)
   const [time, setTime] = useState({ hour: event.eventDate.hour, minute: event.eventDate.minute, amPm: event.eventDate.amPm });
-  console.log(time)
 
   const formatDateForInput = (date) => {
     return date instanceof Date ? date.toISOString().split('T')[0] : '';  // Ensure date is valid
