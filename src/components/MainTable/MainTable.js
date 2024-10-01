@@ -40,9 +40,8 @@ export const MainTable = ({ currentSchedule }) => {
       const formattedRecords = records.docs.map((doc) => {
         const eventData = doc.data();
   
-        // Parse without "at"
-        const eventDate = parse(eventData.eventDate, "MMMM d, yyyy hh:mm:ss a", new Date());
-  
+        const eventDate = new Date(`${eventData.eventDate} GMT-0400`)
+
         return {
           ...eventData,
           id: doc.id,
