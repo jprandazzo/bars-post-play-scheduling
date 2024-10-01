@@ -8,9 +8,12 @@
  * @returns {Date} - A JavaScript Date object combining the date and time.
  */
 export const parseDateInput = (dateString, time) => {
+  // console.log("dateString: " + dateString);
+  // console.log("timeString: " + time)
+
     const [year, month, day] = dateString.split('-').map(Number);
-    const hour = parseInt(time.hour, 10) % 12 + (time.amPm === 'PM' ? 12 : 0);
-    const minute = parseInt(time.minute, 10);
+    const hour = Number.parseInt(time.hour, 10) % 12 + (time.amPm === 'PM' ? 12 : 0);
+    const minute = Number.parseInt(time.minute, 10);
   
     return new Date(year, month - 1, day, hour, minute);
   };

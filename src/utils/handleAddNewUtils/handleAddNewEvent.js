@@ -1,15 +1,16 @@
-import { collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';  // Ensure correct import for firebaseConfig
+
+import { fetchData } from '../fetchData';
 
 // Function to handle adding a new event
 export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOpen) => {
 
   try {
     const eventsCollectionRef = collection(db, 'post play events');
-    console.log(Timestamp.fromDate(newEvent.eventDate))
     await addDoc(eventsCollectionRef, {
       weekNumber: newEvent.weekNumber,
-      eventDate: Timestamp.fromDate(newEvent.eventDate),
+      eventDate: newEvent.eventDate,
       sport: newEvent.sport,
       wtnbOrCoed: newEvent.wtnbOrCoed,
       dayOfWeek: newEvent.dayOfWeek,
@@ -25,8 +26,7 @@ export const handleAddNewEvent = async (newEvent, setAllRecords, setEventModalOp
       sportSeason: newEvent.sportSeason,
     });
 
-    const data = await getDocs(eventsCollectionRef);
-    setAllRecords(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    fetchData({setAllRecords})
     setEventModalOpen(false);
   } catch (error) {
     console.error("Error adding event:", error);

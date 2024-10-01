@@ -7,16 +7,19 @@
  */
 export const sortRecords = (records) => {
     return records.sort((a, b) => {
-      // 1. Sort by date (assume `eventDate` is a Firestore Timestamp)
-      const dateA = new Date(a.eventDate?.seconds * 1000);  // Convert Firestore Timestamp to JS Date
-      const dateB = new Date(b.eventDate?.seconds * 1000);
+      // 1. Sort by date ascending
+      const getJsDate = (dateObject) => {
+        return new Date(`${dateObject.year}-${dateObject.month}-${dateObject.date} ${dateObject.hour}:${dateObject.minute} ${dateObject.amPm}`)
+      }
+      const dateA = getJsDate(a.eventDate);
+      const dateB = getJsDate(b.eventDate);
   
-      if (dateA - dateB !== 0) return dateA - dateB; // Sort by date ascending
+      if (dateA - dateB !== 0) return dateA - dateB;
   
-      // 2. Sort by week number ascending
-      const weekA = parseInt(a.weekNumber, 10);
-      const weekB = parseInt(b.weekNumber, 10);
-      if (weekA - weekB !== 0) return weekA - weekB;
+      // 2. If same date, sort by location alphabetically to highlight potential conflicts
+      const locationA = a.location.toLowerCase()
+      const locationB = b.location.toLowerCase()
+      if (locationA !== locationB) return locationA.localeCompare(locationB);
   
       // 3. Sort by sport alphabetically
       const sportA = a.sport.toLowerCase();

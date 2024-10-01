@@ -1,6 +1,7 @@
 import { collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebaseConfig'; 
 import { generateSeasonEvents } from './generateSeasonEvents';
+import { fetchData } from '../fetchData';
 
 // Function to handle adding a new season
 export const handleAddNewSeason = async (newSeason, setAllRecords, setSeasonModalOpen, setEventModalOpen) => {
@@ -27,8 +28,7 @@ export const handleAddNewSeason = async (newSeason, setAllRecords, setSeasonModa
       });
     }
   
-    const data = await getDocs(eventsCollectionRef);
-    setAllRecords(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    fetchData({setAllRecords})
     
     // Close both modals when done
     setSeasonModalOpen(false);

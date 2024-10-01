@@ -2,21 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { db } from '../../firebaseConfig';  
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { parse } from 'date-fns';
 
+import { fetchData } from '../../utils/fetchData';
 import { filterEvents } from '../../utils/filterEvents';
 import { handleAddNewEvent, handleAddNewSeason } from '../../utils/handleAddNewUtils';
 import { AddNewEventModal, AddNewSeasonModal } from '../Modals';
 import { sortRecords } from '../../utils/sortUtils';
-import { EventRow } from './EventRow/EventRow';  // Import the new child component
+import { EventRow } from './EventRow/EventRow';
 
 export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
-    const [filteredRecords, setFilteredRecords] = useState([]);
+    const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
     const [isEventModalOpen, setEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
-      eventDate: new Date(),
+      eventDate: {
+        year: "",
+        month: "",
+        date: "",
+        hour: "",
+        minute: "",
+        amPm: ""
+    },
       weekNumber: '',
       sport: '',
       wtnbOrCoed: '',
@@ -32,45 +39,20 @@ export const MainTable = ({ currentSchedule }) => {
   });
   
 
-  const fetchData = async () => {
-    try {
-      const eventsCollectionRef = collection(db, 'post play events');
-      const records = await getDocs(eventsCollectionRef);
-  
-      const formattedRecords = records.docs.map((doc) => {
-        const eventData = doc.data();
-  
-        const eventDate = new Date(`${eventData.eventDate} GMT-0400`)
-
-        return {
-          ...eventData,
-          id: doc.id,
-          eventDate,  // Store as Date object
-        };
-      });
-  
-      setAllRecords(formattedRecords);
-    } catch (error) {
-      console.error('Error fetching records:', error);
-    }
-  };
-  
-  
-
     useEffect(() => {
-        fetchData();
+        fetchData({setAllRecords});
     }, []);
 
     useEffect(() => {
         const filtered = filterEvents(allRecords, currentSchedule);
         const sortedRecords = sortRecords(filtered);
-        setFilteredRecords(sortedRecords);
+        setFilteredAndSortedRecords(sortedRecords);
     }, [allRecords, currentSchedule]);
 
     const handleDeleteEvent = async (id) => {
         try {
             await deleteDoc(doc(db, 'post play events', id));
-            fetchData();  // Refresh records after deletion
+            fetchData({setAllRecords});  // Refresh records after deletion
         } catch (error) {
             console.error('Error deleting record:', error);
         }
@@ -80,7 +62,7 @@ export const MainTable = ({ currentSchedule }) => {
         try {
             const eventRef = doc(db, 'post play events', updatedEvent.id);
             await updateDoc(eventRef, updatedEvent);
-            fetchData();  // Refresh records after update
+            fetchData({setAllRecords});  // Refresh records after update
         } catch (error) {
             console.error('Error updating record:', error);
         }
@@ -89,8 +71,8 @@ export const MainTable = ({ currentSchedule }) => {
     return (
         <div>
             <div className='add-event-season-buttons'>
-                <button onClick={() => setEventModalOpen(true)}>Add New Event</button>
-                <button onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
+                <button type="button" onClick={() => setEventModalOpen(true)}>Add New Event</button>
+                <button type="button" onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
             </div>
 
             <table>
@@ -110,7 +92,7 @@ export const MainTable = ({ currentSchedule }) => {
                 </thead>
 
                 <tbody>
-                    {filteredRecords.map((record) => (
+                    {filteredAndSortedRecords.map((record) => (
                         <EventRow
                             key={record.id}
                             record={record}

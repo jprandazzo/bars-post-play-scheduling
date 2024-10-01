@@ -1,4 +1,4 @@
-import { convertTimestampToFormattedString } from "./convertTimestampToFormattedString";
+import { convertDateObjectToFormattedString } from "./convertDateObjectToFormattedString";
 import { parseDateInput } from "./parseDateInput";
 
-export { convertTimestampToFormattedString, parseDateInput }
+export { convertDateObjectToFormattedString, parseDateInput }

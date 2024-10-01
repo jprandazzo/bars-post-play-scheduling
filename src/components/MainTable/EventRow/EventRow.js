@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
-import { convertTimestampToFormattedString } from '../../../utils/dateUtils';
 import { sportColors } from '../../../themes/sportColors';
 import { EditEventModal } from '../../Modals';
 
 export const EventRow = ({ record, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editedEvent, setEditedEvent] = useState(record);  // Initialize with the current record
-
-    // Parse and format eventDate
-    console.log("EventRow record:", record);  // Log the record when rendering
-
-    const eventDate = new Date(record.eventDate);
-    console.log("Parsed eventDate:", eventDate);  // Ensure it logs as a valid Date object
 
 
     const handleDelete = () => {
@@ -49,7 +42,7 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
         <>
             <tr key={record.id} style={{ backgroundColor: sportColors[record.sport.toLowerCase()] }}>
                 <td>{record.weekNumber}</td>
-                <td>{convertTimestampToFormattedString(eventDate)}</td>  {/* Display as a formatted string */}
+                <td>{record.eventDate.month}/{record.eventDate.date}/{record.eventDate.year}<br/>{record.eventDate.hour}:{record.eventDate.minute} {record.eventDate.amPm}<br/></td>
                 <td>{record.wtnbOrCoed} {record.sport} {record.dayOfWeek}</td>
                 <td>{record.numAttendees}</td>
                 <td>{record.location}</td>
@@ -86,10 +79,10 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
                     )}
                 </td>
                 <td>
-                    <button onClick={handleEditClick}>✏️</button>
+                    <button type="button" onClick={handleEditClick}>✏️</button>
                 </td>
                 <td>
-                    <button onClick={handleDelete}>X</button>
+                    <button type="button" onClick={handleDelete}>X</button>
                 </td>
             </tr>
 
