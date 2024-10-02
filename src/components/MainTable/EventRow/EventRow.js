@@ -41,7 +41,7 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
             <tr key={record.id} style={{ backgroundColor: sportColors[record.sport.toLowerCase()] }}>
                 <td>{record.weekNumber}</td>
                 <td>{getJsDate(record.eventDate).toLocaleDateString('en-US', { weekday: 'long' })}<br/>{record.eventDate.month}/{record.eventDate.date}/{record.eventDate.year}<br/>{record.eventDate.hour}:{record.eventDate.minute} {record.eventDate.amPm}<br/></td>
-                <td>{record.wtnbOrCoed} {record.sport} {record.dayOfWeek}</td>
+                <td>{record.wtnbOrCoed} {record.sport} {record.sportDayOfWeek}</td>
                 <td>{record.numAttendees}</td>
                 <td>{record.location}</td>
                 <td>
