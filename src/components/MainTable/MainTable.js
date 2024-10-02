@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Dropdown, Table, Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { db } from '../../firebaseConfig';  
-import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { SportFilter } from './MainTableFilterComponents/SportFilter';
+import { LocationFilter } from './MainTableFilterComponents/LocationFilter';  // Import LocationFilter component
 
 import { fetchData } from '../../utils/fetchData';
 import { filterEventsToCurrentSeason } from '../../utils/filterUtils/filterEventsToCurrentSeason';
@@ -17,7 +18,7 @@ export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
     const [uniqueLocations, setUniqueLocations] = useState([]);
-    const [uniqueSportDaysOfWeek, setUniqueSportDaysOfWeek] = useState([])
+    const [uniqueSportDaysOfWeek, setUniqueSportDaysOfWeek] = useState([]);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
@@ -60,7 +61,6 @@ export const MainTable = ({ currentSchedule }) => {
         const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
         const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
         setFilteredAndSortedRecords(filteredAndSorted);
-
     }, [allRecords, currentSchedule, userFilters]);
 
     useEffect(() => {
@@ -72,8 +72,12 @@ export const MainTable = ({ currentSchedule }) => {
         setUniqueLocations(Array.from(uniqueLocationsSet));
 
         const uniqueSportDaysOfWeekSet = new Set(filteredAndSorted.map(record => record.sportDayOfWeek));
-        console.log(filteredAndSorted)
-        setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet))
+        setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
+
+        setUserFilters((prevFilters) => ({
+            ...prevFilters,
+            selectedLocations: uniqueLocations // Set all locations as selected by default
+        }));
 
     }, [allRecords, currentSchedule]);
 
@@ -102,13 +106,12 @@ export const MainTable = ({ currentSchedule }) => {
             [field]: value
         }));
     };
-    
 
     return (
         <div>
             <div className='add-event-season-buttons'>
                 <Button variant="primary" onClick={() => setIsEventModalOpen(true)}>Add New Event</Button>
-                <Button variant="secondary" onClick={() => setSeasonModalOpen(true)}>Add New Season</Button>
+                <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button>
             </div>
 
             <Table striped bordered hover className="main-table">
@@ -136,26 +139,7 @@ export const MainTable = ({ currentSchedule }) => {
 
                         <th>Est. # of Attendees</th>
 
-                        <th>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary" id="dropdown-location">
-                                    Location
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <select
-                                        value={userFilters.selectedLocation}
-                                        onChange={(e) => handleFilterChange('selectedLocation', e.target.value)}
-                                    >
-                                        <option value="">All</option>
-                                        {uniqueLocations.map((location) => (
-                                            <option key={location} value={location}>
-                                                {location}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </th>
+                        <LocationFilter {...{ uniqueLocations, userFilters, setUserFilters }} />  {/* Use the LocationFilter */}
 
                         <th>Contacted?</th>
                         <th>Confirmed?</th>

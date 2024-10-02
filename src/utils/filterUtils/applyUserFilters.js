@@ -11,7 +11,7 @@ export const applyUserFilters = (records, userFilters) => {
         const sportMatch = userFilters.selectedSports.length === 0 || userFilters.selectedSports.includes(record.sport);
         const wtnbOrCoedMatch = userFilters.selectedWtnbOrCoed.length === 0 || userFilters.selectedWtnbOrCoed.includes(record.wtnbOrCoed);
         const pizzaNightMatch = userFilters.selectedIsPizzaNight.length === 0 || userFilters.selectedIsPizzaNight.includes(record.isPizzaNight);
-        const locationMatch = userFilters.selectedLocations.length === 0 || userFilters.selectedLocatiosn.includes(record.location);
+        const locationMatch = userFilters.selectedLocations.length === 0 || userFilters.selectedLocations.includes(record.location);
         return dateMatch && sportDayOfWeekMatch && pizzaNightMatch && locationMatch && sportMatch && wtnbOrCoedMatch;
     });
 };

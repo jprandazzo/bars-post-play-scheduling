@@ -1,28 +1,9 @@
-import { Dropdown } from 'react-bootstrap';
-import React, { useState, useEffect } from 'react';
+import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
+import React from 'react';
 
 export const SportFilter = ({ uniqueSportDaysOfWeek, userFilters, setUserFilters }) => {
     const sports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'];
     const wtnbOrCoedOptions = ['WTNB', 'Coed'];
-
-  
-    // const isAllChecked = (field, values) => {
-    //     return (userFilters[field] || []).every(value => values.includes(value));
-    // };
-
-    // const handleToggleSelectAll = (field, values, isChecked) => {
-    //     if (isChecked) {
-    //         setUserFilters((prevFilters) => ({
-    //             ...prevFilters,
-    //             [field]: values  // Select all
-    //         }));
-    //     } else {
-    //         setUserFilters((prevFilters) => ({
-    //             ...prevFilters,
-    //             [field]: []  // Unselect all
-    //         }));
-    //     }
-    // };
 
     const handleCheckboxChange = (field, value) => {
         setUserFilters((prevFilters) => {
@@ -36,85 +17,59 @@ export const SportFilter = ({ uniqueSportDaysOfWeek, userFilters, setUserFilters
         });
     };
 
+    const handleClick = (event) => {
+        event.stopPropagation();  // Prevents the dropdown from closing
+    };
+
     return (
         <th>
-            <Dropdown>
-                <Dropdown.Toggle variant="outline-primary" id="dropdown-sport">
-                    Sport
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="sport-filter-dropdown">
-                    <div className="sport-filter-container">
+            <div className="sport-filter-container">
+                <DropdownButton variant="outline-primary" id="dropdown-sport" title="Sport">
+                    <div className="sport-filter-menu">
                         {/* SportDayOfWeek column */}
-                        <div className="sport-day-of-week-column">
-                            {/* <label>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => handleToggleSelectAll('selectedSportDayOfWeek', uniqueSportDaysOfWeek, isAllChecked('selectedSportDayOfWeek', uniqueSportDaysOfWeek))}
-                                    checked={isAllChecked('selectedSportDayOfWeek', uniqueSportDaysOfWeek)}
-                                />
-                                Toggle All/None
-                            </label> */}
-                            {/* {console.log(uniqueSportDaysOfWeek)} */}
-                            {/* {console.log(userFilters.selectedSportDaysOfWeek)} */}
-                            {/* {console.log(userFilters.selectedSportDaysOfWeek.includes(uniqueSportDaysOfWeek[1]))} */}
+                        <div className="sport-filter-column"> Day Of Week
                             {uniqueSportDaysOfWeek.map((dayOfWeek) => (
-                                <label key={dayOfWeek}>
-                                    <input
+                                <Dropdown.Item key={dayOfWeek} as="div" onClick={handleClick}>
+                                    <Form.Check 
                                         type="checkbox"
+                                        label={dayOfWeek}
                                         checked={(userFilters.selectedSportDaysOfWeek || []).includes(dayOfWeek)}
                                         onChange={() => handleCheckboxChange('selectedSportDaysOfWeek', dayOfWeek)}
                                     />
-                                    {dayOfWeek}
-                                </label>
+                                </Dropdown.Item>
                             ))}
                         </div>
 
                         {/* Sports column */}
-                        <div className="sports-column">
-                            {/* <label>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => handleToggleSelectAll('selectedSports', sports, isAllChecked('selectedSports', sports))}
-                                    checked={isAllChecked('selectedSports', sports)}
-                                />
-                                Toggle All/None
-                            </label> */}
-                            {sports.map((sport) => (
-                                <label key={sport}>
-                                    <input
+                        <div className="sport-filter-column"> Sport
+                            {sports.map((sportName) => (
+                                <Dropdown.Item key={sportName} as="div" onClick={handleClick}>
+                                    <Form.Check 
                                         type="checkbox"
-                                        checked={(userFilters.selectedSports || []).includes(sport)}
-                                        onChange={() => handleCheckboxChange('selectedSports', sport)}
+                                        label={sportName}
+                                        checked={(userFilters.selectedSports || []).includes(sportName)}
+                                        onChange={() => handleCheckboxChange('selectedSports', sportName)}
                                     />
-                                    {sport}
-                                </label>
+                                </Dropdown.Item>
                             ))}
                         </div>
 
                         {/* WTNB or Coed column */}
-                        <div className="wtnb-or-coed-column">
-                            {/* <label>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => handleToggleSelectAll('selectedWtnbOrCoed', wtnbOrCoedOptions, isAllChecked('selectedWtnbOrCoed', wtnbOrCoedOptions))}
-                                    checked={isAllChecked('selectedWtnbOrCoed', wtnbOrCoedOptions)}
-                                />
-                                Toggle All/None
-                            </label> */}
-                            {wtnbOrCoedOptions.map((option) => (
-                                <label key={option}>
-                                    <input
+                        <div className="sport-filter-column"> WTNB or Coed
+                            {wtnbOrCoedOptions.map((wtnbOrCoedOption) => (
+                                <Dropdown.Item key={wtnbOrCoedOption} as="div" onClick={handleClick}>
+                                    <Form.Check 
                                         type="checkbox"
-                                        checked={(userFilters.selectedWtnbOrCoed || []).includes(option)}
-                                        onChange={() => handleCheckboxChange('selectedWtnbOrCoed', option)}
+                                        label={wtnbOrCoedOption}
+                                        checked={(userFilters.selectedWtnbOrCoed || []).includes(wtnbOrCoedOption)}
+                                        onChange={() => handleCheckboxChange('selectedWtnbOrCoed', wtnbOrCoedOption)}
                                     />
-                                    {option}
-                                </label>
+                                </Dropdown.Item>
                             ))}
                         </div>
                     </div>
-                </Dropdown.Menu>
-            </Dropdown>
+                </DropdownButton>
+            </div>
         </th>
     );
 };
