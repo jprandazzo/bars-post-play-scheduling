@@ -6,6 +6,7 @@ import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { SportFilter } from './MainTableFilterComponents/SportFilter';
 import { LocationFilter } from './MainTableFilterComponents/LocationFilter';  // Import LocationFilter component
 
+import { getCurrentSeason } from '../../utils/seasonUtils';
 import { fetchData } from '../../utils/fetchData';
 import { filterEventsToCurrentSeason } from '../../utils/filterUtils/filterEventsToCurrentSeason';
 import { handleAddNewEvent, handleAddNewSeason } from '../../utils/handleAddNewUtils';
@@ -14,7 +15,7 @@ import { sortRecords } from '../../utils/sortUtils';
 import { EventRow } from './EventRow/EventRow';
 import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 
-export const MainTable = ({ currentSchedule }) => {
+export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
     const [uniqueLocations, setUniqueLocations] = useState([]);
@@ -54,8 +55,29 @@ export const MainTable = ({ currentSchedule }) => {
     });
 
     useEffect(() => {
+        setCurrentSchedule(getCurrentSeason());
         fetchData({ setAllRecords });
     }, []);
+
+    // Calculate unique locations from all records once
+    useEffect(() => {
+        const uniqueLocationsSet = new Set(allRecords.map(record => record.location));
+        const uniqueLocationsArray = Array.from(uniqueLocationsSet);
+        setUniqueLocations(uniqueLocationsArray);
+
+        // Initialize selectedLocations with all locations by default
+        if (uniqueLocationsArray.length > 0 && userFilters.selectedLocations.length === 0) {
+            setUserFilters((prevFilters) => ({
+                ...prevFilters,
+                selectedLocations: uniqueLocationsArray,  // Set all locations as selected by default
+            }));
+        }
+
+        // Deduplicate sport days of the week from all records
+        const uniqueSportDaysOfWeekSet = new Set(allRecords.map(record => record.sportDayOfWeek));
+        setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
+
+    }, [allRecords]);
 
     useEffect(() => {
         const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
@@ -63,23 +85,7 @@ export const MainTable = ({ currentSchedule }) => {
         setFilteredAndSortedRecords(filteredAndSorted);
     }, [allRecords, currentSchedule, userFilters]);
 
-    useEffect(() => {
-        const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
-        const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
-        setFilteredAndSortedRecords(filteredAndSorted);
 
-        const uniqueLocationsSet = new Set(filteredAndSorted.map(record => record.location));
-        setUniqueLocations(Array.from(uniqueLocationsSet));
-
-        const uniqueSportDaysOfWeekSet = new Set(filteredAndSorted.map(record => record.sportDayOfWeek));
-        setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
-
-        setUserFilters((prevFilters) => ({
-            ...prevFilters,
-            selectedLocations: uniqueLocations // Set all locations as selected by default
-        }));
-
-    }, [allRecords, currentSchedule]);
 
     const handleDeleteEvent = async (id) => {
         try {

@@ -19,7 +19,7 @@ export const App = () => {
         {currentSchedule.season[0].toUpperCase()+currentSchedule.season.slice(1)} {currentSchedule.year}
       </h1>
 
-      <MainTable currentSchedule={currentSchedule} />
+      <MainTable {...{currentSchedule, setCurrentSchedule}} />
 
       
     </div>

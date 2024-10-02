@@ -24,10 +24,7 @@ export const LocationFilter = ({ uniqueLocations, userFilters, setUserFilters })
             <div className="location-filter-container">
                 <DropdownButton variant="outline-primary" id="dropdown-location" title="Location">
                     <div className="location-filter-menu">
-                        {/* Location column */}
                         <div className="location-filter-column">
-                            {/* {console.log(uniqueLocations)} */}
-                            {/* {console.log(userFilters.selectedLocations)} */}
                             {uniqueLocations.map((location) => (
                                 <Dropdown.Item key={location} as="div" onClick={handleClick}>
                                     <Form.Check 
