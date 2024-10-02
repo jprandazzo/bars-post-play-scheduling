@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Dropdown, Table, Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { db } from '../../firebaseConfig';  
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -14,7 +15,6 @@ import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
-    const [uniqueLocations, setUniqueLocations] = useState([]);  // Store deduplicated locations
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
@@ -49,14 +49,6 @@ export const MainTable = ({ currentSchedule }) => {
         selectedWtnbOrCoed: ["WTNB", "Coed"],
     });
 
-    const [isFilterDropdownVisible, setFilterDropdownVisible] = useState({
-        dayOfWeek: false,
-        isPizzaNight: false,
-        location: false,
-        sport: false,
-        wtnbOrCoed: false,
-    });
-
     useEffect(() => {
         fetchData({ setAllRecords });
     }, []);
@@ -71,6 +63,8 @@ export const MainTable = ({ currentSchedule }) => {
         setUniqueLocations(Array.from(uniqueLocationsSet));  // Convert Set to array
 
     }, [allRecords, currentSchedule, userFilters]);
+
+    const [uniqueLocations, setUniqueLocations] = useState([]);  // Initialize uniqueLocations
 
     const handleDeleteEvent = async (id) => {
         try {
@@ -89,13 +83,6 @@ export const MainTable = ({ currentSchedule }) => {
         } catch (error) {
             console.error('Error updating record:', error);
         }
-    };
-
-    const toggleFilterDropdown = (filterName) => {
-        setFilterDropdownVisible((prev) => ({
-            ...prev,
-            [filterName]: !prev[filterName],
-        }));
     };
 
     const handleFilterChange = (field, value) => {
@@ -120,123 +107,107 @@ export const MainTable = ({ currentSchedule }) => {
     return (
         <div>
             <div className='add-event-season-buttons'>
-                <button type="button" onClick={() => setIsEventModalOpen(true)}>Add New Event</button>
-                <button type="button" onClick={() => setSeasonModalOpen(true)}>Add New Season</button>
+                <Button variant="primary" onClick={() => setIsEventModalOpen(true)}>Add New Event</Button>
+                <Button variant="secondary" onClick={() => setSeasonModalOpen(true)}>Add New Season</Button>
             </div>
 
-            <table>
+            <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>Week</th>
 
                         <th>
                             Date
-                            <span style={{ cursor: 'pointer' }}>
-                                <input
-                                    type="date"
-                                    value={userFilters.selectedDate}
-                                    onChange={(e) => handleFilterChange('selectedDate', e.target.value)}
-                                    style={{ display: 'inline-block' }}
-                                />
-                            </span>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-date">
+                                    Date
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <input
+                                        type="date"
+                                        value={userFilters.selectedDate}
+                                        onChange={(e) => handleFilterChange('selectedDate', e.target.value)}
+                                        style={{ display: 'inline-block' }}
+                                    />
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </th>
 
                         <th>
                             Sport
-                            <span onClick={() => toggleFilterDropdown('sport')} style={{ cursor: 'pointer' }}>🔽</span>
-                            {isFilterDropdownVisible.sport && (
-                                <div className="dropdown">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedSports.includes("Dodgeball")}
-                                            onChange={() => handleCheckboxChange('selectedSports', "Dodgeball")}
-                                        />
-                                        Dodgeball
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedSports.includes("Pickleball")}
-                                            onChange={() => handleCheckboxChange('selectedSports', "Pickleball")}
-                                        />
-                                        Pickleball
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedSports.includes("Kickball")}
-                                            onChange={() => handleCheckboxChange('selectedSports', "Kickball")}
-                                        />
-                                        Kickball
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedSports.includes("Bowling")}
-                                            onChange={() => handleCheckboxChange('selectedSports', "Bowling")}
-                                        />
-                                        Bowling
-                                    </label>
-                                </div>
-                            )}
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-sport">
+                                    Sport
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {['Dodgeball', 'Pickleball', 'Kickball', 'Bowling'].map((sport) => (
+                                        <Dropdown.Item key={sport} as="label">
+                                            <input
+                                                type="checkbox"
+                                                checked={userFilters.selectedSports.includes(sport)}
+                                                onChange={() => handleCheckboxChange('selectedSports', sport)}
+                                            />
+                                            {sport}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </th>
 
                         <th>
                             WTNB or Coed
-                            <span onClick={() => toggleFilterDropdown('wtnbOrCoed')} style={{ cursor: 'pointer' }}>🔽</span>
-                            {isFilterDropdownVisible.wtnbOrCoed && (
-                                <div className="dropdown">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedWtnbOrCoed.includes("WTNB")}
-                                            onChange={() => handleCheckboxChange('selectedWtnbOrCoed', "WTNB")}
-                                        />
-                                        WTNB
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={userFilters.selectedWtnbOrCoed.includes("Coed")}
-                                            onChange={() => handleCheckboxChange('selectedWtnbOrCoed', "Coed")}
-                                        />
-                                        Coed
-                                    </label>
-                                </div>
-                            )}
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-wtnbOrCoed">
+                                    WTNB or Coed
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {['WTNB', 'Coed'].map((option) => (
+                                        <Dropdown.Item key={option} as="label">
+                                            <input
+                                                type="checkbox"
+                                                checked={userFilters.selectedWtnbOrCoed.includes(option)}
+                                                onChange={() => handleCheckboxChange('selectedWtnbOrCoed', option)}
+                                            />
+                                            {option}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </th>
 
-                        <th>
-                            Est. # of Attendees
-                        </th>
+                        <th>Est. # of Attendees</th>
 
                         <th>
                             Location
-                            <span onClick={() => toggleFilterDropdown('location')} style={{ cursor: 'pointer' }}>🔽</span>
-                            {isFilterDropdownVisible.location && (
-                                <div className="dropdown">
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-location">
+                                    Location
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
                                     <select
                                         value={userFilters.selectedLocation}
                                         onChange={(e) => handleFilterChange('selectedLocation', e.target.value)}
                                     >
                                         <option value="">All</option>
-                                        {uniqueLocations.map((location, index) => (
-                                            <option key={index} value={location}>
+                                        {uniqueLocations.map((location) => (
+                                            <option key={location} value={location}>
                                                 {location}
                                             </option>
                                         ))}
                                     </select>
-                                </div>
-                            )}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </th>
 
                         <th>Contacted?</th>
                         <th>Confirmed?</th>
-                        <th>Need pizza?
-                            <span onClick={() => toggleFilterDropdown('isPizzaNight')} style={{ cursor: 'pointer' }}>🔽</span>
-                            {isFilterDropdownVisible.isPizzaNight && (
-                                <div className="dropdown">
+                        <th>
+                            Need pizza?
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-pizza">
+                                    Pizza
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
                                     <select
                                         value={userFilters.selectedIsPizzaNight}
                                         onChange={(e) => handleFilterChange('selectedIsPizzaNight', e.target.value === 'true')}
@@ -245,8 +216,8 @@ export const MainTable = ({ currentSchedule }) => {
                                         <option value="true">Yes</option>
                                         <option value="false">No</option>
                                     </select>
-                                </div>
-                            )}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </th>
                         <th>Pizza Ordered?</th>
                         <th>Actions</th>
@@ -263,7 +234,7 @@ export const MainTable = ({ currentSchedule }) => {
                         />
                     ))}
                 </tbody>
-            </table>
+            </Table>
 
             <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, setAllRecords, setNewEvent, newEvent }} />
 

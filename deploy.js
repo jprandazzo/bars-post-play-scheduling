@@ -1,6 +1,6 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const readline = require('readline');
+const { execSync } = require('node:child_process');
+const fs = require('node:fs');
+const readline = require('node:readline');
 
 // Utility to run shell commands
 const run = (command) => execSync(command, { stdio: 'inherit' });
