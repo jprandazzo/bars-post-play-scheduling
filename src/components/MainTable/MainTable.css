@@ -5,3 +5,20 @@
     gap: 5em; /* Add spacing between season buttons */
     margin-bottom: 1em;
 }
+
+.main-table { /*this doesn't work*/
+    padding: 10em;
+}
+
+.sport-filter-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.sport-day-of-week-column,
+.sports-column,
+.wtnb-or-coed-column {
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+}

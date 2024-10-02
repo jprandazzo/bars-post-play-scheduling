@@ -4,6 +4,8 @@ import { EditEventModal } from '../../Modals';
 
 import { getJsDate } from '../../../utils/getJsDate';
 
+import './EventRow.css'
+
 export const EventRow = ({ record, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     // const [editedEvent, setEditedEvent] = useState(record);  // Initialize with the current record
@@ -63,10 +65,8 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
                     )}
                 </td>
                 <td>
-                    <button type="button" onClick={handleEditClick}>✏️</button>
-                </td>
-                <td>
-                    <button type="button" onClick={handleDelete}>X</button>
+                    <button className="edit-delete-event-button" type="button" onClick={handleEditClick}>✏️</button>
+                    <button className="edit-delete-event-button" type="button" onClick={handleDelete}>X</button>
                 </td>
             </tr>
 

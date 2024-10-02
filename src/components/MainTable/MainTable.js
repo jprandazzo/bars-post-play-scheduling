@@ -3,6 +3,7 @@ import { Dropdown, Table, Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { db } from '../../firebaseConfig';  
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { SportFilter } from './MainTableFilterComponents/SportFilter';
 
 import { fetchData } from '../../utils/fetchData';
 import { filterEventsToCurrentSeason } from '../../utils/filterUtils/filterEventsToCurrentSeason';
@@ -15,6 +16,8 @@ import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 export const MainTable = ({ currentSchedule }) => {
     const [allRecords, setAllRecords] = useState([]);
     const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
+    const [uniqueLocations, setUniqueLocations] = useState([]);
+    const [uniqueSportDaysOfWeek, setUniqueSportDaysOfWeek] = useState([])
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
     const [newEvent, setNewEvent] = useState({
@@ -29,7 +32,7 @@ export const MainTable = ({ currentSchedule }) => {
         weekNumber: '',
         sport: '',
         wtnbOrCoed: '',
-        dayOfWeek: '',
+        sportDayOfWeek: '',
         location: '',
         isContacted: false,
         isConfirmed: false,
@@ -42,11 +45,11 @@ export const MainTable = ({ currentSchedule }) => {
 
     const [userFilters, setUserFilters] = useState({
         selectedDate: '',
-        selectedDayOfWeek: '',
-        selectedIsPizzaNight: '',
-        selectedLocation: '',
-        selectedSports: ["Dodgeball", "Pickleball", "Bowling", "Kickball"],
-        selectedWtnbOrCoed: ["WTNB", "Coed"],
+        selectedIsPizzaNight: [],
+        selectedLocations: [],
+        selectedSports: ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'],
+        selectedWtnbOrCoed: ['WTNB', 'Coed'],
+        selectedSportDaysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     });
 
     useEffect(() => {
@@ -58,13 +61,21 @@ export const MainTable = ({ currentSchedule }) => {
         const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
         setFilteredAndSortedRecords(filteredAndSorted);
 
-        // Deduplicate locations from filtered records
-        const uniqueLocationsSet = new Set(filteredAndSorted.map(record => record.location));
-        setUniqueLocations(Array.from(uniqueLocationsSet));  // Convert Set to array
-
     }, [allRecords, currentSchedule, userFilters]);
 
-    const [uniqueLocations, setUniqueLocations] = useState([]);  // Initialize uniqueLocations
+    useEffect(() => {
+        const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
+        const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
+        setFilteredAndSortedRecords(filteredAndSorted);
+
+        const uniqueLocationsSet = new Set(filteredAndSorted.map(record => record.location));
+        setUniqueLocations(Array.from(uniqueLocationsSet));
+
+        const uniqueSportDaysOfWeekSet = new Set(filteredAndSorted.map(record => record.sportDayOfWeek));
+        console.log(filteredAndSorted)
+        setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet))
+
+    }, [allRecords, currentSchedule]);
 
     const handleDeleteEvent = async (id) => {
         try {
@@ -91,18 +102,7 @@ export const MainTable = ({ currentSchedule }) => {
             [field]: value
         }));
     };
-
-    const handleCheckboxChange = (field, value) => {
-        setUserFilters((prevFilters) => {
-            const updatedValues = prevFilters[field].includes(value)
-                ? prevFilters[field].filter((item) => item !== value)
-                : [...prevFilters[field], value];
-            return {
-                ...prevFilters,
-                [field]: updatedValues
-            };
-        });
-    };
+    
 
     return (
         <div>
@@ -111,13 +111,12 @@ export const MainTable = ({ currentSchedule }) => {
                 <Button variant="secondary" onClick={() => setSeasonModalOpen(true)}>Add New Season</Button>
             </div>
 
-            <Table striped bordered hover>
+            <Table striped bordered hover className="main-table">
                 <thead>
                     <tr>
                         <th>Week</th>
 
                         <th>
-                            Date
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-primary" id="dropdown-date">
                                     Date
@@ -133,52 +132,11 @@ export const MainTable = ({ currentSchedule }) => {
                             </Dropdown>
                         </th>
 
-                        <th>
-                            Sport
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary" id="dropdown-sport">
-                                    Sport
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {['Dodgeball', 'Pickleball', 'Kickball', 'Bowling'].map((sport) => (
-                                        <Dropdown.Item key={sport} as="label">
-                                            <input
-                                                type="checkbox"
-                                                checked={userFilters.selectedSports.includes(sport)}
-                                                onChange={() => handleCheckboxChange('selectedSports', sport)}
-                                            />
-                                            {sport}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </th>
-
-                        <th>
-                            WTNB or Coed
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary" id="dropdown-wtnbOrCoed">
-                                    WTNB or Coed
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {['WTNB', 'Coed'].map((option) => (
-                                        <Dropdown.Item key={option} as="label">
-                                            <input
-                                                type="checkbox"
-                                                checked={userFilters.selectedWtnbOrCoed.includes(option)}
-                                                onChange={() => handleCheckboxChange('selectedWtnbOrCoed', option)}
-                                            />
-                                            {option}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </th>
+                        <SportFilter {...{ uniqueSportDaysOfWeek, userFilters, setUserFilters }} />
 
                         <th>Est. # of Attendees</th>
 
                         <th>
-                            Location
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-primary" id="dropdown-location">
                                     Location
@@ -202,10 +160,9 @@ export const MainTable = ({ currentSchedule }) => {
                         <th>Contacted?</th>
                         <th>Confirmed?</th>
                         <th>
-                            Need pizza?
                             <Dropdown>
                                 <Dropdown.Toggle variant="outline-primary" id="dropdown-pizza">
-                                    Pizza
+                                    Need Pizza?
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <select

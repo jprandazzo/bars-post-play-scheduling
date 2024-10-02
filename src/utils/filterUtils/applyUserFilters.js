@@ -7,12 +7,11 @@ export const applyUserFilters = (records, userFilters) => {
             record.eventDate.date === userFilters.selectedDate.split('-')[2]
         );
         
-        const dayOfWeekMatch = userFilters.selectedDayOfWeek === '' || record.dayOfWeek === userFilters.selectedDayOfWeek;
-        const pizzaNightMatch = userFilters.selectedIsPizzaNight === '' || record.isPizzaNight === userFilters.selectedIsPizzaNight;
-        const locationMatch = userFilters.selectedLocation === '' || record.location === userFilters.selectedLocation;
-        const sportMatch = userFilters.selectedSport === '' || userFilters.selectedSports.includes(record.sport);
-        const wtnbOrCoedMatch = userFilters.selectedWtnbOrCoed === '' || userFilters.selectedWtnbOrCoed.includes(record.wtnbOrCoed);
-
-        return dateMatch && dayOfWeekMatch && pizzaNightMatch && locationMatch && sportMatch && wtnbOrCoedMatch;
+        const sportDayOfWeekMatch = userFilters.selectedSportDaysOfWeek.length === 0 || userFilters.selectedSportDaysOfWeek.includes(record.sportDayOfWeek);
+        const sportMatch = userFilters.selectedSports.length === 0 || userFilters.selectedSports.includes(record.sport);
+        const wtnbOrCoedMatch = userFilters.selectedWtnbOrCoed.length === 0 || userFilters.selectedWtnbOrCoed.includes(record.wtnbOrCoed);
+        const pizzaNightMatch = userFilters.selectedIsPizzaNight.length === 0 || userFilters.selectedIsPizzaNight.includes(record.isPizzaNight);
+        const locationMatch = userFilters.selectedLocations.length === 0 || userFilters.selectedLocatiosn.includes(record.location);
+        return dateMatch && sportDayOfWeekMatch && pizzaNightMatch && locationMatch && sportMatch && wtnbOrCoedMatch;
     });
 };

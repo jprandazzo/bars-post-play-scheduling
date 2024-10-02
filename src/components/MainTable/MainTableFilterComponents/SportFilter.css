@@ -1,0 +1,23 @@
+.sport-filter-dropdown {
+    width: 300px !important  /* Adjust the width as necessary */
+}
+
+.sport-filter-container {
+    display: flex;
+    justify-content: space-between;
+    width: 15em;
+}
+
+.sport-day-of-week-column,
+.sports-column,
+.wtnb-or-coed-column {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;  /* Add some spacing between the columns */
+}
+
+.sport-day-of-week-column label,
+.sports-column label,
+.wtnb-or-coed-column label {
+    margin-bottom: 10px;
+}
