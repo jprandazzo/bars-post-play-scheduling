@@ -7,7 +7,7 @@ export const Seasons = ({ year, setSeason }) => {
     <div>
       <h2>{`Select a season for ${year}`}</h2>
       {seasons.map((season) => (
-        <button key={season} onClick={() => setSeason(season)}>
+        <button type="button" key={season} onClick={() => setSeason(season)}>
           {season}
         </button>
       ))}

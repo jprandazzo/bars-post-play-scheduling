@@ -81,6 +81,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     }, [allRecords]);
 
     useEffect(() => {
+        console.log('trigger')
         const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
         const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
         setFilteredAndSortedRecords(filteredAndSorted);
@@ -159,6 +160,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 </thead>
 
                 <tbody>
+                    {console.log(allRecords)}
                     {filteredAndSortedRecords.map((record) => (
                         <EventRow
                             key={record.id}
