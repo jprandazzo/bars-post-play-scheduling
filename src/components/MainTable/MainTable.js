@@ -4,7 +4,8 @@ import Modal from 'react-modal';
 import { db } from '../../firebaseConfig';  
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { SportFilter } from './MainTableFilterComponents/SportFilter';
-import { LocationFilter } from './MainTableFilterComponents/LocationFilter';  // Import LocationFilter component
+import { LocationFilter } from './MainTableFilterComponents/LocationFilter';
+import { PizzaFilter } from './MainTableFilterComponents/PizzaFilter';
 
 import { getCurrentSeason } from '../../utils/seasonUtils';
 import { fetchData } from '../../utils/fetchData';
@@ -47,7 +48,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
     const [userFilters, setUserFilters] = useState({
         selectedDate: '',
-        selectedIsPizzaNight: [],
+        selectedIsPizzaNight: [true,false],
         selectedLocations: [],
         selectedSports: ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'],
         selectedWtnbOrCoed: ['WTNB', 'Coed'],
@@ -149,23 +150,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
                         <th>Contacted?</th>
                         <th>Confirmed?</th>
-                        <th>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary" id="dropdown-pizza">
-                                    Need Pizza?
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <select
-                                        value={userFilters.selectedIsPizzaNight}
-                                        onChange={(e) => handleFilterChange('selectedIsPizzaNight', e.target.value === 'true')}
-                                    >
-                                        <option value="">All</option>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
-                                    </select>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </th>
+
+                        <PizzaFilter {...{ userFilters, setUserFilters }} />  {/* Use the PizzaFilter */}
+                        
                         <th>Pizza Ordered?</th>
                         <th>Actions</th>
                     </tr>
