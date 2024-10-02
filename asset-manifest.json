@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/bars-post-play-scheduling/static/css/main.7419ec24.css",
-    "main.js": "/bars-post-play-scheduling/static/js/main.8b5fc4ab.js",
+    "main.css": "/bars-post-play-scheduling/static/css/main.31d7b4db.css",
+    "main.js": "/bars-post-play-scheduling/static/js/main.2b7a2de1.js",
     "static/js/453.e376779b.chunk.js": "/bars-post-play-scheduling/static/js/453.e376779b.chunk.js",
     "index.html": "/bars-post-play-scheduling/index.html",
-    "main.7419ec24.css.map": "/bars-post-play-scheduling/static/css/main.7419ec24.css.map",
-    "main.8b5fc4ab.js.map": "/bars-post-play-scheduling/static/js/main.8b5fc4ab.js.map",
+    "main.31d7b4db.css.map": "/bars-post-play-scheduling/static/css/main.31d7b4db.css.map",
+    "main.2b7a2de1.js.map": "/bars-post-play-scheduling/static/js/main.2b7a2de1.js.map",
     "453.e376779b.chunk.js.map": "/bars-post-play-scheduling/static/js/453.e376779b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7419ec24.css",
-    "static/js/main.8b5fc4ab.js"
+    "static/css/main.31d7b4db.css",
+    "static/js/main.2b7a2de1.js"
   ]
 }
