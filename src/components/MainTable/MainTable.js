@@ -170,9 +170,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 </tbody>
             </Table>
 
-            <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, setAllRecords, setNewEvent, newEvent }} />
+            <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, allRecords, setAllRecords, setNewEvent, newEvent }} />
 
-            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, setAllRecords, setIsEventModalOpen }} />
+            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, allRecords, setAllRecords, setIsEventModalOpen }} />
         </div>
     );
 };

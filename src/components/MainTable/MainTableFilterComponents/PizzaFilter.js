@@ -26,7 +26,6 @@ export const PizzaFilter = ({ userFilters, setUserFilters }) => {
                 <DropdownButton variant="outline-primary" id="dropdown-pizza" title="Need Pizza?">
                     <div className="pizza-filter-menu">
                         <div className="pizza-filter-column">
-                            {console.log(userFilters.selectedIsPizzaNight)}
                             <Dropdown.Item as="div" onClick={(e) => handleClick(e, true)}>
                                 <Form.Check 
                                     type="checkbox"

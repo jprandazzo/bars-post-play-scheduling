@@ -13,7 +13,7 @@ export const handleAddNewEvent = async (newEvent, setAllRecords, setIsEventModal
       eventDate: newEvent.eventDate,
       sport: newEvent.sport,
       wtnbOrCoed: newEvent.wtnbOrCoed,
-      dayOfWeek: newEvent.dayOfWeek,
+      sportDayOfWeek: newEvent.sportDayOfWeek,
       numRegistered: newEvent.numRegistered || 0,
       percentAttendance: newEvent.percentAttendance || 100,
       numAttendees: newEvent.numAttendees | Math.round((newEvent.numRegistered || 0) * ((newEvent.percentAttendance || 100) / 100) / 20) * 20,
