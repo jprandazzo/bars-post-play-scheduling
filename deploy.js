@@ -69,9 +69,9 @@ const startDeployment = () => {
         // Commit version change and deploy
         try {
             run('git add package.json');
-            run(`git commit -m "deploying version ${newVersion}"`);
+            run(`git commit -m "Deploy version ${newVersion}"`);
             run('git push origin main');
-            run('npm run deploy');
+            run('npx gh-pages -d build');
 
             console.log(`Deployment of version ${newVersion} successful!`);
         } catch (error) {
