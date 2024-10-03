@@ -154,7 +154,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                         <th>
                             Contacted?
                             <br/>
-                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>.(Link to contact list)</a>
+                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>(Link to contact list)</a>
                         </th>
                         <th>Confirmed?</th>
 
