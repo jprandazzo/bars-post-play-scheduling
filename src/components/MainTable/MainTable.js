@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Table, Button } from 'react-bootstrap';
-import Modal from 'react-modal';
+// import { Link } from 'react-router-dom';
+
 import { db } from '../../firebaseConfig';  
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { SportFilter } from './MainTableFilterComponents/SportFilter';
@@ -149,7 +150,11 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
                         <LocationFilter {...{ uniqueLocations, userFilters, setUserFilters }} />  {/* Use the LocationFilter */}
 
-                        <th>Contacted?</th>
+                        <th>
+                            Contacted?
+                            <br/>
+                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>(Link to contact list)</a>
+                        </th>
                         <th>Confirmed?</th>
 
                         <PizzaFilter {...{ userFilters, setUserFilters }} />  {/* Use the PizzaFilter */}
