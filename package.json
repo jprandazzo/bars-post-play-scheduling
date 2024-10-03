@@ -1,7 +1,7 @@
 {
   "name": "bars-post-play-scheduling",
   "homepage": "https://jprandazzo.github.io/bars-post-play-scheduling",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
