@@ -16,44 +16,12 @@ export const EditEventModal = ({
   // handleDiscardChanges,
 }) => {
   const [editedEvent, setEditedEvent] = useState(event)
-  const [time, setTime] = useState({ hour: event.eventDate.hour, minute: event.eventDate.minute, amPm: event.eventDate.amPm });
+  const [time, setTime] = useState({ hour: event?.eventDate?.hour, minute: event?.eventDate?.minute, amPm: event?.eventDate?.amPm });
 
   const formatDateForInput = (date) => {
-    return date instanceof Date ? date.toISOString().split('T')[0] : '';  // Ensure date is valid
+    console.log(date)
+    return date instanceof Date ? date?.toISOString().split('T')[0] : '';  // Ensure date is valid
   };
-  // Initialize the state for editedEvent when the modal opens
-  // do i need this?
-  // useEffect(() => {
-  //   if (event) {
-  //     // Convert eventDate to a Date object if it's a string
-  //     const eventDate = getJsDate(event.eventDate);
-  //     const hours = event.eventDate.hour
-  //     const minutes = event.eventDate.minute
-  //     const amPm = event.eventDate.amPm
-
-  //     setEditedEvent(event);  // Set the initial state for editedEvent
-  //     // setTime({
-  //     //   hour: hours.toString().padStart(2, '0'),
-  //     //   minute: minutes.toString().padStart(2, '0'),
-  //     //   amPm,
-  //     // });
-  //   }
-  // }, [event]);
-
-  // Function to format Date object to 'YYYY-MM-DD'
-  // const formatDateForInput = (date) => {
-  //   // Check if date is valid and handle both string and Date objects
-  //   if (date instanceof Date && !isNaN(date.getTime())) {
-  //     return date.toISOString().split('T')[0];
-  //   }
-  //   const parsedDate = new Date(date);  // Try to parse a string as a Date object
-  //   if (!isNaN(parsedDate.getTime())) {
-  //     return parsedDate.toISOString().split('T')[0];
-  //   }
-
-  //   console.error('Invalid or undefined date:', date);  // Log invalid dates
-  //   return '';  // Fallback to empty string for invalid dates
-  // };
 
   const handleDateChange = (e) => {
     const [year, month, day] = e.target.value.split('-').map(Number);
@@ -75,11 +43,11 @@ export const EditEventModal = ({
   };
 
   const handleSave = () => {
-    if (!editedEvent.eventDate || !time.hour || !time.minute || !time.amPm) {
+    if (!editedEvent?.eventDate || !time.hour || !time.minute || !time.amPm) {
       alert("Please provide both date and time");
       return;
     }
-    const transformedDate = getJsDate(editedEvent.eventDate)
+    const transformedDate = getJsDate(editedEvent?.eventDate)
     
     const updatedEvent = {
       ...editedEvent,
@@ -125,7 +93,7 @@ const handleDiscardChanges = () => {
         <label>Date
           <input
             type="date"
-            value={formatDateForInput(getJsDate(editedEvent.eventDate))}  // YYYY-MM-DD
+            value={formatDateForInput(getJsDate(editedEvent?.eventDate))}  // YYYY-MM-DD
             onChange={handleDateChange}
           />
         </label>
@@ -164,7 +132,7 @@ const handleDiscardChanges = () => {
         <label>Week Number
           <input
             type="text"
-            value={editedEvent.weekNumber}
+            value={editedEvent?.weekNumber}
             // onChange={(e) => setEditedEvent({ ...editedEvent, weekNumber: e.target.value })}
             onChange={(e) => handleInputChange('weekNumber', e.target.value)}
           />
@@ -175,7 +143,7 @@ const handleDiscardChanges = () => {
         <label>Sport
           <input
             type="text"
-            value={editedEvent.sport}
+            value={editedEvent?.sport}
             // onChange={(e) => setEditedEvent({ ...editedEvent, sport: e.target.value })}
             onChange={(e) => handleInputChange('sport', e.target.value)}
           />
@@ -186,7 +154,7 @@ const handleDiscardChanges = () => {
         <label>WTNB or Coed
           <input
             type="text"
-            value={editedEvent.wtnbOrCoed}
+            value={editedEvent?.wtnbOrCoed}
             // onChange={(e) => setEditedEvent({ ...editedEvent, wtnbOrCoed: e.target.value })}
             onChange={(e) => handleInputChange('wtnbOrCoed', e.target.value)}
           />
@@ -197,7 +165,7 @@ const handleDiscardChanges = () => {
         <label>Number of Attendees
           <input
             type="number"
-            value={editedEvent.numAttendees}
+            value={editedEvent?.numAttendees}
             // onChange={(e) => setEditedEvent({ ...editedEvent, numAttendees: e.target.value })}
             onChange={(e) => handleInputChange('numAttendees', e.target.value)}
           />
@@ -208,7 +176,7 @@ const handleDiscardChanges = () => {
         <label>Location
           <input
             type="text"
-            value={editedEvent.location}
+            value={editedEvent?.location}
             // onChange={(e) => setEditedEvent({ ...editedEvent, location: e.target.value })}
             onChange={(e) => handleInputChange('location', e.target.value)}
           />
@@ -220,7 +188,7 @@ const handleDiscardChanges = () => {
           Contacted?
           <input
             type="checkbox"
-            checked={editedEvent.isContacted || false}
+            checked={editedEvent?.isContacted || false}
             // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
             onChange={(e) => handleInputChange('isContacted', e.target.checked)}
           />
@@ -232,7 +200,7 @@ const handleDiscardChanges = () => {
           Confirmed?
           <input
             type="checkbox"
-            checked={editedEvent.isConfirmed || false}
+            checked={editedEvent?.isConfirmed || false}
             // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
             onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
           />
@@ -244,7 +212,7 @@ const handleDiscardChanges = () => {
           Pizza Night?
           <input
             type="checkbox"
-            checked={editedEvent.isPizzaNight || false}
+            checked={editedEvent?.isPizzaNight || false}
             // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
             onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
           />
@@ -256,7 +224,7 @@ const handleDiscardChanges = () => {
           Pizza Ordered?
           <input
             type="checkbox"
-            checked={editedEvent.isPizzaOrdered || false}
+            checked={editedEvent?.isPizzaOrdered || false}
             // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
             onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
           />

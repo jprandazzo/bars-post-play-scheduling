@@ -4,9 +4,7 @@ import { Dropdown, Table, Button } from 'react-bootstrap';
 
 import { db } from '../../firebaseConfig';  
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { SportFilter } from './MainTableFilterComponents/SportFilter';
-import { LocationFilter } from './MainTableFilterComponents/LocationFilter';
-import { PizzaFilter } from './MainTableFilterComponents/PizzaFilter';
+import { LocationFilter, SportFilter, ContactFilters, PizzaFilters } from './MainTableFilterComponents';
 
 import { getCurrentSeason } from '../../utils/seasonUtils';
 import { fetchData } from '../../utils/fetchData';
@@ -49,7 +47,10 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
     const [userFilters, setUserFilters] = useState({
         selectedDate: '',
-        selectedIsPizzaNight: [true,false],
+        selectedIsContacted: [true, false],
+        selectedIsConfirmed: [true, false],
+        selectedIsPizzaNight: [true, false],
+        selectedIsPizzaOrdered: [true, false],
         selectedLocations: [],
         selectedSports: ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'],
         selectedWtnbOrCoed: ['WTNB', 'Coed'],
@@ -149,18 +150,13 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
                         <th>Est. # of Attendees</th>
 
-                        <LocationFilter {...{ uniqueLocations, userFilters, setUserFilters }} />  {/* Use the LocationFilter */}
+                        <LocationFilter {...{ uniqueLocations, userFilters, setUserFilters }} />
 
-                        <th>
-                            Contacted?
-                            <br/>
-                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>(Link to contact list)</a>
-                        </th>
-                        <th>Confirmed?</th>
+                        <ContactFilters {...{ userFilters, setUserFilters }} />
 
-                        <PizzaFilter {...{ userFilters, setUserFilters }} />  {/* Use the PizzaFilter */}
+                        <PizzaFilters {...{ userFilters, setUserFilters }} />
                         
-                        <th>Pizza Ordered?</th>
+                        
                         <th>Actions</th>
                     </tr>
                 </thead>
