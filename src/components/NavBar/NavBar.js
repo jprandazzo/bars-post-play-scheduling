@@ -13,18 +13,19 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
   const resetApp = () => {
     setCurrentSchedule(getCurrentSeason());
   };
-
+  // console.log('nav bar loaded')
   const handleSeasonChange = (direction) => {
     const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
     const currentSeasonIndex = seasonOrder.indexOf(currentSchedule.season);
-  
-  
+    // console.log(direction)
+    // console.log(currentSeasonIndex)
     if (direction === 'prev') {
       if (currentSeasonIndex === 0) {
         setCurrentSchedule({ year: currentSchedule.year - 1, season: 'fall' });
       } else {
         setCurrentSchedule({ year: currentSchedule.year, season: seasonOrder[currentSeasonIndex - 1] });
       }
+      // console.log(currentSchedule)
     } else if (direction === 'next') {
       if (currentSeasonIndex === 3) {
         setCurrentSchedule({ year: currentSchedule.year + 1, season: 'winter' });

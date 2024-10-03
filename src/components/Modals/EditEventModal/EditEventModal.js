@@ -89,7 +89,7 @@ export const EditEventModal = ({
         date: transformedDate.getDate(),
         hour: time.hour,
         minute: time.minute,
-        amPm: time.amPm
+        amPm: time.amPm,
       },
     };
     
@@ -217,7 +217,7 @@ const handleDiscardChanges = () => {
 
       <div>
         <label>
-          Is Contacted:
+          Contacted?
           <input
             type="checkbox"
             checked={editedEvent.isContacted || false}
@@ -229,7 +229,7 @@ const handleDiscardChanges = () => {
       
       <div>
         <label>
-          Is Confirmed:
+          Confirmed?
           <input
             type="checkbox"
             checked={editedEvent.isConfirmed || false}
@@ -241,7 +241,7 @@ const handleDiscardChanges = () => {
 
       <div>
         <label>
-          Is Pizza Night:
+          Pizza Night?
           <input
             type="checkbox"
             checked={editedEvent.isPizzaNight || false}
@@ -253,12 +253,12 @@ const handleDiscardChanges = () => {
 
       <div>
         <label>
-          Is Pizza Confirmed:
+          Pizza Ordered?
           <input
             type="checkbox"
-            checked={editedEvent.isPizzaNight || false}
+            checked={editedEvent.isPizzaOrdered || false}
             // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+            onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
           />
         </label>
       </div>

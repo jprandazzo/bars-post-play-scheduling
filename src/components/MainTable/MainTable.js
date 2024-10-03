@@ -59,7 +59,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     useEffect(() => {
         setCurrentSchedule(getCurrentSeason());
         fetchData({ setAllRecords });
-    }, []);
+    }, [handleAddNewEvent]);
 
     // Calculate unique locations from all records once
     useEffect(() => {
@@ -82,8 +82,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     }, [allRecords]);
 
     useEffect(() => {
-        console.log('trigger')
+        // console.log('trigger')
         const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
+        // console.log(currentSchedule)
         const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
         setFilteredAndSortedRecords(filteredAndSorted);
     }, [allRecords, currentSchedule, userFilters]);
@@ -153,7 +154,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                         <th>
                             Contacted?
                             <br/>
-                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>(Link to contact list)</a>
+                            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>.(Link to contact list)</a>
                         </th>
                         <th>Confirmed?</th>
 
@@ -165,7 +166,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 </thead>
 
                 <tbody>
-                    {console.log(allRecords)}
+                    {/* {console.log(filteredAndSortedRecords)} */}
                     {filteredAndSortedRecords.map((record) => (
                         <EventRow
                             key={record.id}

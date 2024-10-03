@@ -24,6 +24,8 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
   const uniqueDaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const uniqueWtnbOrCoed = ['WTNB', 'Coed']
   const uniqueLocations = [...new Set(allRecords.map(record => record.location))];
+  console.log(allRecords)
+  console.log(uniqueLocations)
 
   // Filter values based on input
   const filteredLocations = uniqueLocations.filter(location =>
@@ -82,7 +84,8 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
       },
       wtnbOrCoed: wtnbOrCoedInput,
       sport: sportInput,
-      sportDayOfWeek: dayOfWeekInput
+      sportDayOfWeek: dayOfWeekInput,
+      location: locationInput
     };
 
     handleAddNewEvent(updatedEvent, setAllRecords, setIsEventModalOpen);
@@ -100,188 +103,247 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
   };
 
   return (
-    <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)}>
-      <h2>Add New Event</h2>
+      <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)}>
+        <h2>Add New Event</h2>
+        <div className='modal-container'>    </div>
+        <div>
+          <label>Post Play / Event Date 
+            <br/>
+            <input
+              type="date"
+              value={formatDateForInput(newEvent?.eventDate)}
+              onChange={handleDateChange}
+            />
+          </label>
+        </div>
 
-      <div>
-        <label>Post Play / Event Date 
-          <br/>
-          <input
-            type="date"
-            value={formatDateForInput(newEvent?.eventDate)}
-            onChange={handleDateChange}
-          />
-        </label>
-      </div>
+        <div>
+          <label>Time
+            <br/>
+            <input
+              type="number"
+              placeholder="HH"
+              value={time.hour}
+              onChange={(e) => setTime({ ...time, hour: e.target.value })}
+              min="01"
+              max="12"
+            />
+            <span>:</span>
+            <input
+              type="number"
+              placeholder="MM"
+              value={time.minute}
+              onChange={(e) => setTime({ ...time, minute: e.target.value })}
+              min="00"
+              max="59"
+            />
+            <select
+              value={time.amPm}
+              onChange={(e) => setTime({ ...time, amPm: e.target.value })}
+            >
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </label>
+        </div>
 
-      <div>
-        <label>Time
-          <br/>
-          <input
-            type="number"
-            placeholder="HH"
-            value={time.hour}
-            onChange={(e) => setTime({ ...time, hour: e.target.value })}
-            min="01"
-            max="12"
-          />
-          <span>:</span>
-          <input
-            type="number"
-            placeholder="MM"
-            value={time.minute}
-            onChange={(e) => setTime({ ...time, minute: e.target.value })}
-            min="00"
-            max="59"
-          />
-          <select
-            value={time.amPm}
-            onChange={(e) => setTime({ ...time, amPm: e.target.value })}
-          >
-            <option value="AM">AM</option>
-            <option value="PM">PM</option>
-          </select>
-        </label>
-      </div>
+        <div>
+          <label>Week Number
+            <br/>
+            <input
+              type="text"
+              placeholder="Week number"
+              value={newEvent?.weekNumber || ''}
+              onChange={(e) => handleInputChange('weekNumber', e.target.value)}
+            />
+          </label>
+        </div>
 
-      <div>
-        <label>Week Number
-          <br/>
-          <input
+        {/* Sport Input: Free text search with matching dropdown */}
+        <div>
+          Sport
+          <FormControl
             type="text"
-            placeholder="Week number"
-            value={newEvent?.weekNumber || ''}
-            onChange={(e) => handleInputChange('weekNumber', e.target.value)}
+            placeholder="Search or select sport"
+            value={sportInput}
+            onFocus={() => setShowSportDropdown(true)}
+            onBlur={() => setTimeout(() => setShowSportDropdown(false), 200)}  // Hide dropdown after blur
+            onChange={(e) => setSportInput(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, filteredSports, sportInput, setSportInput, setShowSportDropdown)}
+            style={{ maxWidth: '20em' }}  // Apply max-width to input
+          />
+          {showSportDropdown && filteredSports.length > 0 && (
+            <Dropdown.Menu show className="dropdown-menu">
+              {filteredSports.map((sport) => (
+                <Dropdown.Item
+                  key={sport}
+                  onClick={() => {
+                    handleInputChange('sport', sport);
+                    setSportInput(sport);
+                    setShowSportDropdown(false);
+                  }}
+                >
+                  {sport}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          )}
+        </div>
+
+        <div>
+          Day
+          <FormControl
+            type="text"
+            placeholder="Search or select day of week"
+            value={dayOfWeekInput}
+            onFocus={() => setShowDayOfWeekDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDayOfWeekDropdown(false), 200)}  // Hide dropdown after blur
+            onChange={(e) => setDayOfWeekInput(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, filteredDaysOfWeek, dayOfWeekInput, setDayOfWeekInput, setShowDayOfWeekDropdown)}
+            style={{ maxWidth: '20em' }}  // Apply max-width to input
+          />
+          {showDayOfWeekDropdown && filteredDaysOfWeek.length > 0 && (
+            <Dropdown.Menu show className="dropdown-menu">
+              {filteredDaysOfWeek.map((sport) => (
+                <Dropdown.Item
+                  key={sport}
+                  onClick={() => {
+                    handleInputChange('sport', sport);
+                    setDayOfWeekInput(sport);
+                    setShowDayOfWeekDropdown(false);
+                  }}
+                >
+                  {sport}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          )}
+        </div>
+
+        {/* WTNB or Coed Input: Free text search with matching dropdown */}
+        <div>
+          WTNB or Coed
+          <FormControl
+            type="text"
+            placeholder="Search or select WTNB or Coed"
+            value={wtnbOrCoedInput}
+            onFocus={() => setShowWtnbOrCoedDropdown(true)}
+            onBlur={() => setTimeout(() => setShowWtnbOrCoedDropdown(false), 200)}
+            onChange={(e) => setWtnbOrCoedInput(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, filteredWtnbOrCoed, wtnbOrCoedInput, setWtnbOrCoedInput, setShowWtnbOrCoedDropdown)}
+            style={{ maxWidth: '20em' }}
+          />
+          {showWtnbOrCoedDropdown && filteredWtnbOrCoed.length > 0 && (
+            <Dropdown.Menu show className="dropdown-menu">
+              {filteredWtnbOrCoed.map((option) => (
+                <Dropdown.Item
+                  key={option}
+                  onClick={() => {
+                    handleInputChange('wtnbOrCoed', option);
+                    setWtnbOrCoedInput(option);
+                    setShowWtnbOrCoedDropdown(false);
+                  }}
+                >
+                  {option}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          )}
+        </div>
+
+        {/* Location Input: Free text search with matching dropdown */}
+        <div>
+          Location
+          <FormControl
+            type="text"
+            placeholder="Search or select location"
+            value={locationInput}
+            onFocus={() => setShowLocationDropdown(true)}
+            onBlur={() => setTimeout(() => setShowLocationDropdown(false), 200)}  // Hide dropdown after blur
+            onChange={(e) => setLocationInput(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, filteredLocations, locationInput, setLocationInput, setShowLocationDropdown)}
+            style={{ maxWidth: '20em' }}  // Apply max-width to input
+          />
+          {showLocationDropdown && filteredLocations.length > 0 && (
+            <Dropdown.Menu show className="dropdown-menu">
+              {filteredLocations.map((location) => (
+                <Dropdown.Item
+                  key={location}
+                  onClick={() => {
+                    handleInputChange('location', location);
+                    setLocationInput(location);
+                    setShowLocationDropdown(false);
+                  }}
+                >
+                  {location}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          )}
+        </div>
+
+        <div>
+          <label>Est # of Attendees
+            <br/>
+            <input
+              type="text"
+              placeholder="# of Attendees"
+              value={newEvent?.numAttendees || ''}
+              onChange={(e) => handleInputChange('numAttendees', e.target.value)}
+            />
+          </label>
+        </div>
+
+      <div>
+        <label>
+          Contacted?
+          <input
+            type="checkbox"
+            checked={newEvent.isContacted || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isContacted', e.target.checked)}
           />
         </label>
       </div>
 
-      {/* Sport Input: Free text search with matching dropdown */}
       <div>
-        Sport
-        <FormControl
-          type="text"
-          placeholder="Search or select sport"
-          value={sportInput}
-          onFocus={() => setShowSportDropdown(true)}
-          onBlur={() => setTimeout(() => setShowSportDropdown(false), 200)}  // Hide dropdown after blur
-          onChange={(e) => setSportInput(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, filteredSports, sportInput, setSportInput, setShowSportDropdown)}
-          style={{ maxWidth: '20em' }}  // Apply max-width to input
-        />
-        {showSportDropdown && filteredSports.length > 0 && (
-          <Dropdown.Menu show className="dropdown-menu">
-            {filteredSports.map((sport) => (
-              <Dropdown.Item
-                key={sport}
-                onClick={() => {
-                  handleInputChange('sport', sport);
-                  setSportInput(sport);
-                  setShowSportDropdown(false);
-                }}
-              >
-                {sport}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        )}
+        <label>
+          Confirmed?
+          <input
+            type="checkbox"
+            checked={newEvent.isConfirmed || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
+          />
+        </label>
       </div>
 
       <div>
-        Day
-        <FormControl
-          type="text"
-          placeholder="Search or select day of week"
-          value={dayOfWeekInput}
-          onFocus={() => setShowDayOfWeekDropdown(true)}
-          onBlur={() => setTimeout(() => setShowDayOfWeekDropdown(false), 200)}  // Hide dropdown after blur
-          onChange={(e) => setDayOfWeekInput(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, filteredDaysOfWeek, dayOfWeekInput, setDayOfWeekInput, setShowDayOfWeekDropdown)}
-          style={{ maxWidth: '20em' }}  // Apply max-width to input
-        />
-        {showDayOfWeekDropdown && filteredDaysOfWeek.length > 0 && (
-          <Dropdown.Menu show className="dropdown-menu">
-            {filteredDaysOfWeek.map((sport) => (
-              <Dropdown.Item
-                key={sport}
-                onClick={() => {
-                  handleInputChange('sport', sport);
-                  setDayOfWeekInput(sport);
-                  setShowDayOfWeekDropdown(false);
-                }}
-              >
-                {sport}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        )}
+        <label>
+          Pizza Night?
+          <input
+            type="checkbox"
+            checked={newEvent.isPizzaNight || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+          />
+        </label>
       </div>
 
-      {/* WTNB or Coed Input: Free text search with matching dropdown */}
       <div>
-        WTNB or Coed
-        <FormControl
-          type="text"
-          placeholder="Search or select WTNB or Coed"
-          value={wtnbOrCoedInput}
-          onFocus={() => setShowWtnbOrCoedDropdown(true)}
-          onBlur={() => setTimeout(() => setShowWtnbOrCoedDropdown(false), 200)}
-          onChange={(e) => setWtnbOrCoedInput(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, filteredWtnbOrCoed, wtnbOrCoedInput, setWtnbOrCoedInput, setShowWtnbOrCoedDropdown)}
-          style={{ maxWidth: '20em' }}
-        />
-        {showWtnbOrCoedDropdown && filteredWtnbOrCoed.length > 0 && (
-          <Dropdown.Menu show className="dropdown-menu">
-            {filteredWtnbOrCoed.map((option) => (
-              <Dropdown.Item
-                key={option}
-                onClick={() => {
-                  handleInputChange('wtnbOrCoed', option);
-                  setWtnbOrCoedInput(option);
-                  setShowWtnbOrCoedDropdown(false);
-                }}
-              >
-                {option}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        )}
+        <label>
+          Pizza Ordered?
+          <input
+            type="checkbox"
+            checked={newEvent.isPizzaOrdered || false}
+            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+            onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
+          />
+        </label>
       </div>
 
-      {/* Location Input: Free text search with matching dropdown */}
-      <div>
-        Location
-        <FormControl
-          type="text"
-          placeholder="Search or select location"
-          value={locationInput}
-          onFocus={() => setShowLocationDropdown(true)}
-          onBlur={() => setTimeout(() => setShowLocationDropdown(false), 200)}  // Hide dropdown after blur
-          onChange={(e) => setLocationInput(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, filteredLocations, locationInput, setLocationInput, setShowLocationDropdown)}
-          style={{ maxWidth: '20em' }}  // Apply max-width to input
-        />
-        {showLocationDropdown && filteredLocations.length > 0 && (
-          <Dropdown.Menu show className="dropdown-menu">
-            {filteredLocations.map((location) => (
-              <Dropdown.Item
-                key={location}
-                onClick={() => {
-                  handleInputChange('location', location);
-                  setLocationInput(location);
-                  setShowLocationDropdown(false);
-                }}
-              >
-                {location}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        )}
-      </div>
-
-      {/* Add remaining fields and buttons */}
-      <button type="button" onClick={handleAddEventWithTimestamp}>Add Event</button>
-      <button type="button" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
-    </Modal>
+        <button type="button" onClick={handleAddEventWithTimestamp}>Add Event</button>
+        <button type="button" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
+      </Modal>
   );
 };
