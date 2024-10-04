@@ -1,12 +1,12 @@
 import { getJsDate } from "./getJsDate";
 
 /**
- * Sort records by date ascending, then week number ascending, then sport, then WTNB/Coed (WTNB first).
- * @param {Array} records - The records to sort.
- * @returns {Array} - The sorted array of records.
+ * Sort events by date ascending, then week number ascending, then sport, then WTNB/Coed (WTNB first).
+ * @param {Array} events - The events to sort.
+ * @returns {Array} - The sorted array of events.
  */
-export const sortRecords = (records) => {
-    return records.sort((a, b) => {
+export const sortEvents = (events) => {
+    return events.sort((a, b) => {
       // 1. Sort by date ascending
 
       const dateA = getJsDate(a.eventDate);

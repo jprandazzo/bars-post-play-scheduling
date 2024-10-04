@@ -4,7 +4,7 @@ import { generateSeasonEvents } from './generateSeasonEvents';
 import { fetchData } from '../fetchData';
 
 // Function to handle adding a new season
-export const handleAddNewSeason = async (newSeason, setAllRecords, setSeasonModalOpen, setIsEventModalOpen) => {
+export const handleAddNewSeason = async (newSeason, setAllEvents, setSeasonModalOpen, setIsEventModalOpen) => {
   try {
     const eventsCollectionRef = collection(db, 'post play events');
     const seasonEvents = generateSeasonEvents(newSeason);
@@ -28,7 +28,7 @@ export const handleAddNewSeason = async (newSeason, setAllRecords, setSeasonModa
       });
     }
   
-    fetchData({setAllRecords})
+    fetchData({setAllEvents})
     
     // Close both modals when done
     setSeasonModalOpen(false);

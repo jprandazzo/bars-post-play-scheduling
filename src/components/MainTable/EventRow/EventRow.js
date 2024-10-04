@@ -7,30 +7,30 @@ import { db } from '../../../firebaseConfig';  // Import Firebase config
 
 import './EventRow.css'
 
-export const EventRow = ({ record, onDelete, onEdit }) => {
+export const EventRow = ({ event, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    // const [editedEvent, setEditedEvent] = useState(record);  // Initialize with the current record
+    // const [editedEvent, setEditedEvent] = useState(event);  // Initialize with the current event
 
     const handleCheckboxChange = async (field, value) => {
         try {
-            const recordRef = doc(db, 'post play events', record.id);  // Reference the record in Firestore
-            await updateDoc(recordRef, { [field]: value });  // Update the field with the new boolean value
+            const eventRef = doc(db, 'post play events', event.id);  // Reference the event in Firestore
+            await updateDoc(eventRef, { [field]: value });  // Update the field with the new boolean value
 
             // Optionally call the onEdit handler to update the state in the parent component
-            onEdit({ ...record, [field]: value });
+            onEdit({ ...event, [field]: value });
         } catch (error) {
-            console.error(`Error updating ${field} for record ${record.id}:`, error);
+            console.error(`Error updating ${field} for event ${event.id}:`, error);
         }
     };
 
     const handleDelete = () => {
-        if (window.confirm("Are you sure you want to delete this record?")) {
-            onDelete(record.id);
+        if (window.confirm("Are you sure you want to delete this event?")) {
+            onDelete(event.id);
         }
     };
 
     const handleEditClick = () => {
-        // setEditedEvent(record);  // Set the current event to be edited
+        // setEditedEvent(event);  // Set the current event to be edited
         setIsEditModalOpen(true);  // Open the modal
     };
 
@@ -38,39 +38,39 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
 
     return (
         <>
-            <tr key={record.id} style={{ backgroundColor: sportColors[record.sport.toLowerCase()] }}>
-                <td>{record.weekNumber}</td>
-                <td>{getJsDate(record.eventDate).toLocaleDateString('en-US', { weekday: 'long' })}<br/>{record.eventDate.month}/{record.eventDate.date}/{record.eventDate.year}<br/>{record.eventDate.hour}:{record.eventDate.minute} {record.eventDate.amPm}<br/></td>
-                <td>{record.wtnbOrCoed} {record.sport} {record.sportDayOfWeek}</td>
-                <td>{record.numAttendees}</td>
-                <td>{record.location}</td>
+            <tr key={event.id} style={{ backgroundColor: sportColors[event.sport.toLowerCase()] }}>
+                <td>{event.weekNumber}</td>
+                <td>{getJsDate(event.eventDate).toLocaleDateString('en-US', { weekday: 'long' })}<br/>{event.eventDate.month}/{event.eventDate.date}/{event.eventDate.year}<br/>{event.eventDate.hour}:{event.eventDate.minute} {event.eventDate.amPm}<br/></td>
+                <td>{event.wtnbOrCoed} {event.sport} {event.sportDayOfWeek}</td>
+                <td>{event.numAttendees}</td>
+                <td>{event.location}</td>
                 <td>
                     <input
                         type="checkbox"
-                        checked={record.isContacted}
-                        onChange={() => handleCheckboxChange('isContacted', !record.isContacted)}
+                        checked={event.isContacted}
+                        onChange={() => handleCheckboxChange('isContacted', !event.isContacted)}
 
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
-                        checked={record.isConfirmed}
-                        onChange={() => handleCheckboxChange('isConfirmed', !record.isConfirmed)}
+                        checked={event.isConfirmed}
+                        onChange={() => handleCheckboxChange('isConfirmed', !event.isConfirmed)}
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
-                        checked={record.isPizzaNight}
-                        onChange={() => handleCheckboxChange('isPizzaNight', !record.isPizzaNight)}  
+                        checked={event.isPizzaNight}
+                        onChange={() => handleCheckboxChange('isPizzaNight', !event.isPizzaNight)}  
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
-                        checked={record.isPizzaOrdered}
-                        onChange={() => handleCheckboxChange('isPizzaOrdered', !record.isPizzaOrdered)} 
+                        checked={event.isPizzaOrdered}
+                        onChange={() => handleCheckboxChange('isPizzaOrdered', !event.isPizzaOrdered)} 
                     />
                 </td>
                 <td>
@@ -82,7 +82,7 @@ export const EventRow = ({ record, onDelete, onEdit }) => {
             <EditEventModal
                 isOpen={isEditModalOpen}
                 // onClose={handleDiscardChanges}
-                event={record}  // Pass the current event into the modal
+                event={event}  // Pass the current event into the modal
                 onEdit={onEdit}
                 isEditModalOpen={isEditModalOpen}
                 setIsEditModalOpen={setIsEditModalOpen}

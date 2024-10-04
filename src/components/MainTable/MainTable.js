@@ -11,13 +11,13 @@ import { fetchData } from '../../utils/fetchData';
 import { filterEventsToCurrentSeason } from '../../utils/filterUtils/filterEventsToCurrentSeason';
 import { handleAddNewEvent, handleAddNewSeason } from '../../utils/handleAddNewUtils';
 import { AddNewEventModal, AddNewSeasonModal } from '../Modals';
-import { sortRecords } from '../../utils/sortUtils';
+import { sortEvents } from '../../utils/sortUtils';
 import { EventRow } from './EventRow/EventRow';
 import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 
 export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
-    const [allRecords, setAllRecords] = useState([]);
-    const [filteredAndSortedRecords, setFilteredAndSortedRecords] = useState([]);
+    const [allEvents, setAllEvents] = useState([]);
+    const [filteredAndSortedEvents, setFilteredAndSortedEvents] = useState([]);
     const [uniqueLocations, setUniqueLocations] = useState([]);
     const [uniqueSportDaysOfWeek, setUniqueSportDaysOfWeek] = useState([]);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -59,12 +59,12 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
     useEffect(() => {
         setCurrentSchedule(getCurrentSeason());
-        fetchData({ setAllRecords });
+        fetchData({ setAllEvents });
     }, [handleAddNewEvent]);
 
-    // Calculate unique locations from all records once
+    // Calculate unique locations from all events once
     useEffect(() => {
-        const uniqueLocationsSet = new Set(allRecords.map(record => record.location));
+        const uniqueLocationsSet = new Set(allEvents.map(event => event.location));
         const uniqueLocationsArray = Array.from(uniqueLocationsSet);
         setUniqueLocations(uniqueLocationsArray);
 
@@ -76,28 +76,28 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
             }));
         }
 
-        // Deduplicate sport days of the week from all records
-        const uniqueSportDaysOfWeekSet = new Set(allRecords.map(record => record.sportDayOfWeek));
+        // Deduplicate sport days of the week from all events
+        const uniqueSportDaysOfWeekSet = new Set(allEvents.map(event => event.sportDayOfWeek));
         setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
 
-    }, [allRecords]);
+    }, [allEvents]);
 
     useEffect(() => {
         // console.log('trigger')
-        const filtered = filterEventsToCurrentSeason(allRecords, currentSchedule);
+        const filtered = filterEventsToCurrentSeason(allEvents, currentSchedule);
         // console.log(currentSchedule)
-        const filteredAndSorted = applyUserFilters(sortRecords(filtered), userFilters);
-        setFilteredAndSortedRecords(filteredAndSorted);
-    }, [allRecords, currentSchedule, userFilters]);
+        const filteredAndSorted = applyUserFilters(sortEvents(filtered), userFilters);
+        setFilteredAndSortedEvents(filteredAndSorted);
+    }, [allEvents, currentSchedule, userFilters]);
 
 
 
     const handleDeleteEvent = async (id) => {
         try {
             await deleteDoc(doc(db, 'post play events', id));
-            fetchData({ setAllRecords });
+            fetchData({ setAllEvents });
         } catch (error) {
-            console.error('Error deleting record:', error);
+            console.error('Error deleting event:', error);
         }
     };
 
@@ -105,9 +105,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
         try {
             const eventRef = doc(db, 'post play events', updatedEvent.id);
             await updateDoc(eventRef, updatedEvent);
-            fetchData({ setAllRecords });
+            fetchData({ setAllEvents });
         } catch (error) {
-            console.error('Error updating record:', error);
+            console.error('Error updating event:', error);
         }
     };
 
@@ -162,11 +162,11 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 </thead>
 
                 <tbody>
-                    {/* {console.log(filteredAndSortedRecords)} */}
-                    {filteredAndSortedRecords.map((record) => (
+                    {/* {console.log(filteredAndSortedEvents)} */}
+                    {filteredAndSortedEvents.map((event) => (
                         <EventRow
-                            key={record.id}
-                            record={record}
+                            key={event.id}
+                            event={event}
                             onDelete={handleDeleteEvent}
                             onEdit={handleEditEvent}
                         />
@@ -174,9 +174,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 </tbody>
             </Table>
 
-            <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, allRecords, setAllRecords, setNewEvent, newEvent }} />
+            <AddNewEventModal {...{ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent, allEvents, setAllEvents, setNewEvent, newEvent }} />
 
-            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, allRecords, setAllRecords, setIsEventModalOpen }} />
+            <AddNewSeasonModal {...{ isSeasonModalOpen, setSeasonModalOpen, handleAddNewSeason, allEvents, setAllEvents, setIsEventModalOpen }} />
         </div>
     );
 };

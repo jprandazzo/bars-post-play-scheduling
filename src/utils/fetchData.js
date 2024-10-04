@@ -1,12 +1,12 @@
 import { db } from '../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
-export const fetchData = async ({setAllRecords}) => {
+export const fetchData = async ({setAllEvents}) => {
     try {
       const eventsCollectionRef = collection(db, 'post play events');
-      const records = await getDocs(eventsCollectionRef);
+      const events = await getDocs(eventsCollectionRef);
   
-      const formattedRecords = records.docs.map((doc) => {
+      const formattedEvents = events.docs.map((doc) => {
         const eventData = doc.data();
 
         return {
@@ -15,8 +15,8 @@ export const fetchData = async ({setAllRecords}) => {
         };
       });
   
-      setAllRecords(formattedRecords);
+      setAllEvents(formattedEvents);
     } catch (error) {
-      console.error('Error fetching records:', error);
+      console.error('Error fetching events:', error);
     }
   };

@@ -8,7 +8,7 @@ const normalizeString = (str) => {
     return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 };
 
-export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllRecords, allRecords }) => {
+export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllEvents, allEvents }) => {
   const [time, setTime] = useState({ hour: '8', minute: '00', amPm: 'PM' });
   const [locationInput, setLocationInput] = useState('');  // Track the location input
   const [dayOfWeekInput, setDayOfWeekInput] = useState('');  // Track the location input
@@ -19,12 +19,12 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
   const [showDayOfWeekDropdown, setShowDayOfWeekDropdown] = useState(false);  // Control visibility of sport dropdown
   const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);  // Control visibility of wtnbOrCoed dropdown
 
-  // Extract unique values for sports, WTNB/Coed, and locations from allRecords
+  // Extract unique values for sports, WTNB/Coed, and locations from allEvents
   const uniqueSports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'];
   const uniqueDaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const uniqueWtnbOrCoed = ['WTNB', 'Coed']
-  const uniqueLocations = [...new Set(allRecords.map(record => record.location))];
-  console.log(allRecords)
+  const uniqueLocations = [...new Set(allEvents.map(event => event.location))];
+  console.log(allEvents)
   console.log(uniqueLocations)
 
   // Filter values based on input
@@ -88,7 +88,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
       location: locationInput
     };
 
-    handleAddNewEvent(updatedEvent, setAllRecords, setIsEventModalOpen);
+    handleAddNewEvent(updatedEvent, setAllEvents, setIsEventModalOpen);
   };
 
   // Handle keyboard navigation (arrow keys and enter key)
