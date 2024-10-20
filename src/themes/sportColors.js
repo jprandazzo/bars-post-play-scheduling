@@ -1,7 +1,7 @@
 export const sportColors = {
-    bowling: '#FFC067', // Light Yellow (Pastel)
-    dodgeball: '#8ACE00', // Brat Green
-    kickball: '#ADD8E6', // Light Blue (Pastel)
-    pickleball: '#FFB6C1', // Light Pink (Pastel)
+    Bowling: '#FFC067', // Light Yellow (Pastel)
+    Dodgeball: '#8ACE00', // Brat Green
+    Kickball: '#ADD8E6', // Light Blue (Pastel)
+    Pickleball: '#FFB6C1', // Light Pink (Pastel)
   };
   

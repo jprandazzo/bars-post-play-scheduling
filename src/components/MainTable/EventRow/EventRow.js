@@ -1,15 +1,46 @@
 import React, { useState } from 'react';
 import { sportColors } from '../../../themes/sportColors';
+import { eventLocations } from '../../../themes/eventLocations';
 import { EditEventModal } from '../../Modals';
 import { getJsDate } from '../../../utils/getJsDate';
 import { doc, updateDoc } from 'firebase/firestore';  // Import Firestore update function
 import { db } from '../../../firebaseConfig';  // Import Firebase config
-
 import './EventRow.css'
 
 export const EventRow = ({ event, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     // const [editedEvent, setEditedEvent] = useState(event);  // Initialize with the current event
+
+    const getEventLocationWithNeighborhood = (location) => {
+        if (eventLocations.hkLocations.includes(location)) return (
+            <td className='event-location-hk'>
+                <p><b>{location}</b></p>
+                <br/>
+                <span><small><u>Neighbordhood:</u>
+                <br/>
+                Hell's Kitchen</small></span>
+            </td>
+        )
+        if (eventLocations.wvLocations.includes(location)) return (
+            <td className='event-location-wv'>
+                <p><b>{location}</b></p>
+                <br/>
+                <span><small><u>Neighbordhood:</u>
+                <br/>
+                West Village</small></span>
+            </td>
+        )
+        if (eventLocations.chelseaLocations.includes(location)) return (
+            <td className='event-location-chelsea'>
+                <p><b>{location}</b></p>
+                <br/>
+                <span><small><u>Neighbordhood:</u>
+                <br/>
+                Chelsea</small></span>
+            </td>
+        )
+        return location
+    }
 
     const handleCheckboxChange = async (field, value) => {
         try {
@@ -38,12 +69,20 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
 
     return (
         <>
-            <tr key={event.id} style={{ backgroundColor: sportColors[event.sport.toLowerCase()] }}>
+            {/* <tr key={event.id} style={{ backgroundColor: sportColors[event.sport.toLowerCase()] }}> */}
+            <tr key={event.id} className={event.sport}>
                 <td>{event.weekNumber}</td>
                 <td>{getJsDate(event.eventDate).toLocaleDateString('en-US', { weekday: 'long' })}<br/>{event.eventDate.month}/{event.eventDate.date}/{event.eventDate.year}<br/>{event.eventDate.hour}:{event.eventDate.minute} {event.eventDate.amPm}<br/></td>
-                <td>{event.wtnbOrCoed} {event.sport} {event.sportDayOfWeek}</td>
+                <td className='event-row-sport'>
+                    <span className='event-row-sportName'>{event.sport}</span>
+                    <br/>
+                    <span className='event-row-sportDayOfWeek'>{event.sportDayOfWeek}</span>
+                    <br/>
+                    <span className='event-row-wtnbOrCoed'>{event.wtnbOrCoed}</span>
+                </td>
                 <td>{event.numAttendees}</td>
-                <td>{event.location}</td>
+                {/* <td className={eventLocationNeighborhood(event.location)}>{event.location}</td> */}
+                {getEventLocationWithNeighborhood(event.location)}
                 <td>
                     <input
                         type="checkbox"

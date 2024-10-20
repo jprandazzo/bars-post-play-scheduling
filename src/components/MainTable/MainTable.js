@@ -124,7 +124,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                 <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button>
             </div>
 
-            <Table striped bordered hover className="main-table">
+            <Table bordered hover className="main-table">
                 <thead>
                     <tr>
                         <th>Week</th>

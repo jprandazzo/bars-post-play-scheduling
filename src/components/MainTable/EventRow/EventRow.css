@@ -1,3 +1,28 @@
 .edit-delete-event-button {
     margin-inline: 1px;
 }
+
+tbody .Bowling > .event-row-sport {
+    --bs-table-bg: #bb99ff;
+}
+
+tbody .Dodgeball > .event-row-sport {
+    --bs-table-bg: #8ACE00;
+}
+
+tbody .Kickball > .event-row-sport {
+    --bs-table-bg: #8ac7db;
+}
+
+tbody .Pickleball > .event-row-sport {
+    --bs-table-bg: #ff99dd;
+}
+
+tbody .event-row-sportName {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+tbody .event-location-hk {
+    --bs-table-bg: red;
+}
