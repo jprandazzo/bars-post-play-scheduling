@@ -1,3 +1,4 @@
+//not used because i'm using a simple html button - consider removing
 import React from 'react';
 
 export function Home({ setYear }) {

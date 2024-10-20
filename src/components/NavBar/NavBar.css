@@ -12,7 +12,7 @@
 }
 
 .nav-bar button {
-    padding: 1em 2.5em;
+    padding: 1em 2em;
 }
 
 .home-btn-wrapper {
@@ -22,6 +22,13 @@
 
 .home-btn {
     flex-shrink: 0;  /* Prevent the button from growing */
+    padding-inline: -.5em;
+    font-weight: bold;
+}
+
+.home-btn-desc-text {
+    font-size: 10px;
+    font-weight: normal;
 }
 
 .season-nav-wrapper {
@@ -42,6 +49,7 @@
 
 .season-nav button {
     margin: 0 5px;
+    font-weight: bold;
 }
 
 .popup-page-container {

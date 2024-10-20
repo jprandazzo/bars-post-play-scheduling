@@ -68,7 +68,8 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
     <>
       <div className="nav-bar">
         <div className='home-btn-wrapper'>
-          <button type="button" className="home-btn" onClick={resetApp}>Home</button>
+          <button type="button" className="home-btn" onClick={resetApp}>Home<br/>
+          <small className="home-btn-desc-text">(navigate back to current season)</small></button>
         </div>
         
         <div className="season-nav-wrapper">
