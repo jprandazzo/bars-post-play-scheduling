@@ -1,6 +1,7 @@
 /* NavBar.css */
 
 .nav-bar {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -10,18 +11,40 @@
     width: 100%;
 }
 
+.nav-bar button {
+    padding: 1em 2.5em;
+}
+
+.home-btn-wrapper {
+    position: relative;
+    z-index: 1; /* Keeps the home button above the navbar */
+}
+
 .home-btn {
-    margin-left: 10px;
+    flex-shrink: 0;  /* Prevent the button from growing */
+}
+
+.season-nav-wrapper {
+    position: absolute; /* Position the .season-nav absolutely */
+    left: 50%; /* Start at 50% from the left of the container */
+    transform: translateX(-50%); /* Center it horizontally */
+    z-index: 0; /* So it's below the home button */
 }
 
 .season-nav {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    flex: 1;
     gap: 2em;
 }
 
-.popup-container {
+.season-nav button {
+    margin: 0 5px;
+}
+
+.popup-page-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -41,18 +64,13 @@
     font-size: 20px;
     border-radius: 8px;
     position: relative;
+    top: -13em;
     z-index: 1001;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: all 0.3s ease;
-    min-height: 150px; /* Set a minimum height to prevent layout shift */
-    height: 150px; /* Ensure it doesn't grow when seasons show */
-    overflow: hidden; /* Hide seasons until they are revealed */
-}
-
-.popup-expanded {
-    height: 300px; /* Increase height when seasons appear */
+    min-height: 200px; /* Set a minimum height to prevent layout shift */
 }
 
 .schedule-popup-buttons {
@@ -74,11 +92,12 @@
 /* Seasons fade-out and fade-in effect */
 .seasons-row {
     opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+    transition: opacity 0.2s ease;
 }
 
 .seasons-row.fade-in {
-    opacity: 1; /* Make it visible when activated */
+    opacity: 1;
+    transition: opacity 0.2s ease;
 }
 
 .years-row {
