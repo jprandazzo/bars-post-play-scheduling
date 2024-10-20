@@ -8,7 +8,9 @@ export const LocationFilter = ({ uniqueLocations, userFilters, setUserFilters })
     return (
         <th>
             <div className="location-filter-container">
-                <DropdownButton variant="outline-primary" id="dropdown-location" title="Location">
+            <a href='https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing' target='_blank' rel='noreferrer'>(Link to BARS Contact List)</a>
+            
+            <DropdownButton variant="outline-primary" id="dropdown-location" title="Location">
                     <div className="location-filter-menu">
                         <div className="location-filter-column">
                             {uniqueLocations.map((location) => (
