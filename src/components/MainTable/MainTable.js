@@ -85,7 +85,6 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     useEffect(() => {
         // console.log('trigger')
         const filtered = filterEventsToCurrentSeason(allEvents, currentSchedule);
-        // console.log(currentSchedule)
         const filteredAndSorted = applyUserFilters(sortEvents(filtered), userFilters);
         setFilteredAndSortedEvents(filteredAndSorted);
     }, [allEvents, currentSchedule, userFilters]);

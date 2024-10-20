@@ -1,0 +1,49 @@
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100px; /* Maximum width for larger screens */
+    min-width: 100px; /* Minimum width for smaller screens */
+    width: auto; /* Let the width adjust based on content */
+    height: auto; /* Let the height adjust based on content */
+}
+
+/* Button styles for Add Event and Cancel */
+.modal-container button.add-event-btn {
+    background-color: #28a745; /* Green background for Add Event */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-container button.add-event-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.modal-container button.cancel-btn {
+    background-color: #dc3545; /* Red background for Cancel */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modal-container button.cancel-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.modal-container .button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 2em; /* Add 2em of space between buttons */
+    margin-top: 20px; /* Add space above the buttons */
+}
+

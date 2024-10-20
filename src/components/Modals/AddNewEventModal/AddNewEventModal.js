@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FormControl, Dropdown } from 'react-bootstrap';
-import { getSeason } from '../../utils/seasonUtils';
+import { getSeason } from '../../../utils/seasonUtils';
 
 // Utility function to normalize strings (remove special characters and case sensitivity)
 const normalizeString = (str) => {
@@ -20,12 +20,28 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
   const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);  // Control visibility of wtnbOrCoed dropdown
 
   // Extract unique values for sports, WTNB/Coed, and locations from allEvents
-  const uniqueSports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'];
+  const uniqueSports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball']
   const uniqueDaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const uniqueWtnbOrCoed = ['WTNB', 'Coed']
   const uniqueLocations = [...new Set(allEvents.map(event => event.location))];
-  console.log(allEvents)
-  console.log(uniqueLocations)
+
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      transform: 'translate(-50%, -50%)',
+      padding: '4em',
+      maxWidth: '500px',
+      width: 'auto',
+      height: 'auto',
+      maxHeight: '90vh',  // Prevents the modal from overflowing the screen height
+      overflowY: 'auto',  // Enables scrolling for long content
+      borderRadius: '8px',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    }
+  };
 
   // Filter values based on input
   const filteredLocations = uniqueLocations.filter(location =>
@@ -103,9 +119,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
   };
 
   return (
-      <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)}>
+    // <div className='modal-container'>    
+      <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)} style={customStyles}>
         <h2>Add New Event</h2>
-        <div className='modal-container'>    </div>
+        
         <div>
           <label>Post Play / Event Date 
             <br/>
@@ -294,56 +311,59 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
           </label>
         </div>
 
-      <div>
-        <label>
-          Contacted?
-          <input
-            type="checkbox"
-            checked={newEvent.isContacted || false}
-            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-            onChange={(e) => handleInputChange('isContacted', e.target.checked)}
-          />
-        </label>
-      </div>
+        <div>
+          <label>
+            Contacted?
+            <input
+              type="checkbox"
+              checked={newEvent.isContacted || false}
+              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+              onChange={(e) => handleInputChange('isContacted', e.target.checked)}
+            />
+          </label>
+        </div>
 
-      <div>
-        <label>
-          Confirmed?
-          <input
-            type="checkbox"
-            checked={newEvent.isConfirmed || false}
-            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-            onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
-          />
-        </label>
-      </div>
+        <div>
+          <label>
+            Confirmed?
+            <input
+              type="checkbox"
+              checked={newEvent.isConfirmed || false}
+              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+              onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
+            />
+          </label>
+        </div>
 
-      <div>
-        <label>
-          Pizza Night?
-          <input
-            type="checkbox"
-            checked={newEvent.isPizzaNight || false}
-            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-            onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
-          />
-        </label>
-      </div>
+        <div>
+          <label>
+            Pizza Night?
+            <input
+              type="checkbox"
+              checked={newEvent.isPizzaNight || false}
+              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+              onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+            />
+          </label>
+        </div>
 
-      <div>
-        <label>
-          Pizza Ordered?
-          <input
-            type="checkbox"
-            checked={newEvent.isPizzaOrdered || false}
-            // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-            onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
-          />
-        </label>
-      </div>
+        <div>
+          <label>
+            Pizza Ordered?
+            <input
+              type="checkbox"
+              checked={newEvent.isPizzaOrdered || false}
+              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
+              onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
+            />
+          </label>
+        </div>
 
-        <button type="button" onClick={handleAddEventWithTimestamp}>Add Event</button>
-        <button type="button" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
+        <div className="button-group">
+          <button type="button" className="add-event-btn" onClick={handleAddEventWithTimestamp}>Add Event</button>
+          <button type="button" className="cancel-btn" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
+        </div>
       </Modal>
+    // </div>
   );
 };
