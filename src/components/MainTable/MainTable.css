@@ -23,6 +23,11 @@
     flex-direction: column;
 }
 
+.add-event-button {
+    position: relative;
+    z-index: 10
+}
+
 .clickable {
     cursor: pointer !important;
 }

@@ -1,3 +1,6 @@
+Modal {
+    
+}
 .modal-container {
     position: fixed;
     top: 50%;
@@ -46,4 +49,93 @@
     gap: 2em; /* Add 2em of space between buttons */
     margin-top: 20px; /* Add space above the buttons */
 }
+  
+  
+.dropdown-menu {
+    position: absolute;
+    max-height: 10em;
+    overflow-y: auto;
+}
+  
+.error-message {
+    font-size: 0.8em;
+    color: red;
+}
 
+.custom-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 4em;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: auto;
+    min-width: 25em;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  /* Overlay styling */
+.custom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+  
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-row label {
+    flex-basis: 40%;
+}
+  
+.form-row input {
+    flex-basis: 60%;
+}
+  
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.add-event-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.add-event-btn:hover {
+    background-color: #218838;
+}
+  
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+  
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+  

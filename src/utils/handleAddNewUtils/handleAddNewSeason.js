@@ -1,10 +1,10 @@
-import { collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebaseConfig'; 
 import { generateSeasonEvents } from './generateSeasonEvents';
-import { fetchData } from '../fetchData';
+// import { fetchData } from '../fetchData';
 
 // Function to handle adding a new season
-export const handleAddNewSeason = async (newSeason, setAllEvents, setSeasonModalOpen, setIsEventModalOpen) => {
+export const handleAddNewSeason = async (newSeason, setSeasonModalOpen, setIsEventModalOpen) => {
   try {
     const eventsCollectionRef = collection(db, 'post play events');
     const seasonEvents = generateSeasonEvents(newSeason);
@@ -28,7 +28,7 @@ export const handleAddNewSeason = async (newSeason, setAllEvents, setSeasonModal
       });
     }
   
-    fetchData({setAllEvents})
+    // fetchData({setAllEvents})
     
     // Close both modals when done
     setSeasonModalOpen(false);

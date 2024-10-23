@@ -14,6 +14,7 @@ export const fetchData = async ({setAllEvents}) => {
           id: doc.id,
         };
       });
+      // console.log(formattedEvents)
   
       setAllEvents(formattedEvents);
     } catch (error) {

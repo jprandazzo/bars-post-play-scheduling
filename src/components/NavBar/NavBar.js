@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { getCurrentSeason } from "../../utils/seasonUtils/getCurrentSeason";
-import { useAuth } from "../../AuthContext"; // Use the AuthContext to manage sign out
+import { useAuth } from "../../contexts/AuthContext"; // Use the AuthContext to manage sign out
 
 import './NavBar.css'
 

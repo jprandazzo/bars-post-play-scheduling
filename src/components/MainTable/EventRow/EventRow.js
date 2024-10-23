@@ -4,7 +4,7 @@ import { EditEventModal } from '../../Modals';
 import { getJsDate } from '../../../utils/getJsDate';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
-import { useAuth } from '../../../AuthContext';  // Import AuthContext for user authentication
+import { useAuth } from '../../../contexts/AuthContext';  // Import AuthContext for user authentication
 import './EventRow.css'
 
 export const EventRow = ({ event, onDelete, onEdit }) => {
@@ -83,7 +83,7 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     <span className='event-row-wtnbOrCoed'>{event.wtnbOrCoed}</span>
                 </td>
                 <td>{event.numAttendees}</td>
-                
+
                 {getEventLocationWithNeighborhood(event.location)}
                 <td>
                     <input

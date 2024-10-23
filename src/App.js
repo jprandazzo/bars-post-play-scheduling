@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAuth } from './AuthContext'; // Import the auth context
+import { useAuth } from './contexts/AuthContext'; // Import the auth context
 
 import { MainTable } from './components/MainTable/MainTable';
 import { NavBar } from './components/NavBar/NavBar';

@@ -1,25 +1,50 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { FormControl, Dropdown } from 'react-bootstrap';
 import { getSeason } from '../../../utils/seasonUtils';
+import { useEvents } from '../../../contexts/EventsContext';
+import { DropdownInput } from '../../../common/DropdownInput';
 
-// Utility function to normalize strings (remove special characters and case sensitivity)
 const normalizeString = (str) => {
     return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 };
 
-export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEvent = {}, setNewEvent, handleAddNewEvent, setAllEvents, allEvents }) => {
+export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent }) => {
+  const { allEvents, setAllEvents } = useEvents();
   const [time, setTime] = useState({ hour: '8', minute: '00', amPm: 'PM' });
-  const [locationInput, setLocationInput] = useState('');  // Track the location input
-  const [dayOfWeekInput, setDayOfWeekInput] = useState('');  // Track the location input
-  const [sportInput, setSportInput] = useState('');  // Track the sport input
-  const [wtnbOrCoedInput, setWtnbOrCoedInput] = useState('');  // Track the wtnbOrCoed input
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);  // Control visibility of location dropdown
-  const [showSportDropdown, setShowSportDropdown] = useState(false);  // Control visibility of sport dropdown
-  const [showDayOfWeekDropdown, setShowDayOfWeekDropdown] = useState(false);  // Control visibility of sport dropdown
-  const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);  // Control visibility of wtnbOrCoed dropdown
+  const [showSportDropdown, setShowSportDropdown] = useState(false);
+  const [showDayOfWeekDropdown, setShowDayOfWeekDropdown] = useState(false);
+  const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [highlightedSportIndex, setHighlightedSportIndex] = useState(-1);
+  const [highlightedDayIndex, setHighlightedDayIndex] = useState(-1);
+  const [highlightedWtnbOrCoedIndex, setHighlightedWtnbOrCoedIndex] = useState(-1);
+  const [highlightedLocationIndex, setHighlightedLocationIndex] = useState(-1);
+  const [isDateValid, setIsDateValid] = useState(true);
+  const [newEvent, setNewEvent] = useState({
+    eventDate: {
+        year: "",
+        month: "",
+        date: "",
+        hour: "",
+        minute: "",
+        amPm: ""
+    },
+    weekNumber: '',
+    dayOfWeek: '',
+    sport: '',
+    wtnbOrCoed: '',
+    sportDayOfWeek: '',
+    location: '',
+    isContacted: false,
+    isConfirmed: false,
+    isPizzaNight: false,
+    isPizzaOrdered: false,
+    numAttendees: 0,
+    numRegistered: 0,
+    percentAttendance: 100,
+});
 
-  // Extract unique values for sports, WTNB/Coed, and locations from allEvents
+
   const uniqueSports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball']
   const uniqueDaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const uniqueWtnbOrCoed = ['WTNB', 'Coed']
@@ -32,29 +57,29 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
       right: 'auto',
       bottom: 'auto',
       transform: 'translate(-50%, -50%)',
-      padding: '4em',
+      padding: '2.5em',
       maxWidth: '500px',
       width: 'auto',
+      minWidth: '25em',
       height: 'auto',
-      maxHeight: '90vh',  // Prevents the modal from overflowing the screen height
-      overflowY: 'auto',  // Enables scrolling for long content
+      maxHeight: '100vh',
+      overflowY: 'auto',
       borderRadius: '8px',
       boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
     }
   };
 
-  // Filter values based on input
-  const filteredLocations = uniqueLocations.filter(location =>
-    normalizeString(location).includes(normalizeString(locationInput))
-  );
   const filteredSports = uniqueSports.filter(sport =>
-    normalizeString(sport).includes(normalizeString(sportInput))
+    normalizeString(sport).includes(normalizeString(newEvent.sport))
   );
   const filteredDaysOfWeek = uniqueDaysOfWeek.filter(day => 
-    normalizeString(day).includes(normalizeString(dayOfWeekInput))
+    normalizeString(day).includes(normalizeString(newEvent.sportDayOfWeek))
   )
+  const filteredLocations = uniqueLocations.filter(location =>
+    normalizeString(location).includes(normalizeString(newEvent.location))
+  );
   const filteredWtnbOrCoed = uniqueWtnbOrCoed.filter(option =>
-    normalizeString(option).includes(normalizeString(wtnbOrCoedInput))
+    normalizeString(option).includes(normalizeString(newEvent.wtnbOrCoed))
   );
 
   const formatDateForInput = (date) => {
@@ -63,15 +88,21 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
 
   const handleDateChange = (e) => {
     const [year, month, date] = e.target.value.split('-').map(Number);
-    const eventDate = new Date(year, month - 1, date);
-    const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
 
-    setNewEvent((prevEvent) => ({
-      ...prevEvent,
-      eventDate,
-      sportYear: year,
-      sportSeason: getSeason(`${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`).season
-    }));
+    const isValid = !Number.isNaN(Date.parse(`${year}-${month}-${date}`)) && e.target.value.length === 10;
+
+    if (isValid) {
+      const eventDate = new Date(year, month - 1, date);
+
+      setNewEvent((prevEvent) => ({
+        ...prevEvent,
+        eventDate,
+        sportYear: year,
+        sportSeason: getSeason(`${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`).season
+      }));
+    }
+
+    setIsDateValid(isValid);
   };
 
   const handleInputChange = (field, value) => {
@@ -97,273 +128,208 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, newEve
         hour: time.hour,
         minute: time.minute,
         amPm: time.amPm
-      },
-      wtnbOrCoed: wtnbOrCoedInput,
-      sport: sportInput,
-      sportDayOfWeek: dayOfWeekInput,
-      location: locationInput
+      }
     };
 
     handleAddNewEvent(updatedEvent, setAllEvents, setIsEventModalOpen);
   };
 
-  // Handle keyboard navigation (arrow keys and enter key)
-  const handleKeyDown = (e, filteredOptions, input, setInput, setShowDropdown) => {
-    if (e.key === 'ArrowDown' && filteredOptions.length > 0) {
-      const nextOption = filteredOptions[0];
-      setInput(nextOption);
-    }
-    if (e.key === 'Enter' && input) {
-      setShowDropdown(false);
-    }
-  };
-
   return (
-    // <div className='modal-container'>    
       <Modal isOpen={isEventModalOpen} onRequestClose={() => setIsEventModalOpen(false)} style={customStyles}>
-        <h2>Add New Event</h2>
+        <h3>Add New Event</h3>
         
-        <div>
-          <label>Post Play / Event Date 
-            <br/>
-            <input
-              type="date"
-              value={formatDateForInput(newEvent?.eventDate)}
-              onChange={handleDateChange}
-            />
-          </label>
-        </div>
+        <div className="form-container">
+          <div className="form-row">
+            <label htmlFor="eventDate">Post Play / Event Date</label>
+            <div>
+              <input
+                id="eventDate"
+                type="date"
+                value={formatDateForInput(newEvent?.eventDate)}
+                onChange={handleDateChange}
+                style={{ borderColor: isDateValid ? '' : 'red' }}
+              />
+              <br />
+              {!isDateValid && (
+                <span className="error-message">
+                  <font color="red">Invalid date. Please enter a valid date.</font>
+                </span>
+              )}
+            </div>
+          </div>
 
-        <div>
-          <label>Time
-            <br/>
-            <input
-              type="number"
-              placeholder="HH"
-              value={time.hour}
-              onChange={(e) => setTime({ ...time, hour: e.target.value })}
-              min="01"
-              max="12"
-            />
-            <span>:</span>
-            <input
-              type="number"
-              placeholder="MM"
-              value={time.minute}
-              onChange={(e) => setTime({ ...time, minute: e.target.value })}
-              min="00"
-              max="59"
-            />
-            <select
-              value={time.amPm}
-              onChange={(e) => setTime({ ...time, amPm: e.target.value })}
-            >
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </label>
-        </div>
+          <div className="form-row">
+            <label htmlFor="eventTime">Time</label>
+            <div>
+              <input
+                id="eventHour"
+                type="number"
+                placeholder="HH"
+                value={time.hour}
+                onChange={(e) => setTime({ ...time, hour: e.target.value })}
+                min="01"
+                max="12"
+              />
+              <span>:</span>
+              <input
+                id="eventMinute"
+                type="number"
+                placeholder="MM"
+                value={time.minute}
+                onChange={(e) => setTime({ ...time, minute: e.target.value })}
+                min="00"
+                max="59"
+              />
+              <select
+                id="eventAmPm"
+                value={time.amPm}
+                onChange={(e) => setTime({ ...time, amPm: e.target.value })}
+              >
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+              </select>
+            </div>
+          </div>
 
-        <div>
-          <label>Week Number
-            <br/>
-            <input
-              type="text"
-              placeholder="Week number"
-              value={newEvent?.weekNumber || ''}
-              onChange={(e) => handleInputChange('weekNumber', e.target.value)}
-            />
-          </label>
-        </div>
+          <div className="form-row">
+            <label htmlFor="weekNumber">Week Number</label>
+            <div>
+              <input
+                id="weekNumber"
+                type="text"
+                placeholder="Week number"
+                value={newEvent?.weekNumber || ''}
+                onChange={(e) => handleInputChange('weekNumber', e.target.value)}
+              />
+            </div>
+          </div>
 
-        {/* Sport Input: Free text search with matching dropdown */}
-        <div>
-          Sport
-          <FormControl
-            type="text"
+          <DropdownInput
+            id="sport"
+            label="Sport"
             placeholder="Search or select sport"
-            value={sportInput}
-            onFocus={() => setShowSportDropdown(true)}
-            onBlur={() => setTimeout(() => setShowSportDropdown(false), 200)}  // Hide dropdown after blur
-            onChange={(e) => setSportInput(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, filteredSports, sportInput, setSportInput, setShowSportDropdown)}
-            style={{ maxWidth: '20em' }}  // Apply max-width to input
+            value={newEvent.sport}
+            options={filteredSports}
+            onChange={(value) => handleInputChange('sport', value)}
+            showDropdown={showSportDropdown}
+            setShowDropdown={setShowSportDropdown}
+            highlightedIndex={highlightedSportIndex}
+            setHighlightedIndex={setHighlightedSportIndex}
           />
-          {showSportDropdown && filteredSports.length > 0 && (
-            <Dropdown.Menu show className="dropdown-menu">
-              {filteredSports.map((sport) => (
-                <Dropdown.Item
-                  key={sport}
-                  onClick={() => {
-                    handleInputChange('sport', sport);
-                    setSportInput(sport);
-                    setShowSportDropdown(false);
-                  }}
-                >
-                  {sport}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        </div>
 
-        <div>
-          Day
-          <FormControl
-            type="text"
+          <DropdownInput
+            id="dayOfWeek"
+            label={`What day of ${newEvent.sport || 'sport'} is this for?`}
             placeholder="Search or select day of week"
-            value={dayOfWeekInput}
-            onFocus={() => setShowDayOfWeekDropdown(true)}
-            onBlur={() => setTimeout(() => setShowDayOfWeekDropdown(false), 200)}  // Hide dropdown after blur
-            onChange={(e) => setDayOfWeekInput(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, filteredDaysOfWeek, dayOfWeekInput, setDayOfWeekInput, setShowDayOfWeekDropdown)}
-            style={{ maxWidth: '20em' }}  // Apply max-width to input
+            value={newEvent.sportDayOfWeek}
+            options={filteredDaysOfWeek}
+            onChange={(value) => handleInputChange('sportDayOfWeek', value)}
+            showDropdown={showDayOfWeekDropdown}
+            setShowDropdown={setShowDayOfWeekDropdown}
+            highlightedIndex={highlightedDayIndex}
+            setHighlightedIndex={setHighlightedDayIndex}
           />
-          {showDayOfWeekDropdown && filteredDaysOfWeek.length > 0 && (
-            <Dropdown.Menu show className="dropdown-menu">
-              {filteredDaysOfWeek.map((sport) => (
-                <Dropdown.Item
-                  key={sport}
-                  onClick={() => {
-                    handleInputChange('sport', sport);
-                    setDayOfWeekInput(sport);
-                    setShowDayOfWeekDropdown(false);
-                  }}
-                >
-                  {sport}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        </div>
 
-        {/* WTNB or Coed Input: Free text search with matching dropdown */}
-        <div>
-          WTNB or Coed
-          <FormControl
-            type="text"
-            placeholder="Search or select WTNB or Coed"
-            value={wtnbOrCoedInput}
-            onFocus={() => setShowWtnbOrCoedDropdown(true)}
-            onBlur={() => setTimeout(() => setShowWtnbOrCoedDropdown(false), 200)}
-            onChange={(e) => setWtnbOrCoedInput(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, filteredWtnbOrCoed, wtnbOrCoedInput, setWtnbOrCoedInput, setShowWtnbOrCoedDropdown)}
-            style={{ maxWidth: '20em' }}
+          <DropdownInput
+            id="wtnbOrCoed"
+            label="WTNB or Coed"
+            placeholder="Select WTNB or Coed"
+            value={newEvent.wtnbOrCoed}
+            options={filteredWtnbOrCoed}
+            onChange={(value) => handleInputChange('wtnbOrCoed', value)}
+            showDropdown={showWtnbOrCoedDropdown}
+            setShowDropdown={setShowWtnbOrCoedDropdown}
+            highlightedIndex={highlightedWtnbOrCoedIndex}
+            setHighlightedIndex={setHighlightedWtnbOrCoedIndex}
           />
-          {showWtnbOrCoedDropdown && filteredWtnbOrCoed.length > 0 && (
-            <Dropdown.Menu show className="dropdown-menu">
-              {filteredWtnbOrCoed.map((option) => (
-                <Dropdown.Item
-                  key={option}
-                  onClick={() => {
-                    handleInputChange('wtnbOrCoed', option);
-                    setWtnbOrCoedInput(option);
-                    setShowWtnbOrCoedDropdown(false);
-                  }}
-                >
-                  {option}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        </div>
 
-        {/* Location Input: Free text search with matching dropdown */}
-        <div>
-          Location
-          <FormControl
-            type="text"
+          <DropdownInput
+            id="location"
+            label="Location"
             placeholder="Search or select location"
-            value={locationInput}
-            onFocus={() => setShowLocationDropdown(true)}
-            onBlur={() => setTimeout(() => setShowLocationDropdown(false), 200)}  // Hide dropdown after blur
-            onChange={(e) => setLocationInput(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, filteredLocations, locationInput, setLocationInput, setShowLocationDropdown)}
-            style={{ maxWidth: '20em' }}  // Apply max-width to input
+            value={newEvent.location}
+            options={filteredLocations}
+            onChange={(value) => handleInputChange('location', value)}
+            showDropdown={showLocationDropdown}
+            setShowDropdown={setShowLocationDropdown}
+            highlightedIndex={highlightedLocationIndex}
+            setHighlightedIndex={setHighlightedLocationIndex}
           />
-          {showLocationDropdown && filteredLocations.length > 0 && (
-            <Dropdown.Menu show className="dropdown-menu">
-              {filteredLocations.map((location) => (
-                <Dropdown.Item
-                  key={location}
-                  onClick={() => {
-                    handleInputChange('location', location);
-                    setLocationInput(location);
-                    setShowLocationDropdown(false);
-                  }}
-                >
-                  {location}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
+
+          <div className="form-row">
+            <label htmlFor="numAttendees">Est # of Attendees</label>
+            <div>
+              <input
+                id="numAttendees"
+                type="text"
+                placeholder="# of Attendees"
+                value={newEvent?.numAttendees || ''}
+                onChange={(e) => handleInputChange('numAttendees', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="isContacted">Contacted?</label>
+            <div>
+              <input
+                id="isContacted"
+                type="checkbox"
+                checked={newEvent.isContacted || false}
+                onChange={(e) => handleInputChange('isContacted', e.target.checked)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="isConfirmed">Confirmed?</label>
+            <div>
+              <input
+                id="isConfirmed"
+                type="checkbox"
+                checked={newEvent.isConfirmed || false}
+                onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="isPizzaNight">Pizza Night?</label>
+            <div>
+              <input
+                id="isPizzaNight"
+                type="checkbox"
+                checked={newEvent.isPizzaNight || false}
+                onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="isPizzaOrdered">Pizza Ordered?</label>
+            <div>
+              <input
+                id="isPizzaOrdered"
+                type="checkbox"
+                checked={newEvent.isPizzaOrdered || false}
+                onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label>Est # of Attendees
-            <br/>
-            <input
-              type="text"
-              placeholder="# of Attendees"
-              value={newEvent?.numAttendees || ''}
-              onChange={(e) => handleInputChange('numAttendees', e.target.value)}
-            />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Contacted?
-            <input
-              type="checkbox"
-              checked={newEvent.isContacted || false}
-              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-              onChange={(e) => handleInputChange('isContacted', e.target.checked)}
-            />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Confirmed?
-            <input
-              type="checkbox"
-              checked={newEvent.isConfirmed || false}
-              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-              onChange={(e) => handleInputChange('isConfirmed', e.target.checked)}
-            />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Pizza Night?
-            <input
-              type="checkbox"
-              checked={newEvent.isPizzaNight || false}
-              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-              onChange={(e) => handleInputChange('isPizzaNight', e.target.checked)}
-            />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Pizza Ordered?
-            <input
-              type="checkbox"
-              checked={newEvent.isPizzaOrdered || false}
-              // onChange={(e) => setEditedEvent({ ...editedEvent, isConfirmed: e.target.checked })}
-              onChange={(e) => handleInputChange('isPizzaOrdered', e.target.checked)}
-            />
-          </label>
-        </div>
 
         <div className="button-group">
-          <button type="button" className="add-event-btn" onClick={handleAddEventWithTimestamp}>Add Event</button>
+          <button 
+            type="button" 
+            className="add-event-btn" 
+            onClick={handleAddEventWithTimestamp} 
+            disabled={!isDateValid}
+          >
+            Add Event
+          </button>
           <button type="button" className="cancel-btn" onClick={() => setIsEventModalOpen(false)}>Cancel</button>
         </div>
       </Modal>
-    // </div>
   );
 };

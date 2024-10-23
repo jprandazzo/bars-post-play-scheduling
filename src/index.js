@@ -4,18 +4,21 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
 import { App } from './App';
-import { AuthProvider } from './AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { EventsProvider } from './contexts/EventsContext';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <Router>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </Router>
+    <AuthProvider>
+      <EventsProvider>
+        <Router>
+          <App />
+        </Router>
+      </EventsProvider>
+    </AuthProvider>
   </React.StrictMode>,
   // document.getElementById('root')
 );
