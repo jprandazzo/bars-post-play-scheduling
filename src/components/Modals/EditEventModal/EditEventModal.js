@@ -136,7 +136,7 @@ const handleDiscardChanges = () => {
               <input
                 id="eventDate"
                 type="date"
-                value={formatDateForInput(getJsDate(editedEvent?.eventDate))}  // YYYY-MM-DD
+                value={formatDateForInput(editedEvent?.eventDate)}  // YYYY-MM-DD
                 onChange={handleDateChange}
                 style={{ borderColor: isDateValid ? '' : 'red' }}
               />
