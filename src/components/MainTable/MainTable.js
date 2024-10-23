@@ -4,6 +4,7 @@ import { Dropdown, Table, Button } from 'react-bootstrap';
 
 import { db } from '../../firebaseConfig';  
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../AuthContext';
 import { LocationFilter, SportFilter, ContactFilters, PizzaFilters } from './MainTableFilterComponents';
 
 import { getCurrentSeason } from '../../utils/seasonUtils';
@@ -16,6 +17,7 @@ import { EventRow } from './EventRow/EventRow';
 import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 
 export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
+    const { currentUser } = useAuth();
     const [allEvents, setAllEvents] = useState([]);
     const [filteredAndSortedEvents, setFilteredAndSortedEvents] = useState([]);
     const [uniqueLocations, setUniqueLocations] = useState([]);
@@ -119,9 +121,17 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
     return (
         <div>
-            <div className='add-event-season-buttons'>
-                <Button variant="primary" onClick={() => setIsEventModalOpen(true)}>Add New Event</Button>
-                <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button>
+            <div 
+                className={`add-event-season-buttons ${currentUser ? "clickable" : "disabled"}`}
+                title={!currentUser ? "Please sign in using your @bigapplerecsports.com email to make changes" : ""}
+            >
+                <Button variant="primary" 
+                    onClick={() => setIsEventModalOpen(true)} 
+                    disabled={!currentUser}
+                >
+                    + Add New Event
+                </Button>
+                {/* <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button> */}
             </div>
 
             <Table bordered hover className="main-table">

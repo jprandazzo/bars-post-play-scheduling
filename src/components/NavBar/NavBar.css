@@ -136,3 +136,22 @@ button {
 button:hover {
     background-color: #d4d4d4;
 }
+
+.logout-btn-wrapper {
+    margin-left: auto;
+    padding-right: 10px;
+}
+
+.logout-btn {
+    font-weight: bold;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #d43f3f;
+}

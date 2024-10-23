@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { sportColors } from '../../../themes/sportColors';
 import { eventLocations } from '../../../themes/eventLocations';
 import { EditEventModal } from '../../Modals';
 import { getJsDate } from '../../../utils/getJsDate';
-import { doc, updateDoc } from 'firebase/firestore';  // Import Firestore update function
-import { db } from '../../../firebaseConfig';  // Import Firebase config
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
+import { useAuth } from '../../../AuthContext';  // Import AuthContext for user authentication
 import './EventRow.css'
 
 export const EventRow = ({ event, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     // const [editedEvent, setEditedEvent] = useState(event);  // Initialize with the current event
+    const { currentUser } = useAuth();  // Get currentUser from AuthContext
+
 
     const getEventLocationWithNeighborhood = (location) => {
         if (eventLocations.hkLocations.includes(location)) return (
@@ -81,40 +83,67 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     <span className='event-row-wtnbOrCoed'>{event.wtnbOrCoed}</span>
                 </td>
                 <td>{event.numAttendees}</td>
-                {/* <td className={eventLocationNeighborhood(event.location)}>{event.location}</td> */}
+                
                 {getEventLocationWithNeighborhood(event.location)}
                 <td>
                     <input
                         type="checkbox"
+                        className={currentUser ? "clickable" : "disabled"}
                         checked={event.isContacted}
                         onChange={() => handleCheckboxChange('isContacted', !event.isContacted)}
-
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
+                        className={currentUser ? "clickable" : "disabled"}
                         checked={event.isConfirmed}
                         onChange={() => handleCheckboxChange('isConfirmed', !event.isConfirmed)}
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
+                        className={currentUser ? "clickable" : "disabled"}
                         checked={event.isPizzaNight}
-                        onChange={() => handleCheckboxChange('isPizzaNight', !event.isPizzaNight)}  
+                        onChange={() => handleCheckboxChange('isPizzaNight', !event.isPizzaNight)}
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
                     />
                 </td>
                 <td>
                     <input
                         type="checkbox"
+                        className={currentUser ? "clickable" : "disabled"}
                         checked={event.isPizzaOrdered}
-                        onChange={() => handleCheckboxChange('isPizzaOrdered', !event.isPizzaOrdered)} 
+                        onChange={() => handleCheckboxChange('isPizzaOrdered', !event.isPizzaOrdered)}
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
                     />
                 </td>
                 <td>
-                    <button className="edit-delete-event-button" type="button" onClick={handleEditClick}>✏️</button>
-                    <button className="edit-delete-event-button" type="button" onClick={handleDelete}>X</button>
+                    <button
+                        className={`edit-delete-event-button ${currentUser ? "clickable" : "disabled"}`}
+                        type="button"
+                        onClick={handleEditClick}
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
+                    >
+                        ✏️
+                    </button>
+                    <button
+                        className={`edit-delete-event-button ${currentUser ? "clickable" : "disabled"}`}
+                        type="button"
+                        onClick={handleDelete}
+                        disabled={!currentUser}
+                        title={!currentUser ? "Please log in using your @bigapplerecsports.com email to make changes" : ""}
+                    >
+                        X
+                    </button>
                 </td>
             </tr>
 

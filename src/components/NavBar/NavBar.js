@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 
 import { getCurrentSeason } from "../../utils/seasonUtils/getCurrentSeason";
+import { useAuth } from "../../AuthContext"; // Use the AuthContext to manage sign out
 
 import './NavBar.css'
 
 export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
+  const { currentUser, signInWithGoogle, logout } = useAuth(); // Get the logout function from the context
+
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedYear, setSelectedYear] = useState(null); // Track selected year
   const [fadeClass, setFadeClass] = useState('fade-in'); // Control fade class
@@ -17,8 +20,7 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
   const handleSeasonChange = (direction) => {
     const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
     const currentSeasonIndex = seasonOrder.indexOf(currentSchedule.season);
-    // console.log(direction)
-    // console.log(currentSeasonIndex)
+
     if (direction === 'prev') {
       if (currentSeasonIndex === 0) {
         setCurrentSchedule({ year: currentSchedule.year - 1, season: 'fall' });
@@ -84,6 +86,14 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
             </button>
             <button type="button" onClick={() => handleSeasonChange('next')}>Next Season</button>
           </div>
+        </div>
+
+        <div className="logout-btn-wrapper">
+          {currentUser ? (
+              <button type="button" onClick={logout} className="btn btn-danger">Logout</button>
+            ) : (
+              <button type="button" onClick={signInWithGoogle} className="btn btn-primary">Sign in with Google</button>
+            )}
         </div>
       </div>
 

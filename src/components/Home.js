@@ -8,7 +8,7 @@ export function Home({ setYear }) {
     <div>
       <h1>What season are you looking for?</h1>
       {years.map((year) => (
-        <button key={year} onClick={() => setYear(year)}>
+        <button type="button" key={year} onClick={() => setYear(year)}>
           {year}
         </button>
       ))}

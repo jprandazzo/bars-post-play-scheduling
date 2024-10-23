@@ -1,4 +1,5 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";  // Import `getApps` to check existing apps
+import { getAuth } from 'firebase/auth';
 import { getFirestore, setLogLevel } from 'firebase/firestore';
 // import { getAnalytics } from "firebase/analytics";
 
@@ -23,6 +24,8 @@ const firebaseConfig = {
 // Initialize Firebase
 setLogLevel('error');
 
-export const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 export const db = getFirestore(app);
+
 // const analytics = getAnalytics(app);

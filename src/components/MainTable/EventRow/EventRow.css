@@ -26,3 +26,30 @@ tbody .event-row-sportName {
 tbody .event-location-hk {
     --bs-table-bg: red;
 }
+
+.clickable {
+    cursor: pointer;
+}
+
+.disabled {
+    cursor: not-allowed;
+    position: relative;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: -25px;
+    left: 105%;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+    display: none;
+}
+
+.disabled:hover .tooltip {
+    display: block;
+}
