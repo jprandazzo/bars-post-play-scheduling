@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/bars-post-play-scheduling/static/css/main.33303a5f.css",
-    "main.js": "/bars-post-play-scheduling/static/js/main.37dce752.js",
+    "main.js": "/bars-post-play-scheduling/static/js/main.a900e28b.js",
     "static/js/453.e376779b.chunk.js": "/bars-post-play-scheduling/static/js/453.e376779b.chunk.js",
     "index.html": "/bars-post-play-scheduling/index.html",
     "main.33303a5f.css.map": "/bars-post-play-scheduling/static/css/main.33303a5f.css.map",
-    "main.37dce752.js.map": "/bars-post-play-scheduling/static/js/main.37dce752.js.map",
+    "main.a900e28b.js.map": "/bars-post-play-scheduling/static/js/main.a900e28b.js.map",
     "453.e376779b.chunk.js.map": "/bars-post-play-scheduling/static/js/453.e376779b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.33303a5f.css",
-    "static/js/main.37dce752.js"
+    "static/js/main.a900e28b.js"
   ]
 }
