@@ -1,5 +1,3 @@
-/* NavBar.css */
-
 .nav-bar {
     position: relative;
     display: flex;
@@ -12,7 +10,7 @@
 }
 
 .nav-bar button {
-    padding: 1em 2em;
+    padding: 0.5em 2em;
 }
 
 .home-btn-wrapper {
@@ -23,7 +21,8 @@
 .home-btn {
     flex-shrink: 0; /* Prevent the button from growing */
     padding-inline: -0.5em;
-    font-weight: bold;
+    font-weight: 600;
+    box-shadow: 0 0 3px 0.5px rgb(193, 191, 191);
 }
 
 .home-btn-desc-text {
@@ -49,7 +48,9 @@
 
 .season-nav button {
     margin: 0 5px;
-    font-weight: bold;
+    font-weight: 600;
+    padding-block: 1em;
+    box-shadow: 0 0 2px 0.5px rgb(193, 191, 191);
 }
 
 .popup-page-container {
@@ -97,17 +98,6 @@
     cursor: pointer;
 }
 
-/* Seasons fade-out and fade-in effect */
-.seasons-row {
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.2s ease;
-}
-
-.seasons-row.fade-in {
-    opacity: 1;
-    transition: opacity 0.2s ease;
-}
-
 .years-row {
     display: flex;
     justify-content: center;
@@ -120,9 +110,15 @@
 .seasons-row {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 1em;
     width: 100%;
-    flex-wrap: nowrap; /* Ensure seasons are on the same line */
+    flex-wrap: nowrap;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.1s ease;
+}
+
+.seasons-row.fade-in {
+    opacity: 1;
 }
 
 button {
@@ -143,10 +139,12 @@ button:hover {
 }
 
 .logout-btn {
-    font-weight: bold;
-    background-color: #ff4d4d;
+    min-height: 3.5em;
+    font-weight: 500;
+    font-size: 16px;
+    background-color: #e94c4c;
     color: white;
-    border: none;
+    box-shadow: 0 1px 1px rgb(228, 152, 152);
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -154,4 +152,59 @@ button:hover {
 
 .logout-btn:hover {
     background-color: #d43f3f;
+}
+
+@media (max-width: 768px) {
+    .nav-bar {
+        flex-direction: column; /* Keep the navbar stacked vertically */
+        align-items: center;
+        padding: 0.5em 1em;
+    }
+
+    /* Adjusting buttons to be in two columns on smaller screens */
+    .season-nav-wrapper {
+        position: static;
+        transform: none;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .season-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Create two columns */
+        gap: 0.5em; /* Add gap between buttons */
+        width: 100%;
+    }
+
+    /* Adjust the home button */
+    .home-btn-wrapper {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .logout-btn-wrapper {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    /* Make buttons wider on mobile for better usability */
+    .nav-bar button {
+        width: 100%;
+        padding: 0.75em;
+        font-size: 1em;
+    }
+
+    /* Popup adjustments for mobile */
+    .popup {
+        width: 90%; /* Make the popup take up most of the screen width */
+        top: 0;
+        margin-top: 20px;
+    }
+
+    .schedule-popup-buttons {
+        font-size: 18px;
+        padding: 10px 15px;
+    }
 }

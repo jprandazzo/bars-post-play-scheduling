@@ -1,6 +1,6 @@
 import { LocationFilter } from './LocationFilter';
 import { SportFilter } from './SportFilter';
 import { PizzaFilters } from './PizzaFilters';
-import { ContactFilters } from './ContactFilters';
+import { ConfirmationFilters } from './ConfirmationFilters';
 
-export { PizzaFilters, LocationFilter, SportFilter, ContactFilters };
+export { PizzaFilters, LocationFilter, SportFilter, ConfirmationFilters };

@@ -24,6 +24,20 @@
     flex-direction: column;
 }
 
+th.location-column,
+td.event-location {
+    width: 100px; /* Adjust width to desired value */
+    max-width: 100px;
+    text-align: center; /* Optional: Center-align the content */
+}
+
+/* Optional: Apply ellipsis to prevent overflow if location names are long */
+td.event-location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .add-event-button {
     position: relative;
     z-index: 10;
@@ -36,4 +50,84 @@
 .disabled {
     cursor: not-allowed !important;
     position: relative;
+}
+
+#attendees-column {
+    width: 150px; /* Adjust the width for the attendees column */
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#sport-filter-container-column {
+    width: 150px;
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#date-filter-container {
+    width: 150px;
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#week-column-header {
+    width: 150px;
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#actions-column-header {
+    width: 150px;
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* Make sure the table adjusts on smaller screens */
+    .main-table {
+        padding: 5em; /* Adjust padding for mobile */
+        width: 100%; /* Ensure the table takes full width */
+        overflow-x: auto; /* Allow horizontal scrolling for smaller screens */
+    }
+
+    /* Adjust column widths for mobile */
+    th.location-column,
+    td.event-location {
+        width: 80px; /* Narrow columns for mobile */
+        max-width: 80px;
+    }
+
+    #attendees-column,
+    #sport-filter-container-column,
+    #date-filter-container,
+    #week-column-header,
+    #actions-column-header {
+        width: 100px; /* Reduce column widths for mobile */
+        max-width: 100px;
+    }
+
+    /* Make table text smaller for mobile */
+    td {
+        font-size: 12px;
+    }
+
+    .add-event-button {
+        padding: 0.5em;
+        font-size: 12px; /* Reduce button font size */
+    }
 }

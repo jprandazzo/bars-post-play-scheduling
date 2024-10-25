@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { eventLocations } from '../../../themes/eventLocations';
 import { EditEventModal } from '../../Modals';
 import { getJsDate } from '../../../utils/getJsDate';
@@ -22,7 +23,6 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     <p>
                         <b>{location}</b>
                     </p>
-                    <br />
                     <span>
                         <small>
                             <u>Neighbordhood:</u>
@@ -38,7 +38,6 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     <p>
                         <b>{location}</b>
                     </p>
-                    <br />
                     <span>
                         <small>
                             <u>Neighbordhood:</u>
@@ -54,7 +53,6 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     <p>
                         <b>{location}</b>
                     </p>
-                    <br />
                     <span>
                         <small>
                             <u>Neighbordhood:</u>
@@ -71,7 +69,10 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                 </p>
             </td>
         ) : (
-            <td>No Location Selected</td>
+            <td>
+                No Location <br />
+                Selected
+            </td>
         );
     };
 
@@ -103,8 +104,8 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
     return (
         <>
             <tr key={event.id} className={event.sport}>
-                <td>{event.weekNumber}</td>
-                <td>
+                <td id="week-column-row">{event.weekNumber}</td>
+                <td id="date-filter-row">
                     {getJsDate(event.eventDate).toLocaleDateString('en-US', {
                         weekday: 'long',
                     })}
@@ -127,86 +128,86 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                         {event.wtnbOrCoed}
                     </span>
                 </td>
-                <td>{event.numAttendees}</td>
+                <td id="attendees-column">{event.numAttendees}</td>
 
                 {getEventLocationWithNeighborhood(event.location)}
                 <td>
-                    <input
-                        type="checkbox"
-                        className={currentUser ? 'clickable' : 'disabled'}
-                        checked={event.isContacted}
-                        onChange={() =>
-                            handleCheckboxChange(
-                                'isContacted',
-                                !event.isContacted
-                            )
-                        }
-                        disabled={!currentUser}
-                        title={
-                            !currentUser
-                                ? 'Please log in using your @bigapplerecsports.com email to make changes'
-                                : ''
-                        }
-                    />
+                    <div className="button-pair">
+                        <button
+                            onClick={() =>
+                                handleCheckboxChange(
+                                    'isContacted',
+                                    !event.isContacted
+                                )
+                            }
+                            className={`status-btn ${event.isContacted ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser}
+                            title={
+                                !currentUser
+                                    ? 'Please log in using your @bigapplerecsports.com email to make changes'
+                                    : ''
+                            }
+                        >
+                            Contacted? {event.isContacted ? 'Yes ✓' : 'No'}
+                        </button>
+                        <button
+                            onClick={() =>
+                                handleCheckboxChange(
+                                    'isConfirmed',
+                                    !event.isConfirmed
+                                )
+                            }
+                            className={`status-btn ${event.isConfirmed ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser}
+                            title={
+                                !currentUser
+                                    ? 'Please log in using your @bigapplerecsports.com email to make changes'
+                                    : ''
+                            }
+                        >
+                            Confirmed? {event.isConfirmed ? 'Yes ✓' : 'No'}
+                        </button>
+                    </div>
+                    <div className="button-pair">
+                        <button
+                            onClick={() =>
+                                handleCheckboxChange(
+                                    'isPizzaNight',
+                                    !event.isPizzaNight
+                                )
+                            }
+                            className={`status-btn ${event.isPizzaNight ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser}
+                            title={
+                                !currentUser
+                                    ? 'Please log in using your @bigapplerecsports.com email to make changes'
+                                    : ''
+                            }
+                        >
+                            Pizza Night? {event.isPizzaNight ? 'Yes ✓' : 'No'}
+                        </button>
+                        <button
+                            onClick={() =>
+                                handleCheckboxChange(
+                                    'isPizzaOrdered',
+                                    !event.isPizzaOrdered
+                                )
+                            }
+                            className={`status-btn ${event.isPizzaOrdered ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser}
+                            title={
+                                !currentUser
+                                    ? 'Please log in using your @bigapplerecsports.com email to make changes'
+                                    : ''
+                            }
+                        >
+                            Pizza Ordered?{' '}
+                            {event.isPizzaOrdered ? 'Yes ✓' : 'No'}
+                        </button>
+                    </div>
                 </td>
-                <td>
-                    <input
-                        type="checkbox"
-                        className={currentUser ? 'clickable' : 'disabled'}
-                        checked={event.isConfirmed}
-                        onChange={() =>
-                            handleCheckboxChange(
-                                'isConfirmed',
-                                !event.isConfirmed
-                            )
-                        }
-                        disabled={!currentUser}
-                        title={
-                            !currentUser
-                                ? 'Please log in using your @bigapplerecsports.com email to make changes'
-                                : ''
-                        }
-                    />
-                </td>
-                <td>
-                    <input
-                        type="checkbox"
-                        className={currentUser ? 'clickable' : 'disabled'}
-                        checked={event.isPizzaNight}
-                        onChange={() =>
-                            handleCheckboxChange(
-                                'isPizzaNight',
-                                !event.isPizzaNight
-                            )
-                        }
-                        disabled={!currentUser}
-                        title={
-                            !currentUser
-                                ? 'Please log in using your @bigapplerecsports.com email to make changes'
-                                : ''
-                        }
-                    />
-                </td>
-                <td>
-                    <input
-                        type="checkbox"
-                        className={currentUser ? 'clickable' : 'disabled'}
-                        checked={event.isPizzaOrdered}
-                        onChange={() =>
-                            handleCheckboxChange(
-                                'isPizzaOrdered',
-                                !event.isPizzaOrdered
-                            )
-                        }
-                        disabled={!currentUser}
-                        title={
-                            !currentUser
-                                ? 'Please log in using your @bigapplerecsports.com email to make changes'
-                                : ''
-                        }
-                    />
-                </td>
-                <td>
+
+                <td id="actions-column-row">
                     {/* <button
                         className={`edit-delete-event-button ${currentUser ? "clickable" : "disabled"}`}
                         type="button"

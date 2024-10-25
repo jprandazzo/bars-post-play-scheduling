@@ -10,7 +10,7 @@ import { useEvents } from '../../contexts/EventsContext';
 import {
     LocationFilter,
     SportFilter,
-    ContactFilters,
+    ConfirmationFilters,
     PizzaFilters,
 } from './MainTableFilterComponents';
 
@@ -175,9 +175,9 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
             <Table bordered hover className="main-table">
                 <thead>
                     <tr>
-                        <th>Week</th>
+                        <th id="week-column-header">Week</th>
 
-                        <th>
+                        <th id="date-filter-container">
                             <Dropdown>
                                 <Dropdown.Toggle
                                     variant="outline-primary"
@@ -186,7 +186,6 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                     Date
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    {/* ADD: React DatePicker for selecting a date range */}
                                     <DatePicker
                                         selected={selectedDate}
                                         onChange={(date) => {
@@ -214,7 +213,10 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                             }}
                         />
 
-                        <th>Est. # of Attendees</th>
+                        <th id="attendees-column">
+                            Est. # of <br />
+                            Attendees
+                        </th>
 
                         <LocationFilter
                             {...{
@@ -224,11 +226,13 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                             }}
                         />
 
-                        <ContactFilters {...{ userFilters, setUserFilters }} />
+                        <ConfirmationFilters
+                            {...{ userFilters, setUserFilters }}
+                        />
 
-                        <PizzaFilters {...{ userFilters, setUserFilters }} />
+                        {/* <PizzaFilters {...{ userFilters, setUserFilters }} /> */}
 
-                        <th>Actions</th>
+                        <th id="actions-column-header">Actions</th>
                     </tr>
                 </thead>
 

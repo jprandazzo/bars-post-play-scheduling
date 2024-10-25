@@ -23,3 +23,37 @@
 .sport-filter-column .form-check {
     margin-bottom: 10px;
 }
+
+#sport-filter-container-column {
+    width: 150px; /* Adjust the width for the attendees column */
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* Ensure the dropdown adapts to smaller screens */
+    .sport-filter-dropdown {
+        width: 100% !important; /* Take full width on mobile */
+        padding: 5px;
+    }
+
+    .sport-filter-container {
+        flex-direction: column; /* Stack columns vertically on mobile */
+    }
+
+    /* Narrow down each column for mobile */
+    .sport-day-of-week-column,
+    .sports-column,
+    .wtnb-or-coed-column {
+        flex-basis: 100%; /* Each column takes full width */
+        margin-right: 0;
+    }
+
+    #sport-filter-container-column {
+        width: 100px; /* Adjust the width for mobile */
+        max-width: 100px;
+    }
+}

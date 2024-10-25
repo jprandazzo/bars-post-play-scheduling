@@ -1,0 +1,73 @@
+.contact-confirm-filter-container {
+    width: 100%;
+    width: 220px; /* Narrow the confirmation column */
+    max-width: 220px;
+    text-align: center;
+}
+
+#dropdown-contact-confirm {
+    width: 100%; /* Ensure dropdown button fits within the column */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if the title is too long */
+}
+
+.contact-confirm-filter-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.contact-confirm-filter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.contact-confirm-filter-column .form-check {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contact-confirm-filter-column .form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 0.5em;
+}
+
+.confirmation-filters-container {
+    width: 350px; /* Adjust the width for the attendees column */
+    max-width: 350px;
+    text-align: center;
+    overflow: visible;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* Adjust the confirmation column for mobile */
+    .contact-confirm-filter-container {
+        width: 180px; /* Reduce the width for mobile */
+        max-width: 180px;
+        font-size: 12px; /* Smaller text for mobile */
+    }
+
+    /* Ensure dropdowns fit within the screen */
+    #dropdown-contact-confirm {
+        width: 100%;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    .contact-confirm-filter-menu {
+        padding: 2px;
+    }
+
+    .confirmation-filters-container {
+        width: 250px; /* Reduce width for mobile */
+        max-width: 250px;
+    }
+}

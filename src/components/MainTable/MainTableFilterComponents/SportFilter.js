@@ -12,7 +12,7 @@ export const SportFilter = ({
     const wtnbOrCoedOptions = ['WTNB', 'Coed'];
 
     return (
-        <th>
+        <th id="sport-filter-container-column">
             <div className="sport-filter-container">
                 <DropdownButton
                     variant="outline-primary"

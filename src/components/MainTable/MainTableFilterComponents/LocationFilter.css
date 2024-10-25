@@ -1,0 +1,70 @@
+.location-column {
+    width: 100px; /* Adjust to the desired width */
+    max-width: 100px;
+    text-align: center; /* Center-align the content */
+}
+
+/* Style the location filter container */
+.location-filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    text-align: center;
+}
+
+/* Style the dropdown button */
+#dropdown-location {
+    max-width: 100%; /* Ensure the dropdown button fits within the column */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if the title is too long */
+}
+
+/* Adjust the width of the dropdown menu */
+.location-filter-menu {
+    max-width: 200px; /* Set a max width for the dropdown menu */
+    overflow-y: auto; /* Allow scrolling if there are many locations */
+}
+
+/* Style each checkbox item */
+.location-filter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Add spacing between checkboxes */
+}
+
+/* Style the individual form checkboxes */
+.location-filter-column .form-check {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Optional: Adjust the size of the checkboxes */
+.location-filter-column .form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 0.5em;
+}
+
+@media (max-width: 768px) {
+    .location-column {
+        width: 80px; /* Narrow location columns for mobile */
+        max-width: 80px;
+    }
+
+    /* Adjust the dropdown for mobile */
+    .location-filter-container {
+        padding: 2px;
+        font-size: 12px; /* Make text smaller for mobile */
+    }
+
+    .location-filter-menu {
+        max-width: 150px; /* Reduce the dropdown width for mobile */
+        overflow-y: auto;
+    }
+}

@@ -123,9 +123,9 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
                         <button
                             type="button"
                             onClick={logout}
-                            className="btn btn-danger"
+                            className="logout-btn btn-danger"
                         >
-                            Logout
+                            Log out
                         </button>
                     ) : (
                         <button

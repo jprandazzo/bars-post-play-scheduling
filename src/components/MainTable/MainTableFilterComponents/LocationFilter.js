@@ -3,13 +3,15 @@ import React from 'react';
 
 import { handleFilterCheckboxClick } from '../../../utils/filterUtils';
 
+import './LocationFilter.css';
+
 export const LocationFilter = ({
     uniqueLocations,
     userFilters,
     setUserFilters,
 }) => {
     return (
-        <th>
+        <th className="location-column">
             <div className="location-filter-container">
                 <a
                     href="https://docs.google.com/spreadsheets/d/15UWM_Ip4aVnZxhdEFbRYRICz-PdJoyI1MaAK3lTKqx8/edit?usp=sharing"
@@ -41,7 +43,7 @@ export const LocationFilter = ({
                                 >
                                     <Form.Check
                                         type="checkbox"
-                                        label={location}
+                                        label={location ? location : 'None'}
                                         checked={(
                                             userFilters.selectedLocations || []
                                         ).includes(location)}
