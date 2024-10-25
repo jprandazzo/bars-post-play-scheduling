@@ -7,19 +7,30 @@ import { getFirestore, setLogLevel } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDebOtDhZi9ayD_Ey_rgPySnWT_DheEsS4",
-  authDomain: "bars-post-play-scheduling.firebaseapp.com",
-  databaseURL: "https://bars-post-play-scheduling-default-rtdb.firebaseio.com",
-  projectId: "bars-post-play-scheduling",
-  storageBucket: "bars-post-play-scheduling.appspot.com",
-  messagingSenderId: "723538198579",
-  appId: "1:723538198579:web:cf03f3022506b644c0e346",
-  measurementId: "G-45CHPMS1NF"
+const firebaseConfigProd = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY_PROD,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN_PROD,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID_PROD,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET_PROD,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID_PROD,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID_PROD,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID_PROD
 };
+
+const firebaseConfigDev = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY_DEV,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN_DEV,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID_DEV,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET_DEV,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID_DEV,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID_DEV,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID_DEV
+};
+
+const firebaseConfig = process.env.NODE_ENV === 'development'
+  ? firebaseConfigDev
+  : firebaseConfigProd;
 
 // Initialize Firebase
 setLogLevel('error');
