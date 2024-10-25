@@ -24,7 +24,7 @@ tbody .event-row-sportName {
 }
 
 tbody .event-location-hk {
-    --bs-table-bg: rgb(247, 132, 132);
+    --bs-table-bg: rgb(235, 186, 80);
 }
 
 tbody .event-location-chelsea {
@@ -73,7 +73,8 @@ td {
 .event-row-sport,
 .event-location-hk,
 .event-location-wv,
-.event-location-chelsea {
+.event-location-chelsea,
+.event-location-unknown {
     max-width: 2000px; /* Narrower max-width for location and sport cells */
     padding: 5px; /* Reduce padding */
     width: 150px; /* Adjust the width for the attendees column */

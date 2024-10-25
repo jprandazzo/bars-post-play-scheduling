@@ -69,9 +69,11 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                 </p>
             </td>
         ) : (
-            <td>
-                No Location <br />
-                Selected
+            <td className="event-location-unknown">
+                <p>
+                    No Location <br />
+                    Selected
+                </p>
             </td>
         );
     };
@@ -157,8 +159,8 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                                     !event.isConfirmed
                                 )
                             }
-                            className={`status-btn ${event.isConfirmed ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
-                            disabled={!currentUser}
+                            className={`status-btn ${event.isConfirmed ? 'blue' : ''} ${currentUser && event.isContacted ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser || !event.isContacted}
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
@@ -193,8 +195,8 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                                     !event.isPizzaOrdered
                                 )
                             }
-                            className={`status-btn ${event.isPizzaOrdered ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
-                            disabled={!currentUser}
+                            className={`status-btn ${event.isPizzaOrdered ? 'blue' : ''} ${currentUser && event.isPizzaNight ? 'clickable' : 'disabled'}`}
+                            disabled={!currentUser || !event.isPizzaNight}
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
