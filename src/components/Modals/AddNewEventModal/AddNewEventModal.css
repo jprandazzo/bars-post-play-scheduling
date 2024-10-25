@@ -1,141 +1,106 @@
-Modal {
-    
+.ReactModal__Content {
+    padding: 2em !important;
 }
-.modal-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 100px; /* Maximum width for larger screens */
-    min-width: 100px; /* Minimum width for smaller screens */
-    width: auto; /* Let the width adjust based on content */
-    height: auto; /* Let the height adjust based on content */
+h3 {
+    margin: auto;
+    width: 50%;
+    margin-block: .5em;
 }
 
-/* Button styles for Add Event and Cancel */
-.modal-container button.add-event-btn {
-    background-color: #28a745; /* Green background for Add Event */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.modal-container button.add-event-btn:hover {
-    background-color: #218838; /* Darker green on hover */
-}
-
-.modal-container button.cancel-btn {
-    background-color: #dc3545; /* Red background for Cancel */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.modal-container button.cancel-btn:hover {
-    background-color: #c82333; /* Darker red on hover */
-}
-
-.modal-container .button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 2em; /* Add 2em of space between buttons */
-    margin-top: 20px; /* Add space above the buttons */
-}
-  
-  
-.dropdown-menu {
-    position: absolute;
-    max-height: 10em;
-    overflow-y: auto;
-}
-  
-.error-message {
-    font-size: 0.8em;
-    color: red;
-}
-
-.custom-modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 4em;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: auto;
-    min-width: 25em;
-    height: auto;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
-  /* Overlay styling */
-.custom-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-}
-  
 .form-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-between;  /* Ensure the label and input stay aligned */
+    align-items: center;             /* Vertically align label and input */
+    width: 100%;                     /* Ensure form-row takes full width */
+    margin-bottom: 1em;              /* Add spacing between rows */
 }
 
 .form-row label {
-    flex-basis: 40%;
+    flex-basis: 40%;                 /* Labels take 40% of the width */
+    padding-right: 1em;              /* Add some padding to push the input field away from the label */
+    text-align: left;                /* Ensure label is aligned to the left */
 }
-  
-.form-row input {
-    flex-basis: 60%;
+
+.form-row .react-datepicker-wrapper,
+.form-row input, .form-row select {
+    flex-basis: 60%;                 /* Inputs take 60% of the width */
+    max-width: 250px;                /* Set a maximum width to prevent inputs from being too wide */
+    width: 100%;                     /* Ensure input takes up the available space */
 }
-  
+
+.react-datepicker-wrapper {
+    width: 100%;                     /* Ensure the date picker takes up the available space */
+}
+
+.react-datepicker__input-container {
+    width: 100%;                     /* Ensure the input container takes full width */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.react-datepicker__input-container input {
+    width: calc(100% - 20px);        /* Adjust the input width to ensure padding does not shift content */
+    /* border: 1px solid grey; */
+}
+
+input[type="text"] {
+    border: 1px solid #dee2e6;
+    border-radius: .375em;
+    min-height: 2.5em;
+}
+
+input[type="text"]::placeholder {
+    text-align: center;
+}
+
+input[type="text"]:focus {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+.custom-modal input, .custom-modal select {
+    width: 100%;                     /* Ensure all input elements take full width */
+    padding: 0.5em;                  /* Add some padding for consistent spacing */
+}
+
 .button-group {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    width: 100%;
+}
+
+.add-event-btn, .cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 45%;      
+    font-weight: 500;                /* Make buttons take up equal space and align side by side */
 }
 
 .add-event-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    background-color: #B7E882;
+}
+
+.cancel-btn {
+    background-color: #DC3444;
 }
 
 .add-event-btn:hover {
-    background-color: #218838;
+    filter: brightness(.8);
+    background-color: #B7E882;
 }
-  
-.cancel-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
-  
+
 .cancel-btn:hover {
-    background-color: #c82333;
+    filter: brightness(.8);
+    background-color: #DC3444;
 }
-  
+
+.modal-checkbox {
+    min-width: 1.75em;
+    height: 1.75em;
+}

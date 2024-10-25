@@ -1,5 +1,6 @@
 import React, { } from 'react';
 import { FormControl, Dropdown } from 'react-bootstrap';
+import { LabelWithoutInputFocus } from './LabelWithoutInputFocus';
 
 export const DropdownInput = ({
   id,
@@ -44,15 +45,15 @@ export const DropdownInput = ({
 
   return (
     <div className="form-row">
-      <label htmlFor={id}>{label}</label>
+      <LabelWithoutInputFocus htmlFor={id}>{label}</LabelWithoutInputFocus>
       <div>
         <FormControl
           id={id}
           type="text"
           placeholder={placeholder}
           value={value}
-          onFocus={() => setShowDropdown(true)}
-          onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+          onFocus={() => setTimeout(()=> setShowDropdown(true),100)}
+          onBlur={() => setShowDropdown(false)}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyChangeInput}
           style={{ maxWidth }}

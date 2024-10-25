@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import DatePicker from 'react-datepicker';
+
+import { LabelWithoutInputFocus } from '../../../common/LabelWithoutInputFocus';
 import { getSeason } from '../../../utils/seasonUtils';
 import { useEvents } from '../../../contexts/EventsContext';
 import { DropdownInput } from '../../../common/DropdownInput';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import 'react-datepicker/dist/react-datepicker.css';
+import './AddNewEventModal.css'
 
 const normalizeString = (str) => {
     return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -10,7 +18,9 @@ const normalizeString = (str) => {
 
 export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handleAddNewEvent }) => {
   const { allEvents, setAllEvents } = useEvents();
-  const [time, setTime] = useState({ hour: '8', minute: '00', amPm: 'PM' });
+  // const [time, setTime] = useState({ hour: '8', minute: '00', amPm: 'PM' });
+  const [selectedDate, setSelectedDate] = useState(null); 
+  const [selectedTime, setSelectedTime] = useState(null);
   const [showSportDropdown, setShowSportDropdown] = useState(false);
   const [showDayOfWeekDropdown, setShowDayOfWeekDropdown] = useState(false);
   const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);
@@ -19,7 +29,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
   const [highlightedDayIndex, setHighlightedDayIndex] = useState(-1);
   const [highlightedWtnbOrCoedIndex, setHighlightedWtnbOrCoedIndex] = useState(-1);
   const [highlightedLocationIndex, setHighlightedLocationIndex] = useState(-1);
-  const [isDateValid, setIsDateValid] = useState(true);
+  // const [isDateValid, setIsDateValid] = useState(true);
   const [newEvent, setNewEvent] = useState({
     eventDate: {
         year: "",
@@ -82,28 +92,29 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
     normalizeString(option).includes(normalizeString(newEvent.wtnbOrCoed))
   );
 
+  // do i still need this?
   const formatDateForInput = (date) => {
     return date instanceof Date ? date.toISOString().split('T')[0] : '';
   };
 
-  const handleDateChange = (e) => {
-    const [year, month, date] = e.target.value.split('-').map(Number);
+  // const handleDateChange = (e) => {
+  //   const [year, month, date] = e.target.value.split('-').map(Number);
 
-    const isValid = !Number.isNaN(Date.parse(`${year}-${month}-${date}`)) && e.target.value.length === 10;
+  //   const isValid = !Number.isNaN(Date.parse(`${year}-${month}-${date}`)) && e.target.value.length === 10;
 
-    if (isValid) {
-      const eventDate = new Date(year, month - 1, date);
+  //   if (isValid) {
+  //     const eventDate = new Date(year, month - 1, date);
 
-      setNewEvent((prevEvent) => ({
-        ...prevEvent,
-        eventDate,
-        sportYear: year,
-        sportSeason: getSeason(`${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`).season
-      }));
-    }
+  //     setNewEvent((prevEvent) => ({
+  //       ...prevEvent,
+  //       eventDate,
+  //       sportYear: year,
+  //       sportSeason: getSeason(`${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`).season
+  //     }));
+  //   }
 
-    setIsDateValid(isValid);
-  };
+  //   setIsDateValid(isValid);
+  // };
 
   const handleInputChange = (field, value) => {
     setNewEvent((prevEvent) => ({
@@ -112,26 +123,86 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
     }));
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date); // Set the selected date
+    if (date) {
+      setNewEvent((prevEvent) => ({
+        ...prevEvent,
+        eventDate: {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,  // JavaScript months are 0-based
+          date: date.getDate(),
+        },
+        sportYear: date.getFullYear(),
+        sportSeason: getSeason(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`).season
+      }));
+    }
+  };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+    if (time) {
+      setNewEvent((prevEvent) => ({
+        ...prevEvent,
+        eventDate: {
+          ...prevEvent.eventDate,
+          hour: time.getHours(),
+          minute: time.getMinutes(),
+          amPm: time.getHours() >= 12 ? 'PM' : 'AM',
+        }
+      }));
+    }
+  };
+
+  // const handleAddEventWithTimestamp = () => {
+  //   if (!newEvent.eventDate || !time.hour || !time.minute || !time.amPm) {
+  //     alert("Please provide both date and time");
+  //     return;
+  //   }
+
+  //   const updatedEvent = {
+  //     ...newEvent,
+  //     eventDate: {
+  //       year: newEvent.eventDate.getFullYear(),
+  //       month: newEvent.eventDate.getMonth() + 1,
+  //       date: newEvent.eventDate.getDate(),
+  //       dayOfWeek: newEvent.eventDate.toLocaleDateString('en-US', { weekday: 'long' }),
+  //       hour: time.hour,
+  //       minute: time.minute,
+  //       amPm: time.amPm
+  //     }
+  //   };
+
+  //   handleAddNewEvent(updatedEvent, setAllEvents, setIsEventModalOpen);
+  // };
+
+  // const handleAddEventWithTimestamp = () => {
+  //   // REPLACE: You no longer need the manual date validation
+  //   if (!selectedDate || !time.hour || !time.minute || !time.amPm) {
+  //     alert("Please provide both date and time");
+  //     return;
+  //   }
+
+  //   const updatedEvent = {
+  //     ...newEvent,
+  //     eventDate: {
+  //       ...newEvent.eventDate,
+  //       hour: time.hour,
+  //       minute: time.minute,
+  //       amPm: time.amPm
+  //     }
+  //   };
+
+  //   handleAddNewEvent(updatedEvent, setAllEvents, setIsEventModalOpen);
+  // };
+
   const handleAddEventWithTimestamp = () => {
-    if (!newEvent.eventDate || !time.hour || !time.minute || !time.amPm) {
+    if (!selectedDate || !selectedTime) {
       alert("Please provide both date and time");
       return;
     }
 
-    const updatedEvent = {
-      ...newEvent,
-      eventDate: {
-        year: newEvent.eventDate.getFullYear(),
-        month: newEvent.eventDate.getMonth() + 1,
-        date: newEvent.eventDate.getDate(),
-        dayOfWeek: newEvent.eventDate.toLocaleDateString('en-US', { weekday: 'long' }),
-        hour: time.hour,
-        minute: time.minute,
-        amPm: time.amPm
-      }
-    };
-
-    handleAddNewEvent(updatedEvent, setAllEvents, setIsEventModalOpen);
+    handleAddNewEvent(newEvent, setAllEvents, setIsEventModalOpen);
   };
 
   return (
@@ -139,7 +210,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
         <h3>Add New Event</h3>
         
         <div className="form-container">
-          <div className="form-row">
+          {/* <div className="form-row">
             <label htmlFor="eventDate">Post Play / Event Date</label>
             <div>
               <input
@@ -156,43 +227,46 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
                 </span>
               )}
             </div>
+          </div> */}
+
+{/* ADD: Use react-datepicker instead of the manual date input */}
+          <div className="form-row">
+            <LabelWithoutInputFocus>
+              Post Play / Event Date 
+              {/* <FontAwesomeIcon
+                icon={faCalendarAlt}
+                className="calendar-icon"
+                onClick={() => document.getElementById('eventDate').focus()}
+              /> */}
+            </LabelWithoutInputFocus>
+            <DatePicker
+              id='eventDate'
+              placeholderText="Type or select"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="MM/dd/yyyy"
+              className="form-control"
+            />
           </div>
 
           <div className="form-row">
-            <label htmlFor="eventTime">Time</label>
-            <div>
-              <input
-                id="eventHour"
-                type="number"
-                placeholder="HH"
-                value={time.hour}
-                onChange={(e) => setTime({ ...time, hour: e.target.value })}
-                min="01"
-                max="12"
-              />
-              <span>:</span>
-              <input
-                id="eventMinute"
-                type="number"
-                placeholder="MM"
-                value={time.minute}
-                onChange={(e) => setTime({ ...time, minute: e.target.value })}
-                min="00"
-                max="59"
-              />
-              <select
-                id="eventAmPm"
-                value={time.amPm}
-                onChange={(e) => setTime({ ...time, amPm: e.target.value })}
-              >
-                <option value="AM">AM</option>
-                <option value="PM">PM</option>
-              </select>
-            </div>
+          <LabelWithoutInputFocus htmlFor="eventTime">Time</LabelWithoutInputFocus>
+            <DatePicker
+              id="eventTime"
+              selected={selectedTime}
+              onChange={handleTimeChange}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}  // 15-minute intervals for time selection
+              timeCaption="Time"
+              dateFormat="h:mm aa"
+              className="form-control"
+              placeholderText="Select a time"
+            />
           </div>
 
           <div className="form-row">
-            <label htmlFor="weekNumber">Week Number</label>
+            <LabelWithoutInputFocus htmlFor="weekNumber">Week Number</LabelWithoutInputFocus>
             <div>
               <input
                 id="weekNumber"
@@ -207,7 +281,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           <DropdownInput
             id="sport"
             label="Sport"
-            placeholder="Search or select sport"
+            placeholder="Search/select sport"
             value={newEvent.sport}
             options={filteredSports}
             onChange={(value) => handleInputChange('sport', value)}
@@ -220,7 +294,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           <DropdownInput
             id="dayOfWeek"
             label={`What day of ${newEvent.sport || 'sport'} is this for?`}
-            placeholder="Search or select day of week"
+            placeholder="Search/select day of week"
             value={newEvent.sportDayOfWeek}
             options={filteredDaysOfWeek}
             onChange={(value) => handleInputChange('sportDayOfWeek', value)}
@@ -257,9 +331,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           />
 
           <div className="form-row">
-            <label htmlFor="numAttendees">Est # of Attendees</label>
+            <LabelWithoutInputFocus htmlFor="numAttendees">Est # of Attendees</LabelWithoutInputFocus>
             <div>
               <input
+                className="modal-checkbox"
                 id="numAttendees"
                 type="text"
                 placeholder="# of Attendees"
@@ -270,9 +345,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           </div>
 
           <div className="form-row">
-            <label htmlFor="isContacted">Contacted?</label>
+            <LabelWithoutInputFocus htmlFor="isContacted">Contacted?</LabelWithoutInputFocus>
             <div>
               <input
+                className="modal-checkbox"
                 id="isContacted"
                 type="checkbox"
                 checked={newEvent.isContacted || false}
@@ -282,9 +358,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           </div>
 
           <div className="form-row">
-            <label htmlFor="isConfirmed">Confirmed?</label>
+            <LabelWithoutInputFocus htmlFor="isConfirmed">Confirmed?</LabelWithoutInputFocus>
             <div>
               <input
+                className="modal-checkbox"
                 id="isConfirmed"
                 type="checkbox"
                 checked={newEvent.isConfirmed || false}
@@ -294,9 +371,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           </div>
 
           <div className="form-row">
-            <label htmlFor="isPizzaNight">Pizza Night?</label>
+            <LabelWithoutInputFocus htmlFor="isPizzaNight">Pizza Night?</LabelWithoutInputFocus>
             <div>
               <input
+                className="modal-checkbox"
                 id="isPizzaNight"
                 type="checkbox"
                 checked={newEvent.isPizzaNight || false}
@@ -306,9 +384,10 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
           </div>
 
           <div className="form-row">
-            <label htmlFor="isPizzaOrdered">Pizza Ordered?</label>
+            <LabelWithoutInputFocus htmlFor="isPizzaOrdered">Pizza Ordered?</LabelWithoutInputFocus>
             <div>
               <input
+                className="modal-checkbox"
                 id="isPizzaOrdered"
                 type="checkbox"
                 checked={newEvent.isPizzaOrdered || false}
@@ -324,7 +403,7 @@ export const AddNewEventModal = ({ isEventModalOpen, setIsEventModalOpen, handle
             type="button" 
             className="add-event-btn" 
             onClick={handleAddEventWithTimestamp} 
-            disabled={!isDateValid}
+            // disabled={!isDateValid}
           >
             Add Event
           </button>
