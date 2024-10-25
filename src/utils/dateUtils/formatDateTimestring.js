@@ -13,9 +13,10 @@ export const formatDateAndTimeString = (dateString, time) => {
     const hour = Number.parseInt(time.hour, 10) % 12 || 12;
     const minute = String(time.minute).padStart(2, '0');
     const amPm = time.amPm;
-  
-    const monthName = new Date(year, month - 1, day).toLocaleString('en-US', { month: 'long' });
-  
+
+    const monthName = new Date(year, month - 1, day).toLocaleString('en-US', {
+        month: 'long',
+    });
+
     return `${monthName} ${day}, ${year} ${hour}:${minute} ${amPm}`;
-  };
-  
+};

@@ -6,7 +6,10 @@ const inquirer = require('inquirer');
 
 // Utility function to run shell commands
 const run = (command, args = [], options = {}) => {
-    const { status, error } = spawnSync(command, args, { stdio: 'inherit', ...options });
+    const { status, error } = spawnSync(command, args, {
+        stdio: 'inherit',
+        ...options,
+    });
     if (status !== 0) {
         console.error(`Command failed: ${command} ${args.join(' ')}`);
         console.error(error);
@@ -19,7 +22,10 @@ const packageJson = JSON.parse(fs.readFileSync('./package.json'));
 const currentVersion = packageJson.version;
 
 // Get the current Git branch
-const getCurrentBranch = () => spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf-8' }).stdout.trim();
+const getCurrentBranch = () =>
+    spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
+        encoding: 'utf-8',
+    }).stdout.trim();
 
 // Check if there are uncommitted changes
 const hasUncommittedChanges = () => {
@@ -29,10 +35,14 @@ const hasUncommittedChanges = () => {
 
 // Get commit messages since the last deploy, excluding "Deploy version" commits
 const getLastDeployCommit = () => {
-    const gitLog = spawnSync('git', ['log', '--pretty=format:%H %s'], { encoding: 'utf-8' }).stdout.trim();
+    const gitLog = spawnSync('git', ['log', '--pretty=format:%H %s'], {
+        encoding: 'utf-8',
+    }).stdout.trim();
     const deployCommit = gitLog
         .split('\n')
-        .find(commitLine => commitLine.toLowerCase().includes('deploy version'));
+        .find((commitLine) =>
+            commitLine.toLowerCase().includes('deploy version')
+        );
 
     if (deployCommit) {
         const [commitHash] = deployCommit.split(' ');
@@ -46,28 +56,39 @@ const getCommitsSinceLastDeploy = () => {
 
     if (!lastDeployCommit) {
         // No previous deploy found, return all commits
-        return spawnSync('git', ['log', '--oneline'], { encoding: 'utf-8' }).stdout.trim();
+        return spawnSync('git', ['log', '--oneline'], {
+            encoding: 'utf-8',
+        }).stdout.trim();
     }
 
     // Fetch commits since the last deploy
-    return spawnSync('git', ['log', `${lastDeployCommit}..HEAD`, '--oneline'], { encoding: 'utf-8' }).stdout.trim();
+    return spawnSync('git', ['log', `${lastDeployCommit}..HEAD`, '--oneline'], {
+        encoding: 'utf-8',
+    }).stdout.trim();
 };
 
 // Bump version based on selection
 const bumpVersion = (version, bumpType) => {
     const [major, minor, patch] = version.split('.').map(Number);
     switch (bumpType) {
-        case 'patch': return `${major}.${minor}.${patch + 1}`;
-        case 'minor': return `${major}.${minor + 1}.0`;
-        case 'major': return `${major + 1}.0.0`;
-        default: throw new Error(`Unknown bump type: ${bumpType}`);
+        case 'patch':
+            return `${major}.${minor}.${patch + 1}`;
+        case 'minor':
+            return `${major}.${minor + 1}.0`;
+        case 'major':
+            return `${major + 1}.0.0`;
+        default:
+            throw new Error(`Unknown bump type: ${bumpType}`);
     }
 };
 
 // Open a temp file in VS Code and return the path
 const createTempReleaseNotesFile = (commits) => {
     const tempFile = path.join(os.tmpdir(), `release_notes_${Date.now()}.md`);
-    const initialContent = `# Release Notes\n\n${commits.split('\n').map(commit => `- ${commit}`).join('\n')}`;
+    const initialContent = `# Release Notes\n\n${commits
+        .split('\n')
+        .map((commit) => `- ${commit}`)
+        .join('\n')}`;
     fs.writeFileSync(tempFile, initialContent, 'utf-8');
     return tempFile;
 };
@@ -76,24 +97,32 @@ const createTempReleaseNotesFile = (commits) => {
 const startDeployment = async (bumpArg) => {
     const currentBranch = getCurrentBranch();
     if (currentBranch !== 'main') {
-        console.error(`Please switch to the 'main' branch (current: ${currentBranch}).`);
+        console.error(
+            `Please switch to the 'main' branch (current: ${currentBranch}).`
+        );
         process.exit(1);
     }
 
     if (hasUncommittedChanges()) {
-        console.error('You have uncommitted changes. Please commit or stash them before deploying.');
+        console.error(
+            'You have uncommitted changes. Please commit or stash them before deploying.'
+        );
         process.exit(1);
     }
 
     const bumpOptions = ['patch', 'minor', 'major'];
 
     // Check if bumpArg is provided, else prompt
-    const bumpType = bumpArg || (await inquirer.prompt({
-        type: 'list',
-        name: 'versionBump',
-        message: 'Select version bump type:',
-        choices: bumpOptions,
-    })).versionBump;
+    const bumpType =
+        bumpArg ||
+        (
+            await inquirer.prompt({
+                type: 'list',
+                name: 'versionBump',
+                message: 'Select version bump type:',
+                choices: bumpOptions,
+            })
+        ).versionBump;
 
     const newVersion = bumpVersion(currentVersion, bumpType);
     console.log(`Current version: ${currentVersion}`);

@@ -21,8 +21,8 @@
 }
 
 .home-btn {
-    flex-shrink: 0;  /* Prevent the button from growing */
-    padding-inline: -.5em;
+    flex-shrink: 0; /* Prevent the button from growing */
+    padding-inline: -0.5em;
     font-weight: bold;
 }
 

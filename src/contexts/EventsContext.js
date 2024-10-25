@@ -6,15 +6,15 @@ const EventsContext = createContext();
 export const useEvents = () => useContext(EventsContext);
 
 export const EventsProvider = ({ children }) => {
-  const [allEvents, setAllEvents] = useState([]);
+    const [allEvents, setAllEvents] = useState([]);
 
-  useEffect(() => {
-    fetchData({ setAllEvents });
-  }, []);
+    useEffect(() => {
+        fetchData({ setAllEvents });
+    }, []);
 
-  return (
-    <EventsContext.Provider value={{ allEvents, setAllEvents }}>
-      {children}
-    </EventsContext.Provider>
-  );
+    return (
+        <EventsContext.Provider value={{ allEvents, setAllEvents }}>
+            {children}
+        </EventsContext.Provider>
+    );
 };

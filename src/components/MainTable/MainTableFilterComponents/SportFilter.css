@@ -1,25 +1,25 @@
 /* Ensure the dropdown menu has enough width for three columns */
 .sport-filter-dropdown {
-    width: 600px !important;  /* Adjust the width as necessary */
-    padding: 10px;  /* Add padding for spacing */
+    width: 600px !important;
+    padding: 10px;
 }
 
 /* Flexbox layout to create three columns */
 .sport-filter-container {
     display: flex;
     justify-content: space-between;
-    width: 100%;  /* Use the full width of the dropdown */
+    width: 100%;
 }
 
 /* Ensure each column is vertical */
 .sport-day-of-week-column {
     display: flex;
     flex-direction: column;
-    flex-basis: 33%;  /* Each column takes up one-third of the space */
-    margin-right: 10px;  /* Add space between columns */
+    flex-basis: 33%;
+    margin-right: 10px;
 }
 
 /* Spacing for checkboxes */
 .sport-filter-column .form-check {
-    margin-bottom: 10px;  /* Add space between checkboxes */
+    margin-bottom: 10px;
 }

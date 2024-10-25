@@ -1,4 +1,9 @@
-export const handleFilterCheckboxClick = (e, field, value, {setUserFilters}) => {
+export const handleFilterCheckboxClick = (
+    e,
+    field,
+    value,
+    { setUserFilters }
+) => {
     e.stopPropagation();
 
     setUserFilters((prevFilters) => {
@@ -7,7 +12,7 @@ export const handleFilterCheckboxClick = (e, field, value, {setUserFilters}) => 
             : [...prevFilters[field], value];
         return {
             ...prevFilters,
-            [field]: updatedValues
+            [field]: updatedValues,
         };
     });
 };

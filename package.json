@@ -1,58 +1,59 @@
 {
-  "name": "bars-post-play-scheduling",
-  "homepage": "https://jprandazzo.github.io/bars-post-play-scheduling",
-  "version": "2.0.1",
-  "private": true,
-  "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "bootstrap": "^5.3.3",
-    "date-fns": "^4.1.0",
-    "firebase": "^10.13.2",
-    "inquirer": "^12.0.0",
-    "react": "^18.3.1",
-    "react-bootstrap": "^2.10.5",
-    "react-datepicker": "^7.5.0",
-    "react-dom": "^18.3.1",
-    "react-modal": "^3.16.1",
-    "react-router-dom": "^6.26.2",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "node deploy.js",
-    "version": "git add -A && git commit -m 'Release v$npm_package_version' && git tag v$npm_package_version"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "css-loader": "^7.1.2",
-    "gh-pages": "^6.1.1",
-    "prettier": "^3.3.3",
-    "style-loader": "^4.0.0"
-  }
+    "name": "bars-post-play-scheduling",
+    "homepage": "https://jprandazzo.github.io/bars-post-play-scheduling",
+    "version": "2.0.1",
+    "private": true,
+    "dependencies": {
+        "@fortawesome/free-solid-svg-icons": "^6.6.0",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "bootstrap": "^5.3.3",
+        "date-fns": "^4.1.0",
+        "firebase": "^10.13.2",
+        "inquirer": "^12.0.0",
+        "react": "^18.3.1",
+        "react-bootstrap": "^2.10.5",
+        "react-datepicker": "^7.5.0",
+        "react-dom": "^18.3.1",
+        "react-modal": "^3.16.1",
+        "react-router-dom": "^6.26.2",
+        "react-scripts": "5.0.1",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "lint": "prettier --write .",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "predeploy": "npm run build",
+        "deploy": "node deploy.js",
+        "version": "git add -A && git commit -m 'Release v$npm_package_version' && git tag v$npm_package_version"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "css-loader": "^7.1.2",
+        "gh-pages": "^6.1.1",
+        "prettier": "^3.3.3",
+        "style-loader": "^4.0.0"
+    }
 }

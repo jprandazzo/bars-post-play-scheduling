@@ -3,5 +3,4 @@ export const sportColors = {
     Dodgeball: '#8ACE00', // Brat Green
     Kickball: '#ADD8E6', // Light Blue (Pastel)
     Pickleball: '#FFB6C1', // Light Pink (Pastel)
-  };
-  
+};

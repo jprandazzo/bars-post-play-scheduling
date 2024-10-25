@@ -4,66 +4,70 @@
 h3 {
     margin: auto;
     width: 50%;
-    margin-block: .5em;
+    margin-block: 0.5em;
 }
 
 .form-row {
     display: flex;
-    justify-content: space-between;  /* Ensure the label and input stay aligned */
-    align-items: center;             /* Vertically align label and input */
-    width: 100%;                     /* Ensure form-row takes full width */
-    margin-bottom: 1em;              /* Add spacing between rows */
+    justify-content: space-between; /* Ensure the label and input stay aligned */
+    align-items: center; /* Vertically align label and input */
+    width: 100%; /* Ensure form-row takes full width */
+    margin-bottom: 1em; /* Add spacing between rows */
 }
 
 .form-row label {
-    flex-basis: 40%;                 /* Labels take 40% of the width */
-    padding-right: 1em;              /* Add some padding to push the input field away from the label */
-    text-align: left;                /* Ensure label is aligned to the left */
+    flex-basis: 40%; /* Labels take 40% of the width */
+    padding-right: 1em; /* Add some padding to push the input field away from the label */
+    text-align: left; /* Ensure label is aligned to the left */
 }
 
 .form-row .react-datepicker-wrapper,
-.form-row input, .form-row select {
-    flex-basis: 60%;                 /* Inputs take 60% of the width */
-    max-width: 250px;                /* Set a maximum width to prevent inputs from being too wide */
-    width: 100%;                     /* Ensure input takes up the available space */
+.form-row input,
+.form-row select {
+    flex-basis: 60%; /* Inputs take 60% of the width */
+    max-width: 250px; /* Set a maximum width to prevent inputs from being too wide */
+    width: 100%; /* Ensure input takes up the available space */
 }
 
 .react-datepicker-wrapper {
-    width: 100%;                     /* Ensure the date picker takes up the available space */
+    width: 100%; /* Ensure the date picker takes up the available space */
 }
 
 .react-datepicker__input-container {
-    width: 100%;                     /* Ensure the input container takes full width */
+    width: 100%; /* Ensure the input container takes full width */
     display: flex;
     justify-content: flex-end;
 }
 
 .react-datepicker__input-container input {
-    width: calc(100% - 20px);        /* Adjust the input width to ensure padding does not shift content */
+    width: calc(
+        100% - 20px
+    ); /* Adjust the input width to ensure padding does not shift content */
     /* border: 1px solid grey; */
 }
 
-input[type="text"] {
+input[type='text'] {
     border: 1px solid #dee2e6;
-    border-radius: .375em;
+    border-radius: 0.375em;
     min-height: 2.5em;
 }
 
-input[type="text"]::placeholder {
+input[type='text']::placeholder {
     text-align: center;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
     color: var(--bs-body-color);
     background-color: var(--bs-body-bg);
     border-color: #86b7fe;
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-.custom-modal input, .custom-modal select {
-    width: 100%;                     /* Ensure all input elements take full width */
-    padding: 0.5em;                  /* Add some padding for consistent spacing */
+.custom-modal input,
+.custom-modal select {
+    width: 100%; /* Ensure all input elements take full width */
+    padding: 0.5em; /* Add some padding for consistent spacing */
 }
 
 .button-group {
@@ -73,31 +77,32 @@ input[type="text"]:focus {
     width: 100%;
 }
 
-.add-event-btn, .cancel-btn {
+.add-event-btn,
+.cancel-btn {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 45%;      
-    font-weight: 500;                /* Make buttons take up equal space and align side by side */
+    width: 45%;
+    font-weight: 500; /* Make buttons take up equal space and align side by side */
 }
 
 .add-event-btn {
-    background-color: #B7E882;
+    background-color: #b7e882;
 }
 
 .cancel-btn {
-    background-color: #DC3444;
+    background-color: #dc3444;
 }
 
 .add-event-btn:hover {
-    filter: brightness(.8);
-    background-color: #B7E882;
+    filter: brightness(0.8);
+    background-color: #b7e882;
 }
 
 .cancel-btn:hover {
-    filter: brightness(.8);
-    background-color: #DC3444;
+    filter: brightness(0.8);
+    background-color: #dc3444;
 }
 
 .modal-checkbox {
