@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Table, Button } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { db } from '../../firebaseConfig';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -32,6 +34,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     const [uniqueSportDaysOfWeek, setUniqueSportDaysOfWeek] = useState([]);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isSeasonModalOpen, setSeasonModalOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
 
     const [userFilters, setUserFilters] = useState({
         selectedDate: '',
@@ -56,7 +59,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
     useEffect(() => {
         setCurrentSchedule(getCurrentSeason());
         fetchData({ setAllEvents });
-    }, [handleAddNewEvent]);
+    }, [setAllEvents, setCurrentSchedule]);
 
     // Calculate unique locations from all events once
     useEffect(() => {
@@ -82,7 +85,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
             allEvents.map((event) => event.sportDayOfWeek)
         );
         setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
-    }, [allEvents]);
+    }, [allEvents, userFilters.selectedLocations.length]);
 
     useEffect(() => {
         const filtered = filterEventsToCurrentSeason(
@@ -109,7 +112,32 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
         try {
             const eventRef = doc(db, 'post play events', updatedEvent.id);
             await updateDoc(eventRef, updatedEvent);
-            fetchData({ setAllEvents });
+
+            setAllEvents((prevEvents) =>
+                prevEvents.map((event) =>
+                    event.id === updatedEvent.id ? { ...updatedEvent } : event
+                )
+            );
+
+            setUniqueLocations((prevLocations) => {
+                const newLocationSet = new Set([
+                    ...prevLocations,
+                    updatedEvent.location,
+                ]);
+                const newLocationArray = Array.from(newLocationSet);
+                setUserFilters((prevFilters) => ({
+                    ...prevFilters,
+                    selectedLocations: prevFilters.selectedLocations.includes(
+                        updatedEvent.location
+                    )
+                        ? prevFilters.selectedLocations
+                        : [
+                              ...prevFilters.selectedLocations,
+                              updatedEvent.location,
+                          ],
+                }));
+                return newLocationArray;
+            });
         } catch (error) {
             console.error('Error updating event:', error);
         }
@@ -158,16 +186,21 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                     Date
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <input
-                                        type="date"
-                                        value={userFilters.selectedDate}
-                                        onChange={(e) =>
+                                    {/* ADD: React DatePicker for selecting a date range */}
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={(date) => {
+                                            setSelectedDate(date);
                                             handleFilterChange(
                                                 'selectedDate',
-                                                e.target.value
-                                            )
-                                        }
-                                        style={{ display: 'inline-block' }}
+                                                date
+                                            );
+                                        }}
+                                        open={true}
+                                        isClearable
+                                        dateFormat="MM/dd/yyyy"
+                                        placeholderText="Select date"
+                                        className="form-control"
                                     />
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -220,6 +253,8 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                     handleAddNewEvent,
                     allEvents,
                     setAllEvents,
+                    setUniqueLocations,
+                    setUserFilters,
                 }}
             />
 

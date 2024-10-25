@@ -24,7 +24,15 @@ tbody .event-row-sportName {
 }
 
 tbody .event-location-hk {
-    --bs-table-bg: red;
+    --bs-table-bg: rgb(247, 132, 132);
+}
+
+tbody .event-location-chelsea {
+    --bs-table-bg: rgb(164, 238, 189);
+}
+
+tbody .event-location-wv {
+    --bs-table-bg: rgb(132, 195, 247);
 }
 
 .clickable {
@@ -52,4 +60,16 @@ tbody .event-location-hk {
 
 .disabled:hover .tooltip {
     display: block;
+}
+
+td input[type='checkbox'] {
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+}
+
+/* Adjust the size and style of the checkboxes in disabled state */
+td input[type='checkbox']:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

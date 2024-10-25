@@ -64,7 +64,15 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                     </span>
                 </td>
             );
-        return location;
+        return location ? (
+            <td className="event-location-chelsea">
+                <p>
+                    <b>{location}</b>
+                </p>
+            </td>
+        ) : (
+            <td>No Location Selected</td>
+        );
     };
 
     const handleCheckboxChange = async (field, value) => {

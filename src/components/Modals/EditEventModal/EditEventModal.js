@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import DatePicker from 'react-datepicker';
 
 import { DropdownInput } from '../../../common/DropdownInput';
 import { useEvents } from '../../../contexts/EventsContext';
-
-import { getJsDate } from '../../../utils/getJsDate';
 import { getSeason } from '../../../utils/seasonUtils';
+import { LabelWithoutInputFocus } from '../../../common/LabelWithoutInputFocus';
+
+import 'react-datepicker/dist/react-datepicker.css';
+import '../AddNewEventModal/AddNewEventModal.css';
 
 const normalizeString = (str) => {
     return str?.replace(/[^a-zA-Z0-9]/g, '')?.toLowerCase();
@@ -21,12 +24,17 @@ export const EditEventModal = ({
 }) => {
     const { allEvents } = useEvents();
     const [editedEvent, setEditedEvent] = useState(event);
-    const [time, setTime] = useState({
-        hour: event?.eventDate?.hour || '',
-        minute: event?.eventDate?.minute || '',
-        amPm: event?.eventDate?.amPm || '',
-    });
-    const [isDateValid, setIsDateValid] = useState(true);
+    const [hasChanges, setHasChanges] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(
+        event?.eventDate
+            ? new Date(
+                  event.eventDate.year,
+                  event.eventDate.month - 1,
+                  event.eventDate.date
+              )
+            : null
+    );
+    const [selectedTime, setSelectedTime] = useState(null);
     const [showSportDropdown, setShowSportDropdown] = useState(false);
     const [showDayOfWeekDropdown, setShowDayOfWeekDropdown] = useState(false);
     const [showWtnbOrCoedDropdown, setShowWtnbOrCoedDropdown] = useState(false);
@@ -52,6 +60,18 @@ export const EditEventModal = ({
     const uniqueLocations = [
         ...new Set(allEvents.map((event) => event.location)),
     ];
+
+    useEffect(() => {
+        if (event.eventDate.hour && event.eventDate.minute) {
+            const hour =
+                event.eventDate.amPm === 'PM' && event.eventDate.hour < 12
+                    ? event.eventDate.hour + 12
+                    : event.eventDate.hour; // Convert to 24-hour format if PM
+            const time = new Date();
+            time.setHours(hour, event.eventDate.minute, 0, 0); // Set hours and minutes
+            setSelectedTime(time); // Initialize selectedTime with the event's time
+        }
+    }, [event]);
 
     const customStyles = {
         content: {
@@ -90,30 +110,42 @@ export const EditEventModal = ({
         )
     );
 
-    const formatDateForInput = (date) =>
-        date instanceof Date ? date?.toISOString().split('T')[0] : '';
-
-    const handleDateChange = (e) => {
-        const [year, month, date] = e.target.value.split('-').map(Number);
-
-        const isValid =
-            !Number.isNaN(Date.parse(`${year}-${month}-${date}`)) &&
-            e.target.value.length === 10;
-
-        if (isValid) {
-            const eventDate = new Date(year, month - 1, date);
-
-            setEditedEvent((prev) => ({
-                ...prev,
-                eventDate: eventDate,
-                sportYear: year,
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+        setHasChanges(true);
+        if (date) {
+            setEditedEvent((prevEvent) => ({
+                ...prevEvent,
+                eventDate: {
+                    year: date.getFullYear(),
+                    month: date.getMonth() + 1, // JavaScript months are 0-based
+                    date: date.getDate(),
+                    dayOfWeek: date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                    }),
+                },
+                sportYear: date.getFullYear(),
                 sportSeason: getSeason(
-                    `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`
+                    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                 ).season,
             }));
         }
+    };
 
-        setIsDateValid(isValid);
+    const handleTimeChange = (time) => {
+        setSelectedTime(time);
+        setHasChanges(true);
+        if (time) {
+            setEditedEvent((prevEvent) => ({
+                ...prevEvent,
+                eventDate: {
+                    ...prevEvent.eventDate,
+                    hour: time.getHours(),
+                    minute: time.getMinutes().toString().padStart(2, '0'),
+                    amPm: time.getHours() >= 12 ? 'PM' : 'AM',
+                },
+            }));
+        }
     };
 
     const handleInputChange = (field, value) => {
@@ -121,112 +153,78 @@ export const EditEventModal = ({
             ...prevEvent,
             [field]: value,
         }));
+        setHasChanges(true);
     };
 
     const handleSaveChanges = () => {
-        if (
-            !editedEvent?.eventDate ||
-            !time.hour ||
-            !time.minute ||
-            !time.amPm
-        ) {
+        if (!selectedDate || !selectedTime) {
             alert('Please provide both date and time');
             return;
         }
-        const transformedDate = getJsDate(editedEvent?.eventDate);
 
-        const updatedEvent = {
-            ...editedEvent,
-            eventDate: {
-                year: transformedDate.getFullYear(),
-                month: transformedDate.getMonth() + 1,
-                date: transformedDate.getDate(),
-                hour: time.hour,
-                minute: time.minute,
-                amPm: time.amPm,
-            },
-        };
-
-        onEdit(updatedEvent); //update this
-        setIsEditModalOpen(false); // Close the modal after saving
+        onEdit(editedEvent); // Pass the updated event back to the parent
+        setIsEditModalOpen(false);
+        setHasChanges(false);
     };
 
     const handleDiscardChanges = () => {
-        if (window.confirm('Are you sure you want to discard changes?')) {
-            setEditedEvent(event); // Reset the edited event back to the original state
+        if (hasChanges) {
+            if (window.confirm('Are you sure you want to discard changes?')) {
+                setEditedEvent(event); // Reset the edited event back to the original state
+                setIsEditModalOpen(false);
+                setHasChanges(false);
+            }
+        } else {
             setIsEditModalOpen(false);
         }
     };
 
     return (
-        // todo: align these attributes with the ones on the AddEventModal
         <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
             <h3>Edit Event</h3>
 
             <div className="form-container">
                 <div className="form-row">
-                    <label htmlFor="eventDate">Post Play / Event Date</label>
-                    <input
+                    <LabelWithoutInputFocus htmlFor="eventDate">
+                        Post Play / Event Date
+                    </LabelWithoutInputFocus>
+                    <DatePicker
                         id="eventDate"
-                        type="date"
-                        value={formatDateForInput(editedEvent?.eventDate)} // YYYY-MM-DD
+                        selected={selectedDate}
                         onChange={handleDateChange}
-                        style={{ borderColor: isDateValid ? '' : 'red' }}
+                        dateFormat="MM/dd/yyyy"
+                        className="form-control"
+                        placeholderText="Select date"
                     />
-                    <br />
-                    {!isDateValid && (
-                        <span className="error-message">
-                            <font color="red">
-                                Invalid date. Please enter a valid date.
-                            </font>
-                        </span>
-                    )}
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="eventTime">Time</label>
-                    <div>
-                        <input
-                            type="number"
-                            placeholder="HH"
-                            value={time.hour}
-                            onChange={(e) =>
-                                setTime({ ...time, hour: e.target.value })
-                            }
-                            min="01"
-                            max="12"
-                        />
-                        <span>:</span>
-                        <input
-                            type="number"
-                            placeholder="MM"
-                            value={time.minute}
-                            onChange={(e) =>
-                                setTime({ ...time, minute: e.target.value })
-                            }
-                            min="00"
-                            max="59"
-                        />
-                        <select
-                            value={time.amPm}
-                            onChange={(e) =>
-                                setTime({ ...time, amPm: e.target.value })
-                            }
-                        >
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                        </select>
-                    </div>
+                    <LabelWithoutInputFocus htmlFor="eventTime">
+                        Time
+                    </LabelWithoutInputFocus>
+                    <DatePicker
+                        id="eventTime"
+                        selected={selectedTime}
+                        onChange={handleTimeChange}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="h:mm aa"
+                        className="form-control"
+                        placeholderText="Select time"
+                    />
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="weekNumber">Week Number</label>
-                    <br />
+                    <LabelWithoutInputFocus htmlFor="weekNumber">
+                        Week Number
+                    </LabelWithoutInputFocus>
                     <input
                         id="weekNumber"
                         type="text"
                         placeholder="Week number"
-                        value={editedEvent?.weekNumber}
+                        value={editedEvent?.weekNumber || ''}
                         onChange={(e) =>
                             handleInputChange('weekNumber', e.target.value)
                         }
@@ -236,7 +234,7 @@ export const EditEventModal = ({
                 <DropdownInput
                     id="sport"
                     label="Sport"
-                    placeholder="Search or select sport"
+                    placeholder="Search/select sport"
                     value={editedEvent.sport}
                     options={filteredSports}
                     onChange={(value) => handleInputChange('sport', value)}
@@ -249,7 +247,7 @@ export const EditEventModal = ({
                 <DropdownInput
                     id="dayOfWeek"
                     label={`What day of ${editedEvent.sport || 'sport'} is this for?`}
-                    placeholder="Search or select day of week"
+                    placeholder="Search/select day of week"
                     value={editedEvent.sportDayOfWeek}
                     options={filteredDaysOfWeek}
                     onChange={(value) =>
@@ -288,27 +286,27 @@ export const EditEventModal = ({
                 />
 
                 <div className="form-row">
-                    <label htmlFor="numAttendees">Est # of Attendees</label>
-                    <div>
-                        <input
-                            id="numAttendees"
-                            type="text"
-                            placeholder="# of Attendees"
-                            value={editedEvent?.numAttendees || ''}
-                            onChange={(e) =>
-                                handleInputChange(
-                                    'numAttendees',
-                                    e.target.value
-                                )
-                            }
-                        />
-                    </div>
+                    <LabelWithoutInputFocus htmlFor="numAttendees">
+                        Est # of Attendees
+                    </LabelWithoutInputFocus>
+                    <input
+                        id="numAttendees"
+                        type="text"
+                        placeholder="# of Attendees"
+                        value={editedEvent?.numAttendees || ''}
+                        onChange={(e) =>
+                            handleInputChange('numAttendees', e.target.value)
+                        }
+                    />
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="isContacted">Contacted?</label>
-                    <div>
+                    <LabelWithoutInputFocus htmlFor="isContacted">
+                        Contacted?
+                    </LabelWithoutInputFocus>
+                    <div className="modal-checkbox-container">
                         <input
+                            className="modal-checkbox"
                             id="isContacted"
                             type="checkbox"
                             checked={editedEvent.isContacted || false}
@@ -323,9 +321,12 @@ export const EditEventModal = ({
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="isConfirmed">Confirmed?</label>
-                    <div>
+                    <LabelWithoutInputFocus htmlFor="isConfirmed">
+                        Confirmed?
+                    </LabelWithoutInputFocus>
+                    <div className="modal-checkbox-container">
                         <input
+                            className="modal-checkbox"
                             id="isConfirmed"
                             type="checkbox"
                             checked={editedEvent.isConfirmed || false}
@@ -340,9 +341,12 @@ export const EditEventModal = ({
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="isPizzaNight">Pizza Night?</label>
-                    <div>
+                    <LabelWithoutInputFocus htmlFor="isPizzaNight">
+                        Pizza Night?
+                    </LabelWithoutInputFocus>
+                    <div className="modal-checkbox-container">
                         <input
+                            className="modal-checkbox"
                             id="isPizzaNight"
                             type="checkbox"
                             checked={editedEvent.isPizzaNight || false}
@@ -357,9 +361,12 @@ export const EditEventModal = ({
                 </div>
 
                 <div className="form-row">
-                    <label htmlFor="isPizzaOrdered">Pizza Ordered?</label>
-                    <div>
+                    <LabelWithoutInputFocus htmlFor="isPizzaOrdered">
+                        Pizza Ordered?
+                    </LabelWithoutInputFocus>
+                    <div className="modal-checkbox-container">
                         <input
+                            className="modal-checkbox"
                             id="isPizzaOrdered"
                             type="checkbox"
                             checked={editedEvent.isPizzaOrdered || false}
@@ -384,8 +391,8 @@ export const EditEventModal = ({
             >
                 <button
                     type="button"
+                    className="save-changes-btn"
                     onClick={handleSaveChanges}
-                    disabled={!isDateValid}
                 >
                     Save Changes
                 </button>

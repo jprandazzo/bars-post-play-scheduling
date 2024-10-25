@@ -7,8 +7,6 @@ import { getSeason } from '../../../utils/seasonUtils';
 import { useEvents } from '../../../contexts/EventsContext';
 import { DropdownInput } from '../../../common/DropdownInput';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import './AddNewEventModal.css';
 
@@ -20,6 +18,8 @@ export const AddNewEventModal = ({
     isEventModalOpen,
     setIsEventModalOpen,
     handleAddNewEvent,
+    setUniqueLocations,
+    setUserFilters,
 }) => {
     const { allEvents, setAllEvents } = useEvents();
     // const [time, setTime] = useState({ hour: '8', minute: '00', amPm: 'PM' });
@@ -41,12 +41,12 @@ export const AddNewEventModal = ({
             year: '',
             month: '',
             date: '',
+            dayOfWeek: '',
             hour: '',
             minute: '',
             amPm: '',
         },
         weekNumber: '',
-        dayOfWeek: '',
         sport: '',
         wtnbOrCoed: '',
         sportDayOfWeek: '',
@@ -107,11 +107,6 @@ export const AddNewEventModal = ({
         normalizeString(option).includes(normalizeString(newEvent.wtnbOrCoed))
     );
 
-    // do i still need this?
-    const formatDateForInput = (date) => {
-        return date instanceof Date ? date.toISOString().split('T')[0] : '';
-    };
-
     // const handleDateChange = (e) => {
     //   const [year, month, date] = e.target.value.split('-').map(Number);
 
@@ -147,6 +142,9 @@ export const AddNewEventModal = ({
                     year: date.getFullYear(),
                     month: date.getMonth() + 1, // JavaScript months are 0-based
                     date: date.getDate(),
+                    dayOfWeek: date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                    }),
                 },
                 sportYear: date.getFullYear(),
                 sportSeason: getSeason(
@@ -164,7 +162,7 @@ export const AddNewEventModal = ({
                 eventDate: {
                     ...prevEvent.eventDate,
                     hour: time.getHours(),
-                    minute: time.getMinutes(),
+                    minute: time.getMinutes().toString().padStart(2, '0'),
                     amPm: time.getHours() >= 12 ? 'PM' : 'AM',
                 },
             }));
@@ -219,7 +217,13 @@ export const AddNewEventModal = ({
             return;
         }
 
-        handleAddNewEvent(newEvent, setAllEvents, setIsEventModalOpen);
+        handleAddNewEvent(
+            newEvent,
+            setAllEvents,
+            setIsEventModalOpen,
+            setUniqueLocations,
+            setUserFilters
+        );
     };
 
     return (
@@ -262,7 +266,7 @@ export const AddNewEventModal = ({
                     </LabelWithoutInputFocus>
                     <DatePicker
                         id="eventDate"
-                        placeholderText="Type or select"
+                        placeholderText="Type/select a date"
                         selected={selectedDate}
                         onChange={handleDateChange}
                         dateFormat="MM/dd/yyyy"
@@ -284,7 +288,7 @@ export const AddNewEventModal = ({
                         timeCaption="Time"
                         dateFormat="h:mm aa"
                         className="form-control"
-                        placeholderText="Select a time"
+                        placeholderText="Type/select a time"
                     />
                 </div>
 
@@ -365,7 +369,6 @@ export const AddNewEventModal = ({
                     </LabelWithoutInputFocus>
                     <div>
                         <input
-                            className="modal-checkbox"
                             id="numAttendees"
                             type="text"
                             placeholder="# of Attendees"
@@ -384,7 +387,7 @@ export const AddNewEventModal = ({
                     <LabelWithoutInputFocus htmlFor="isContacted">
                         Contacted?
                     </LabelWithoutInputFocus>
-                    <div>
+                    <div className="modal-checkbox-container">
                         <input
                             className="modal-checkbox"
                             id="isContacted"
@@ -404,7 +407,7 @@ export const AddNewEventModal = ({
                     <LabelWithoutInputFocus htmlFor="isConfirmed">
                         Confirmed?
                     </LabelWithoutInputFocus>
-                    <div>
+                    <div className="modal-checkbox-container">
                         <input
                             className="modal-checkbox"
                             id="isConfirmed"
@@ -424,7 +427,7 @@ export const AddNewEventModal = ({
                     <LabelWithoutInputFocus htmlFor="isPizzaNight">
                         Pizza Night?
                     </LabelWithoutInputFocus>
-                    <div>
+                    <div className="modal-checkbox-container">
                         <input
                             className="modal-checkbox"
                             id="isPizzaNight"
@@ -444,7 +447,7 @@ export const AddNewEventModal = ({
                     <LabelWithoutInputFocus htmlFor="isPizzaOrdered">
                         Pizza Ordered?
                     </LabelWithoutInputFocus>
-                    <div>
+                    <div className="modal-checkbox-container">
                         <input
                             className="modal-checkbox"
                             id="isPizzaOrdered"

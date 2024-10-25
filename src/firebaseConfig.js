@@ -1,7 +1,6 @@
-import { initializeApp } from 'firebase/app'; 
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, setLogLevel } from 'firebase/firestore';
-
 
 const firebaseConfigProd = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY_PROD,

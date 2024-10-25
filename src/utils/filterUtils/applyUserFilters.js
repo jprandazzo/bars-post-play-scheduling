@@ -1,12 +1,11 @@
 export const applyUserFilters = (events, userFilters) => {
     return events.filter((event) => {
         const dateMatch =
-            userFilters.selectedDate === '' ||
-            (event.eventDate.year === userFilters.selectedDate.split('-')[0] &&
+            !userFilters.selectedDate ||
+            (event.eventDate.year === userFilters.selectedDate.getFullYear() &&
                 event.eventDate.month ===
-                    userFilters.selectedDate.split('-')[1] &&
-                event.eventDate.date ===
-                    userFilters.selectedDate.split('-')[2]);
+                    userFilters.selectedDate.getMonth() + 1 &&
+                event.eventDate.date === userFilters.selectedDate.getDate());
 
         const sportDayOfWeekMatch =
             userFilters.selectedSportDaysOfWeek.length === 0 ||

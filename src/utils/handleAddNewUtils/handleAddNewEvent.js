@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig'; // Ensure correct import for firebaseConfig
 
 import { fetchData } from '../fetchData';
@@ -7,11 +7,13 @@ import { fetchData } from '../fetchData';
 export const handleAddNewEvent = async (
     newEvent,
     setAllEvents,
-    setIsEventModalOpen
+    setIsEventModalOpen,
+    setUniqueLocations,
+    setUserFilters
 ) => {
     try {
         const eventsCollectionRef = collection(db, 'post play events');
-        await addDoc(eventsCollectionRef, {
+        const newEventRef = await addDoc(eventsCollectionRef, {
             weekNumber: newEvent.weekNumber,
             eventDate: newEvent.eventDate,
             sport: newEvent.sport,
@@ -20,13 +22,13 @@ export const handleAddNewEvent = async (
             numRegistered: newEvent.numRegistered || 0,
             percentAttendance: newEvent.percentAttendance || 100,
             numAttendees:
-                newEvent.numAttendees |
-                (Math.round(
-                    ((newEvent.numRegistered || 0) *
-                        ((newEvent.percentAttendance || 100) / 100)) /
-                        20
-                ) *
-                    20),
+                newEvent.numAttendees || newEvent.numRegistered
+                    ? Math.round(
+                          ((newEvent.numRegistered || 0) *
+                              ((newEvent.percentAttendance || 100) / 100)) /
+                              20
+                      ) * 20
+                    : null,
             location: newEvent.location || '',
             isContacted: newEvent.isContacted || false,
             isConfirmed: newEvent.isConfirmed || false,
@@ -34,6 +36,27 @@ export const handleAddNewEvent = async (
             isPizzaOrdered: newEvent.isPizzaOrdered || false,
             sportYear: newEvent.sportYear,
             sportSeason: newEvent.sportSeason,
+        });
+        setAllEvents((prevEvents) => [
+            ...prevEvents,
+            { ...newEvent, id: newEventRef.id },
+        ]);
+
+        setUniqueLocations((prevLocations) => {
+            const newLocationSet = new Set([
+                ...prevLocations,
+                newEvent.location,
+            ]);
+            const newLocationArray = Array.from(newLocationSet);
+            setUserFilters((prevFilters) => ({
+                ...prevFilters,
+                selectedLocations: prevFilters.selectedLocations.includes(
+                    newEvent.location
+                )
+                    ? prevFilters.selectedLocations
+                    : [...prevFilters.selectedLocations, newEvent.location],
+            }));
+            return newLocationArray;
         });
 
         fetchData({ setAllEvents });

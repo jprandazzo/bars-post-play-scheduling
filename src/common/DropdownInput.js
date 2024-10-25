@@ -64,7 +64,7 @@ export const DropdownInput = ({
                         {options.map((option, index) => (
                             <Dropdown.Item
                                 key={option}
-                                onClick={() => {
+                                onMouseDown={() => {
                                     onChange(option);
                                     setShowDropdown(false);
                                 }}

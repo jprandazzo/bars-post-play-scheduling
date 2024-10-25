@@ -9,41 +9,37 @@ h3 {
 
 .form-row {
     display: flex;
-    justify-content: space-between; /* Ensure the label and input stay aligned */
-    align-items: center; /* Vertically align label and input */
-    width: 100%; /* Ensure form-row takes full width */
-    margin-bottom: 1em; /* Add spacing between rows */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1em;
 }
 
 .form-row label {
-    flex-basis: 40%; /* Labels take 40% of the width */
+    flex-basis: 50%; /* Labels take 50% of the width */
     padding-right: 1em; /* Add some padding to push the input field away from the label */
-    text-align: left; /* Ensure label is aligned to the left */
+    text-align: left;
 }
 
 .form-row .react-datepicker-wrapper,
 .form-row input,
 .form-row select {
-    flex-basis: 60%; /* Inputs take 60% of the width */
-    max-width: 250px; /* Set a maximum width to prevent inputs from being too wide */
-    width: 100%; /* Ensure input takes up the available space */
+    max-width: 90%;
+    padding-left: 1em;
+    text-align: center; /* Center align the text inside inputs */
 }
 
 .react-datepicker-wrapper {
-    width: 100%; /* Ensure the date picker takes up the available space */
+    flex-basis: 100%; /* Labels take 50% of the width */
+    width: 100%;
+    padding-left: 1em;
 }
 
 .react-datepicker__input-container {
-    width: 100%; /* Ensure the input container takes full width */
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
-}
-
-.react-datepicker__input-container input {
-    width: calc(
-        100% - 20px
-    ); /* Adjust the input width to ensure padding does not shift content */
-    /* border: 1px solid grey; */
+    justify-content: center; /* Center the input within the date picker */
+    padding-left: 1em;
 }
 
 input[type='text'] {
@@ -53,7 +49,7 @@ input[type='text'] {
 }
 
 input[type='text']::placeholder {
-    text-align: center;
+    text-align: center; /* Center the placeholder text */
 }
 
 input[type='text']:focus {
@@ -64,10 +60,20 @@ input[type='text']:focus {
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-.custom-modal input,
-.custom-modal select {
-    width: 100%; /* Ensure all input elements take full width */
-    padding: 0.5em; /* Add some padding for consistent spacing */
+.modal-checkbox-container {
+    display: flex;
+    justify-content: center; /* Center the checkbox within the container */
+    width: 100%;
+}
+
+.modal-checkbox {
+    width: 1.5em;
+    height: 1.5em;
+    transform: translateX(0); /* Remove translation to center the checkbox */
+}
+
+.modal-checkbox:hover {
+    cursor: pointer;
 }
 
 .button-group {
@@ -78,16 +84,18 @@ input[type='text']:focus {
 }
 
 .add-event-btn,
-.cancel-btn {
+.save-changes-btn .cancel-btn {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     width: 45%;
-    font-weight: 500; /* Make buttons take up equal space and align side by side */
+    font-weight: 500;
+    box-shadow: 0 0 2px 1px rgb(168, 167, 167);
 }
 
-.add-event-btn {
+.add-event-btn,
+.save-changes-btn {
     background-color: #b7e882;
 }
 
@@ -95,7 +103,8 @@ input[type='text']:focus {
     background-color: #dc3444;
 }
 
-.add-event-btn:hover {
+.add-event-btn:hover,
+.save-changes-btn:hover {
     filter: brightness(0.8);
     background-color: #b7e882;
 }
@@ -103,9 +112,4 @@ input[type='text']:focus {
 .cancel-btn:hover {
     filter: brightness(0.8);
     background-color: #dc3444;
-}
-
-.modal-checkbox {
-    min-width: 1.75em;
-    height: 1.75em;
 }
