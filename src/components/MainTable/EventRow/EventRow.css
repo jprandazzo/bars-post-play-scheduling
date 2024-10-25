@@ -2,6 +2,10 @@
     margin-inline: 1px;
 }
 
+tbody {
+    margin-bottom: 0em !important;
+}
+
 tbody .Bowling > .event-row-sport {
     --bs-table-bg: #bb99ff;
 }
@@ -126,18 +130,6 @@ td input[type='checkbox']:disabled {
     color: white;
 }
 
-.status-btn:hover {
-    background-color: #007bff;
-    filter: brightness(0.85);
-    color: white;
-}
-
-.status-btn.blue:hover {
-    background-color: rgb(217, 217, 217);
-    filter: brightness(0.85);
-    color: white;
-}
-
 .clickable {
     cursor: pointer;
 }
@@ -185,6 +177,15 @@ td input[type='checkbox']:disabled {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* .table>:not(caption)>*>* {
+    padding: .5em 0em 0em 0em;
+} */
+
+tr,
+tr > td {
+    max-height: 1em !important;
 }
 
 @media (max-width: 768px) {

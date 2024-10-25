@@ -13,8 +13,8 @@ import './EventRow.css';
 
 export const EventRow = ({ event, onDelete, onEdit }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    // const [editedEvent, setEditedEvent] = useState(event);  // Initialize with the current event
     const { currentUser } = useAuth();
+    const [hoveredButton, setHoveredButton] = useState(null);
 
     const getEventLocationWithNeighborhood = (location) => {
         if (eventLocations.hkLocations.includes(location))
@@ -99,8 +99,15 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
     };
 
     const handleEditClick = () => {
-        // setEditedEvent(event);  // Set the current event to be edited
-        setIsEditModalOpen(true); // Open the modal
+        setIsEditModalOpen(true);
+    };
+
+    const handleMouseOver = (button) => {
+        setHoveredButton(button);
+    };
+
+    const handleMouseOut = () => {
+        setHoveredButton(null);
     };
 
     return (
@@ -136,6 +143,8 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                 <td>
                     <div className="button-pair">
                         <button
+                            onMouseOver={() => handleMouseOver('isContacted')}
+                            onMouseOut={handleMouseOut}
                             onClick={() =>
                                 handleCheckboxChange(
                                     'isContacted',
@@ -144,15 +153,25 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                             }
                             className={`status-btn ${event.isContacted ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
                             disabled={!currentUser}
+                            style={
+                                hoveredButton === 'isContacted'
+                                    ? {
+                                          backgroundColor: '#7bacf5',
+                                          color: 'white',
+                                      }
+                                    : {}
+                            }
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
                                     : ''
                             }
                         >
-                            Contacted? {event.isContacted ? 'Yes ✓' : 'No'}
+                            Contacted? {event.isContacted ? '✓' : 'X'}
                         </button>
                         <button
+                            onMouseOver={() => handleMouseOver('isConfirmed')}
+                            onMouseOut={handleMouseOut}
                             onClick={() =>
                                 handleCheckboxChange(
                                     'isConfirmed',
@@ -161,17 +180,27 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                             }
                             className={`status-btn ${event.isConfirmed ? 'blue' : ''} ${currentUser && event.isContacted ? 'clickable' : 'disabled'}`}
                             disabled={!currentUser || !event.isContacted}
+                            style={
+                                hoveredButton === 'isConfirmed'
+                                    ? {
+                                          backgroundColor: '#7bacf5',
+                                          color: 'white',
+                                      }
+                                    : {}
+                            }
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
                                     : ''
                             }
                         >
-                            Confirmed? {event.isConfirmed ? 'Yes ✓' : 'No'}
+                            Confirmed? {event.isConfirmed ? '✓' : 'X'}
                         </button>
                     </div>
                     <div className="button-pair">
                         <button
+                            onMouseOver={() => handleMouseOver('isPizzaNight')}
+                            onMouseOut={handleMouseOut}
                             onClick={() =>
                                 handleCheckboxChange(
                                     'isPizzaNight',
@@ -180,15 +209,27 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                             }
                             className={`status-btn ${event.isPizzaNight ? 'blue' : ''} ${currentUser ? 'clickable' : 'disabled'}`}
                             disabled={!currentUser}
+                            style={
+                                hoveredButton === 'isPizzaNight'
+                                    ? {
+                                          backgroundColor: '#7bacf5',
+                                          color: 'white',
+                                      }
+                                    : {}
+                            }
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
                                     : ''
                             }
                         >
-                            Pizza Night? {event.isPizzaNight ? 'Yes ✓' : 'No'}
+                            Pizza? {event.isPizzaNight ? '✓' : 'X'}
                         </button>
                         <button
+                            onMouseOver={() =>
+                                handleMouseOver('isPizzaOrdered')
+                            }
+                            onMouseOut={handleMouseOut}
                             onClick={() =>
                                 handleCheckboxChange(
                                     'isPizzaOrdered',
@@ -197,14 +238,21 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
                             }
                             className={`status-btn ${event.isPizzaOrdered ? 'blue' : ''} ${currentUser && event.isPizzaNight ? 'clickable' : 'disabled'}`}
                             disabled={!currentUser || !event.isPizzaNight}
+                            style={
+                                hoveredButton === 'isPizzaOrdered'
+                                    ? {
+                                          backgroundColor: '#7bacf5',
+                                          color: 'white',
+                                      }
+                                    : {}
+                            }
                             title={
                                 !currentUser
                                     ? 'Please log in using your @bigapplerecsports.com email to make changes'
                                     : ''
                             }
                         >
-                            Pizza Ordered?{' '}
-                            {event.isPizzaOrdered ? 'Yes ✓' : 'No'}
+                            Ordered? {event.isPizzaOrdered ? '✓' : 'X'}
                         </button>
                     </div>
                 </td>

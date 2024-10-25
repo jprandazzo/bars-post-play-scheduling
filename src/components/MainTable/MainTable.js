@@ -11,7 +11,6 @@ import {
     LocationFilter,
     SportFilter,
     ConfirmationFilters,
-    PizzaFilters,
 } from './MainTableFilterComponents';
 
 import { getCurrentSeason } from '../../utils/seasonUtils';
@@ -172,7 +171,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
             {/* <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button> */}
             {/* </div> */}
 
-            <Table bordered hover className="main-table">
+            <Table bordered hover size="sm" className="main-table">
                 <thead>
                     <tr>
                         <th id="week-column-header">Week</th>
@@ -229,8 +228,6 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                         <ConfirmationFilters
                             {...{ userFilters, setUserFilters }}
                         />
-
-                        {/* <PizzaFilters {...{ userFilters, setUserFilters }} /> */}
 
                         <th id="actions-column-header">Actions</th>
                     </tr>

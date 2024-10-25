@@ -114,6 +114,7 @@ export const EditEventModal = ({
         setSelectedDate(date);
         setHasChanges(true);
         if (date) {
+            console.log(date.getDay());
             setEditedEvent((prevEvent) => ({
                 ...prevEvent,
                 eventDate: {

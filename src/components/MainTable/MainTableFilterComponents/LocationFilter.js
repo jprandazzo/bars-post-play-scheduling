@@ -18,8 +18,9 @@ export const LocationFilter = ({
                     target="_blank"
                     rel="noreferrer"
                 >
-                    (Link to BARS Contact List)
+                    BARS Contact List
                 </a>
+                <br />
 
                 <DropdownButton
                     variant="outline-primary"

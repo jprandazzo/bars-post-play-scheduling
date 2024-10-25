@@ -29,6 +29,6 @@ const firebaseConfig =
 
 setLogLevel('error');
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfigProd);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
