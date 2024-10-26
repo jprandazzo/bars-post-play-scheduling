@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 
 import { LabelWithoutInputFocus } from '../../../common/LabelWithoutInputFocus';
 import { getSeason } from '../../../utils/seasonUtils';
-import { useEvents } from '../../../contexts/EventsContext';
+import { useEvents } from '../../../../contexts/EventsContext';
 import { DropdownInput } from '../../../common/DropdownInput';
 
 import 'react-datepicker/dist/react-datepicker.css';

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
-import { App } from './App';
+import { App } from './postPlayEvents/App';
 import { AuthProvider } from './contexts/AuthContext';
 import { EventsProvider } from './contexts/EventsContext';
 import reportWebVitals from './reportWebVitals';
@@ -14,7 +14,7 @@ root.render(
     <React.StrictMode>
         <AuthProvider>
             <EventsProvider>
-                <Router>
+                <Router basename="/bars-post-play-scheduling">
                     <App />
                 </Router>
             </EventsProvider>

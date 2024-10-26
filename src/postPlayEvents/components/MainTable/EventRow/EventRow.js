@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 import { eventLocations } from '../../../themes/eventLocations';
-import { EditEventModal } from '../../Modals';
+import { EditEventModal } from '../../../components/Modals';
 import { getJsDate } from '../../../utils/getJsDate';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebaseConfig';
-import { useAuth } from '../../../contexts/AuthContext';
+import { db } from '../../../../firebaseConfig';
+import { useAuth } from '../../../../contexts/AuthContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';

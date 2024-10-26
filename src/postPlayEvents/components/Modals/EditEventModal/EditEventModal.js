@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 
 import { DropdownInput } from '../../../common/DropdownInput';
-import { useEvents } from '../../../contexts/EventsContext';
+import { useEvents } from '../../../../contexts/EventsContext';
 import { getSeason } from '../../../utils/seasonUtils';
 import { LabelWithoutInputFocus } from '../../../common/LabelWithoutInputFocus';
 

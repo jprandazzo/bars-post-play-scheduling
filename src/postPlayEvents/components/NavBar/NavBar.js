@@ -1,77 +1,65 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { getCurrentSeason } from '../../utils/seasonUtils/getCurrentSeason';
-import { useAuth } from '../../contexts/AuthContext'; // Use the AuthContext to manage sign out
+import { useAuth } from '../../../contexts/AuthContext';
 
 import './NavBar.css';
 
 export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
-    const { currentUser, signInWithGoogle, logout } = useAuth(); // Get the logout function from the context
-
+    const { currentUser, signInWithGoogle, logout } = useAuth();
     const [popupVisible, setPopupVisible] = useState(false);
-    const [selectedYear, setSelectedYear] = useState(null); // Track selected year
-    const [fadeClass, setFadeClass] = useState('fade-in'); // Control fade class
-    const [showSeasons, setShowSeasons] = useState(false); // Track if seasons should be shown
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [fadeClass, setFadeClass] = useState('fade-in');
+    const [showSeasons, setShowSeasons] = useState(false);
+    const navigate = useNavigate(); // Add navigate from react-router
 
     const resetApp = () => {
         setCurrentSchedule(getCurrentSeason());
+        const { year, season } = getCurrentSeason();
+        navigate(`/season/${year}/${season.toLowerCase()}`);
     };
-    // console.log('nav bar loaded')
+
     const handleSeasonChange = (direction) => {
         const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
         const currentSeasonIndex = seasonOrder.indexOf(currentSchedule.season);
+        let newYear = currentSchedule.year;
+        let newSeason = currentSchedule.season.toLowerCase();
 
         if (direction === 'prev') {
             if (currentSeasonIndex === 0) {
-                setCurrentSchedule({
-                    year: currentSchedule.year - 1,
-                    season: 'fall',
-                });
+                newYear = currentSchedule.year - 1;
+                newSeason = 'fall';
             } else {
-                setCurrentSchedule({
-                    year: currentSchedule.year,
-                    season: seasonOrder[currentSeasonIndex - 1],
-                });
+                newSeason = seasonOrder[currentSeasonIndex - 1];
             }
-            // console.log(currentSchedule)
         } else if (direction === 'next') {
             if (currentSeasonIndex === 3) {
-                setCurrentSchedule({
-                    year: currentSchedule.year + 1,
-                    season: 'winter',
-                });
+                newYear = currentSchedule.year + 1;
+                newSeason = 'winter';
             } else {
-                setCurrentSchedule({
-                    year: currentSchedule.year,
-                    season: seasonOrder[currentSeasonIndex + 1],
-                });
+                newSeason = seasonOrder[currentSeasonIndex + 1];
             }
         }
-    };
 
-    const handlePopupClick = (e) => {
-        if (e.target.className === 'popup-page-container') {
-            setPopupVisible(false);
-            setShowSeasons(false); // Hide seasons when the popup is closed
-        }
+        setCurrentSchedule({ year: newYear, season: newSeason });
+        navigate(`/season/${newYear}/${newSeason.toLowerCase()}`);
     };
 
     const handleYearClick = (year) => {
-        setSelectedYear(year); // Store selected year
-        setFadeClass('fade-out'); // Trigger fade-out animation
-
-        // After fade-out, show seasons and trigger fade-in
+        setSelectedYear(year);
+        setFadeClass('fade-out');
         setTimeout(() => {
             setFadeClass('fade-in');
             setShowSeasons(true);
-        }, 100); // Adjust delay to match CSS transition
+        }, 100);
     };
 
     const handleSeasonClick = (season) => {
         if (selectedYear) {
-            setCurrentSchedule({ year: selectedYear, season }); // Set year and season
-            setPopupVisible(false); // Close the popup after selecting the season
-            setShowSeasons(false); // Reset showSeasons for future interactions
+            setCurrentSchedule({ year: selectedYear, season });
+            setPopupVisible(false);
+            setShowSeasons(false);
+            navigate(`/season/${selectedYear}/${season.toLowerCase()}`);
         }
     };
 
@@ -102,10 +90,7 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
                         </button>
                         <button
                             type="button"
-                            onClick={() => {
-                                setPopupVisible(true);
-                                setShowSeasons(false);
-                            }}
+                            onClick={() => setPopupVisible(true)}
                         >
                             Select Season
                         </button>
@@ -142,7 +127,10 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
             {popupVisible && (
                 <div
                     className="popup-page-container"
-                    onClick={handlePopupClick}
+                    onClick={(e) =>
+                        e.target.className === 'popup-page-container' &&
+                        setPopupVisible(false)
+                    }
                 >
                     <div className="popup">
                         <button
@@ -167,7 +155,6 @@ export const NavBar = ({ currentSchedule, setCurrentSchedule }) => {
                             ))}
                         </div>
 
-                        {/* Show seasons only when a year is selected */}
                         {showSeasons && (
                             <div className={`seasons-row ${fadeClass}`}>
                                 {['Winter', 'Spring', 'Summer', 'Fall'].map(

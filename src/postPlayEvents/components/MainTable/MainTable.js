@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Dropdown, Table, Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { db } from '../../firebaseConfig';
+import { db } from '../../../firebaseConfig';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { useAuth } from '../../contexts/AuthContext';
-import { useEvents } from '../../contexts/EventsContext';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useEvents } from '../../../contexts/EventsContext';
 import {
     LocationFilter,
     SportFilter,
@@ -14,18 +15,17 @@ import {
 } from './MainTableFilterComponents';
 
 import { getCurrentSeason } from '../../utils/seasonUtils';
-import { fetchData } from '../../utils/fetchData';
-import { filterEventsToCurrentSeason } from '../../utils/filterUtils/filterEventsToCurrentSeason';
-import {
-    handleAddNewEvent,
-    handleAddNewSeason,
-} from '../../utils/handleAddNewUtils';
-import { AddNewEventModal, AddNewSeasonModal } from '../Modals';
+import { fetchData } from '../../../fetchData';
+import { filterEventsToCurrentSeason } from '../../utils/filterUtils';
+import { handleAddNewEvent } from '../../utils/handleAddNewUtils';
+import { AddNewEventModal, AddNewSeasonModal } from '../../components/Modals';
 import { sortEvents } from '../../utils/sortUtils';
 import { EventRow } from './EventRow/EventRow';
 import { applyUserFilters } from '../../utils/filterUtils/applyUserFilters';
 
 export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
+    const { year, season } = useParams();
+    const navigate = useNavigate();
     const { currentUser } = useAuth();
     const { allEvents, setAllEvents } = useEvents();
     const [filteredAndSortedEvents, setFilteredAndSortedEvents] = useState([]);
@@ -55,12 +55,21 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
         ],
     });
 
+    // Combine useEffect to handle both URL params and fetching data
     useEffect(() => {
-        setCurrentSchedule(getCurrentSeason());
-        fetchData({ setAllEvents });
-    }, [setAllEvents, setCurrentSchedule]);
+        const fetchAndSetData = async () => {
+            if (year && season) {
+                setCurrentSchedule({ year: Number.parseInt(year), season });
+            } else {
+                setCurrentSchedule(getCurrentSeason());
+            }
+            await fetchData({ setAllEvents });
+        };
 
-    // Calculate unique locations from all events once
+        fetchAndSetData();
+    }, [year, season, setAllEvents, setCurrentSchedule]);
+
+    // Handle unique locations and sports
     useEffect(() => {
         const uniqueLocationsSet = new Set(
             allEvents.map((event) => event.location)
@@ -68,24 +77,23 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
         const uniqueLocationsArray = Array.from(uniqueLocationsSet);
         setUniqueLocations(uniqueLocationsArray);
 
-        // Initialize selectedLocations with all locations by default
         if (
             uniqueLocationsArray.length > 0 &&
             userFilters.selectedLocations.length === 0
         ) {
             setUserFilters((prevFilters) => ({
                 ...prevFilters,
-                selectedLocations: uniqueLocationsArray, // Set all locations as selected by default
+                selectedLocations: uniqueLocationsArray,
             }));
         }
 
-        // Deduplicate sport days of the week from all events
         const uniqueSportDaysOfWeekSet = new Set(
             allEvents.map((event) => event.sportDayOfWeek)
         );
         setUniqueSportDaysOfWeek(Array.from(uniqueSportDaysOfWeekSet));
     }, [allEvents, userFilters.selectedLocations.length]);
 
+    // Apply user filters and sort events
     useEffect(() => {
         const filtered = filterEventsToCurrentSeason(
             allEvents,
@@ -151,10 +159,6 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
 
     return (
         <div>
-            {/* <div 
-                className={"add-event-season-buttons"}
-                
-            > */}
             <Button
                 variant="primary"
                 onClick={() => setIsEventModalOpen(true)}
@@ -168,14 +172,13 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
             >
                 + Add New Event
             </Button>
-            {/* <Button variant="secondary" onClick={() => setSeasonModalOpen(true)} disabled={true}>Add New Season</Button> */}
-            {/* </div> */}
+            <br />
+            <br />
 
             <Table bordered hover size="sm" className="main-table">
                 <thead>
                     <tr>
                         <th id="week-column-header">Week</th>
-
                         <th id="date-filter-container">
                             <Dropdown>
                                 <Dropdown.Toggle
@@ -203,7 +206,6 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </th>
-
                         <SportFilter
                             {...{
                                 uniqueSportDaysOfWeek,
@@ -211,12 +213,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                 setUserFilters,
                             }}
                         />
-
-                        <th id="attendees-column">
-                            Est. # of <br />
-                            Attendees
-                        </th>
-
+                        <th id="attendees-column">Est. # of Attendees</th>
                         <LocationFilter
                             {...{
                                 uniqueLocations,
@@ -224,18 +221,13 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                 setUserFilters,
                             }}
                         />
-
                         <ConfirmationFilters
                             {...{ userFilters, setUserFilters }}
                         />
-
                         <th id="actions-column-header">Actions</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    {/* {console.log(allEvents)} */}
-                    {/* {console.log(filteredAndSortedEvents)} */}
                     {filteredAndSortedEvents.map((event) => (
                         <EventRow
                             key={event.id}
@@ -258,12 +250,10 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                     setUserFilters,
                 }}
             />
-
             <AddNewSeasonModal
                 {...{
                     isSeasonModalOpen,
                     setSeasonModalOpen,
-                    handleAddNewSeason,
                     allEvents,
                     setAllEvents,
                     setIsEventModalOpen,

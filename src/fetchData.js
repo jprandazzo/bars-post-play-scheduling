@@ -1,4 +1,4 @@
-import { db } from '../firebaseConfig';
+import { db } from './firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
 export const fetchData = async ({ setAllEvents }) => {

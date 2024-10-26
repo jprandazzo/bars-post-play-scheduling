@@ -1,7 +1,7 @@
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig'; // Ensure correct import for firebaseConfig
+import { db } from '../../../firebaseConfig';
 
-import { fetchData } from '../fetchData';
+import { fetchData } from '../../../fetchData';
 
 // Function to handle adding a new event
 export const handleAddNewEvent = async (

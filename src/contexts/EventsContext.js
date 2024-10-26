@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchData } from '../utils/fetchData';
+import { fetchData } from '../fetchData';
 
 const EventsContext = createContext();
 
