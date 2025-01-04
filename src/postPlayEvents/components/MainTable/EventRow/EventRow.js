@@ -16,6 +16,17 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
     const { currentUser } = useAuth();
     const [hoveredButton, setHoveredButton] = useState(null);
 
+    const getFormattedHours = militaryHours => {
+        if (!(!!militaryHours && militaryHours >= 0 && militaryHours <=23 )) return "error - please check data"
+
+        const formattedHour = 
+            militaryHours > 12 ? militaryHours - 12 : 
+                militaryHours === 0 ? 12 : militaryHours
+        
+        const formattedAmPm = militaryHours < 12 ? "AM" : "PM"
+        return {hour: formattedHour, amPm: formattedAmPm}
+    }
+
     const getEventLocationWithNeighborhood = (location) => {
         if (eventLocations.hkLocations.includes(location))
             return (
@@ -115,15 +126,16 @@ export const EventRow = ({ event, onDelete, onEdit }) => {
             <tr key={event.id} className={event.sport}>
                 <td id="week-column-row">{event.weekNumber}</td>
                 <td id="date-filter-row">
-                    {getJsDate(event.eventDate).toLocaleDateString('en-US', {
+                    {/* {getJsDate(event.eventDate).toLocaleDateString('en-US', {
                         weekday: 'long',
-                    })}
+                    })} */}
+                    {event.eventDate?.dayOfWeek}
                     <br />
-                    {event.eventDate.month}/{event.eventDate.date}/
-                    {event.eventDate.year}
+                    {event.eventDate?.month}/{event.eventDate?.date}/
+                    {event.eventDate?.year}
                     <br />
-                    {event.eventDate.hour}:{event.eventDate.minute}{' '}
-                    {event.eventDate.amPm}
+                    {getFormattedHours(event.eventDate.hour).hour}:{event.eventDate.minute}{' '}
+                    {getFormattedHours(event.eventDate.hour).amPm}
                     <br />
                 </td>
                 <td className="event-row-sport">

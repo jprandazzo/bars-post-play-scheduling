@@ -213,7 +213,7 @@ export const MainTable = ({ currentSchedule, setCurrentSchedule }) => {
                                 setUserFilters,
                             }}
                         />
-                        <th id="attendees-column">Est. # of Attendees</th>
+                        <th id="attendees-column">Est. # of <br/>Attendees</th>
                         <LocationFilter
                             {...{
                                 uniqueLocations,

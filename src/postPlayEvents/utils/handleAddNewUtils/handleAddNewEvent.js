@@ -21,14 +21,7 @@ export const handleAddNewEvent = async (
             sportDayOfWeek: newEvent.sportDayOfWeek,
             numRegistered: newEvent.numRegistered || 0,
             percentAttendance: newEvent.percentAttendance || 100,
-            numAttendees:
-                newEvent.numAttendees || newEvent.numRegistered
-                    ? Math.round(
-                          ((newEvent.numRegistered || 0) *
-                              ((newEvent.percentAttendance || 100) / 100)) /
-                              20
-                      ) * 20
-                    : null,
+            numAttendees: newEvent.numAttendees || 0,
             location: newEvent.location || '',
             isContacted: newEvent.isContacted || false,
             isConfirmed: newEvent.isConfirmed || false,

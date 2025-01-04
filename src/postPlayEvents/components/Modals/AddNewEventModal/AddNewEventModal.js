@@ -55,9 +55,9 @@ export const AddNewEventModal = ({
         isConfirmed: false,
         isPizzaNight: false,
         isPizzaOrdered: false,
-        numAttendees: 0,
+        numAttendees: "",
         numRegistered: 0,
-        percentAttendance: 100,
+        percentAttendance: 0,
     });
 
     const uniqueSports = ['Bowling', 'Dodgeball', 'Kickball', 'Pickleball'];
@@ -126,11 +126,29 @@ export const AddNewEventModal = ({
     //   setIsDateValid(isValid);
     // };
 
+    const calculateNumAttendees = () => {
+        return newEvent.numRegistered > 0 && newEvent.percentAttendance > 0 ? newEvent.numRegistered * newEvent.percentAttendance : newEvent.numAttendees
+    }
+
+    // keep this to use later
+    // const calculatePercentAttendance = (prevEvent, field, value) => {
+    //     if (field === 'sport') {
+    //         if (value === 'dodgeball') return 70
+    //         if (value === 'pickleball') return 50
+    //         if (value === 'bowling') return 35
+    //         if (value === 'kickball') return 70
+    //     }
+    //     return prevEvent.percentAttendance
+    // }
+
     const handleInputChange = (field, value) => {
         setNewEvent((prevEvent) => ({
             ...prevEvent,
             [field]: value,
+            // percentAttendance: calculatePercentAttendance(prevEvent, field, value)
         }));
+
+        // console.log(newEvent)
     };
 
     const handleDateChange = (date) => {
@@ -216,7 +234,6 @@ export const AddNewEventModal = ({
             alert('Please provide both date and time');
             return;
         }
-
         handleAddNewEvent(
             newEvent,
             setAllEvents,
@@ -372,7 +389,7 @@ export const AddNewEventModal = ({
                             id="numAttendees"
                             type="text"
                             placeholder="# of Attendees"
-                            value={newEvent?.numAttendees || ''}
+                            value={calculateNumAttendees() || ''}
                             onChange={(e) =>
                                 handleInputChange(
                                     'numAttendees',
