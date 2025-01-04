@@ -1,8 +1,9 @@
-const { spawnSync } = require('node:child_process');
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
-const inquirer = require('inquirer');
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import inquirer from 'inquirer';
+
 
 // Utility function to run shell commands
 const run = (command, args = [], options = {}) => {
